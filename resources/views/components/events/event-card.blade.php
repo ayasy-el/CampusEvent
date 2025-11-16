@@ -1,103 +1,173 @@
-@props(['event', 'variant' => 'list', 'index' => 0])
+@props([
+    'event',
+    'variant' => 'list',
+    'index' => 0,
+    'show_detail' => false,
+    'status' => 'open', // 'open', 'registered', 'finished'
+])
 
 @php
     $style = match (strtolower($event['quota_info'])) {
-        'kuota penuh'        => 'subtle-danger',
+        'kuota penuh' => 'subtle-danger',
         'kuota hampir penuh' => 'subtle-warning',
-        default              => 'subtle-success',
+        default => 'subtle-success',
     };
 @endphp
 
-<article
-    class="{{ $variant === 'list'
-                ? 'bg-white/95 border border-slate-100 rounded-2xl p-4 shadow-sm hover:shadow-md transition group'
-                : 'bg-white/95 border border-slate-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition group' }}"
-    data-category="{{ $event['category'] }}"
-    data-mode="{{ $event['mode'] }}"
-    data-date="{{ $event['date']->format('Y-m-d') }}"
-    data-index="{{ $index }}"
-    data-title="{{ strtolower($event['title']) }}"
-    data-registered="{{ $event['registered'] }}"
->
+<article @class([
+    'bg-white/95 border border-slate-100 shadow-sm hover:shadow-md transition group',
+
+    'rounded-2xl p-4' => $variant === 'list',
+    'rounded-3xl overflow-hidden' => $variant !== 'list',
+
+    'opacity-80' => $status === 'finished',
+]) data-category="{{ $event['category'] }}" data-mode="{{ $event['mode'] }}"
+    data-date="{{ $event['date']->format('Y-m-d') }}" data-index="{{ $index }}"
+    data-title="{{ strtolower($event['title']) }}" data-registered="{{ $event['registered'] }}">
 
     {{-- VARIANT LIST --}}
     @if ($variant === 'list')
         <div class="flex gap-4">
             <!-- Date -->
-            <div class="flex flex-col items-center justify-center px-3 py-2 bg-slate-900 text-white rounded-xl min-w-[68px]">
-                <span class="text-[11px] uppercase text-slate-300">
-                    {{ $event['date']->translatedFormat('D') }}
-                </span>
-                <span class="text-xl font-bold">
-                    {{ $event['date']->format('d') }}
-                </span>
-                <span class="text-[11px] text-slate-300">
-                    {{ $event['date']->translatedFormat('M') }}
-                </span>
-            </div>
+
+            @if ($event['image'])
+                <div class="relative w-25 h-25 rounded-2xl overflow-hidden bg-slate-200 flex-shrink-0">
+                    <img src="{{ $event['image'] }}" alt="Campus Startup Competition 2025" @class([
+                        'w-full h-full object-cover',
+                        'grayscale' => $status === 'finished',
+                    ]) />
+                    <div
+                        class="absolute top-1 left-1 px-1.5 py-1 rounded-2xl bg-slate-900/90 text-white text-center min-w-[44px]">
+                        <span
+                            class="text-[9px] uppercase tracking-wide text-slate-200 block">{{ $event['date']->translatedFormat('D') }}</span>
+                        <span class="text-xs font-bold leading-none block">{{ $event['date']->format('d') }}</span>
+                        <span
+                            class="text-[9px] text-slate-300 block mt-0.5">{{ $event['date']->translatedFormat('M') }}</span>
+                    </div>
+                </div>
+            @else
+                <div
+                    class="flex flex-col items-center justify-center px-9 py-2 bg-slate-900 text-white rounded-xl min-w-[68px]">
+                    <span class="text-[11px] uppercase text-slate-300">
+                        {{ $event['date']->translatedFormat('D') }}
+                    </span>
+                    <span class="text-xl font-bold">
+                        {{ $event['date']->format('d') }}
+                    </span>
+                    <span class="text-[11px] text-slate-300">
+                        {{ $event['date']->translatedFormat('M') }}
+                    </span>
+                </div>
+            @endif
 
             <!-- Content -->
             <div class="flex-1 min-w-0">
                 <div class="flex justify-between items-start mb-1">
-                    <h2 class="text-sm md:text-base font-semibold text-slate-900 group-hover:text-sky-700 line-clamp-2">
+                    <h2 class="text-xs md:text-sm font-semibold text-slate-900 group-hover:text-sky-700 line-clamp-2">
                         {{ $event['title'] }}
                     </h2>
-
-                    <x-badge variant="subtle-info" size="xs">
-                        {{ $event['category_icon'] }} {{ ucfirst($event['category']) }}
-                    </x-badge>
+                    @if ($status === 'open')
+                        <x-badge variant="subtle-info" size="xs">
+                            {{ $event['category_icon'] }} {{ ucfirst($event['category']) }}
+                        </x-badge>
+                    @endif
                 </div>
 
                 <p class="text-[11px] text-slate-500">
-                    {{ $event['organizer'] }} • {{ $event['location'] }}
+                    {{ $event['organizer'] }}
+                    @if ($event['location'] && $event['organizer'])
+                        •
+                    @endif
+                    {{ $event['location'] }}
                 </p>
 
                 <p class="mt-1 text-[11px] text-slate-500">
-                    {{ $event['time'] }} WIB • {{ $event['benefit'] }}
+                    {{ $event['time'] }} WIB
+                    @if ($event['benefit'] && $event['time'])
+                        •
+                    @endif
+                    {{ $event['benefit'] }}
                 </p>
 
                 <!-- Badges -->
-                <div class="mt-2 flex gap-2 flex-wrap">
-                    <x-badge variant="outline-dark" size="xxs">
-                        👥 {{ $event['registered'] }} terdaftar
-                    </x-badge>
+                @if ($status === 'open')
+                    <div class="mt-2 flex gap-2 flex-wrap">
+                        <x-badge variant="outline-dark" size="xxs">
+                            👥 {{ $event['registered'] }} terdaftar
+                        </x-badge>
 
-                    <x-badge size="xxs" variant="{{ $style }}">
-                        {{ $event['quota_info'] }}
-                </x-badge>
-                </div>
+                        <x-badge size="xxs" variant="{{ $style }}">
+                            {{ $event['quota_info'] }}
+                        </x-badge>
+                    </div>
+                @endif
             </div>
 
             <!-- CTA Desktop -->
-            <div class="hidden md:flex flex-col items-end justify-between">
-                <x-button variant="primary-sm">
-                    Daftar
-                </x-button>
+            <div @class([
+                'hidden md:flex' => $status === 'open',
+                'flex' => $status === 'registered' || $status === 'finished',
+                'flex-col items-end justify-between',
+            ])>
+                @if ($status === 'registered')
+                    <x-badge size="xxs" variant="subtle-success">Sudah Terdaftar</x-badge>
+                @elseif ($status === 'finished')
+                    <x-badge variant="subtle-gray" size="xxs"> Selesai</x-badge>
+                @elseif ($status === 'open')
+                    <x-button variant="primary-sm">
+                        Daftar
+                    </x-button>
+                @endif
+
+
+                @if ($show_detail)
+                    <a href="#" class="text-[11px] items-end text-sky-600 font-medium">
+                        Lihat detail →
+                    </a>
+                @endif
             </div>
         </div>
 
         <!-- CTA Mobile -->
-        <div class="mt-3 flex md:hidden justify-between pt-3 border-t border-slate-100">
-            <x-button variant="primary-sm">
-                Lihat detail
-            </x-button>
-        </div>
-    @else
-    {{-- VARIANT GRID --}}
-        <div class="relative h-32">
-            <img src="{{ $event['image'] }}" class="w-full h-full object-cover group-hover:scale-[1.03] transition" />
-
-            <div class="absolute top-2 left-2 px-2 py-1.5 bg-slate-900/90 text-white rounded-2xl text-center">
-                <span class="text-[10px] uppercase text-slate-200 block">
-                    {{ $event['date']->translatedFormat('D') }}
-                </span>
-                <span class="text-base font-bold block">
-                    {{ $event['date']->format('d') }}
-                </span>
-                <span class="text-[10px] text-slate-300 block mt-0.5">
-                    {{ $event['date']->translatedFormat('M') }}
-                </span>
+        @if ($status === 'open')
+            <div class="mt-3 flex md:hidden justify-between pt-3 border-t border-slate-100">
+                <x-button variant="primary-sm">
+                    Lihat detail
+                </x-button>
             </div>
+        @endif
+    @else
+        {{-- VARIANT GRID --}}
+        <div class="relative h-32">
+            @if ($event['image'])
+                <img src="{{ $event['image'] }}"
+                    class="w-full h-full object-cover group-hover:scale-[1.03] transition" />
+
+                <div class="absolute top-2 left-2 px-2 py-1.5 bg-slate-900/90 text-white rounded-2xl text-center">
+                    <span class="text-[10px] uppercase text-slate-200 block">
+                        {{ $event['date']->translatedFormat('D') }}
+                    </span>
+                    <span class="text-base font-bold block">
+                        {{ $event['date']->format('d') }}
+                    </span>
+                    <span class="text-[10px] text-slate-300 block mt-0.5">
+                        {{ $event['date']->translatedFormat('M') }}
+                    </span>
+                </div>
+            @else
+                <div
+                    class="flex flex-col items-center justify-center bg-slate-900 text-white rounded-xl min-h-full min-w-full">
+                    <span class="text-[20px] uppercase text-slate-300">
+                        {{ $event['date']->translatedFormat('D') }}
+                    </span>
+                    <span class="text-[30px] font-bold">
+                        {{ $event['date']->format('d') }}
+                    </span>
+                    <span class="text-[20px] text-slate-300">
+                        {{ $event['date']->translatedFormat('M') }}
+                    </span>
+                </div>
+            @endif
 
             <x-badge variant="subtle-info" size="xs" class="absolute bottom-2 right-2">
                 {{ $event['category_icon'] }} {{ ucfirst($event['category']) }}

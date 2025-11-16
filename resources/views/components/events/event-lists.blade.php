@@ -35,7 +35,7 @@
             'category' => 'kompetisi',
             'category_icon' => '🏆',
             'mode' => 'onsite',
-            'image' => 'https://images.unsplash.com/photo-1559136555-9303baea8ebd',
+            'image' => '',
             'organizer' => 'Inkubator Bisnis Kampus',
             'location' => 'Aula & Studio Pitching',
             'time' => '1 hari penuh',
