@@ -21,10 +21,11 @@
         "bg-white rounded-full shadow-md border border-slate-100 text-slate-700" => $variant === 'minimalist',
         "bg-slate-50 border border-slate-200 rounded-full text-slate-600" => $variant === 'outline-dark',
 
-        "rounded-full bg-red-50 border-red-200 text-red-700"=> $variant === "subtle-danger",
-        "rounded-full bg-amber-50 border-amber-200 text-amber-700"=> $variant === "subtle-warning",
-        "rounded-full bg-emerald-50 border-emerald-200 text-emerald-700"=> $variant === "subtle-success",
+        "rounded-full bg-red-50 border border-red-200 text-red-700"=> $variant === "subtle-danger",
+        "rounded-full bg-amber-50 border border-amber-200 text-amber-700"=> $variant === "subtle-warning",
+        "rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700"=> $variant === "subtle-success",
         "rounded-full bg-sky-50 border border-sky-100 text-sky-700" => $variant === "subtle-info",
+        "rounded-full bg-slate-100 border border-slate-200 text-slate-600" => $variant === "subtle-gray",
     ])}}
 >
     {{ $slot }}
