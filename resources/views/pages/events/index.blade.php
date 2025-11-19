@@ -11,7 +11,7 @@
         </x-slot:badge>
 
         <x-info-banner title="Event yang sudah kamu daftarkan"
-            description="Lihat event <strong>mendatang</strong> dan <strong>riwayat</strong> di Event Saya." href="#">
+            description="Lihat event <strong>mendatang</strong> dan <strong>riwayat</strong> di Event Saya." href="{{ route('my_events') }}">
                 Lihat Semua Event Terdaftar
                 <span class="inline-flex items-center justify-center ml-1 px-2 py-0.5 rounded-full bg-white/20 text-[11px]">
                     3 event

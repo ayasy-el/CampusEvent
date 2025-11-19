@@ -8,7 +8,7 @@
     <x-home.upcoming-events />
     <x-home.featured-event />
     <x-home.explore-categories/>
-    <x-home.organizations/>
+    {{-- <x-home.organizations/> --}}
     <x-home.how-it-works/>
     <x-home.benefits/>
     <x-home.final-cta/>

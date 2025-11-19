@@ -62,7 +62,7 @@
                 Daftar event yang sudah kamu pilih. Datang tepat waktu ya ✨
             </p>
         </div>
-        <x-button href="#" variant="link-sm">Show All</x-button>
+        <x-button href=" {{ route('my_events') }}" variant="link-sm">Show All</x-button>
     </div>
 
 
@@ -75,7 +75,7 @@
     <!-- CONTOH KETIKA SUDAH ADA EVENT TERDAFTAR -->
     <div class="grid gap-3 lg:grid-cols-3">
         @foreach ($events as $i => $event)
-            <x-events.event-card :event="$event" :index="$i" variant="list" status="registered"
+            <x-events.event-card :event="$event" :index="$i+1" variant="list" status="registered"
                 show_detail="true" />
         @endforeach
     </div>

@@ -3,7 +3,7 @@
         <h2 class="text-sm md:text-base font-semibold text-slate-900">
             Event lain yang mungkin kamu suka
         </h2>
-        <a href="all-events.html" class="text-[11px] md:text-xs font-semibold text-sky-600 hover:text-sky-700">
+        <a href="{{ route('events') }}" class="text-[11px] md:text-xs font-semibold text-sky-600 hover:text-sky-700">
             Lihat semua event
         </a>
     </div>

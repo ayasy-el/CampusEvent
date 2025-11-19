@@ -51,7 +51,7 @@
         />
 
         <x-profile.profile-actions
-            cancel-url="#"
+            cancel-url="{{ route('profile') }}"
         />
     </x-student.profile-form>
 </main>

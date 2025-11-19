@@ -1,8 +1,9 @@
 @props([
     'variant' => 'primary-lg',
+    'href' => '#',
 ])
 
-<a
+<a href="{{ $href }}"
     {{ $attributes->class([
         'inline-flex items-center font-semibold transition rounded-full',
 

@@ -64,7 +64,7 @@
             <div class="flex-1 min-w-0">
                 <div class="flex justify-between items-start mb-1">
                     <h2 class="text-xs md:text-sm font-semibold text-slate-900 group-hover:text-sky-700 line-clamp-2">
-                        {{ $event['title'] }}
+                        <a href="{{ route('event_detail', ['id'=>$index]) }}">{{ $event['title'] }}</a>
                     </h2>
                     @if ($status === 'open')
                         <x-badge variant="subtle-info" size="xs">
@@ -114,14 +114,14 @@
                 @elseif ($status === 'finished')
                     <x-badge variant="subtle-gray" size="xxs"> Selesai</x-badge>
                 @elseif ($status === 'open')
-                    <x-button variant="primary-sm">
+                    <x-button href="{{ route('event_detail', ['id'=>$index]) }}" variant="primary-sm">
                         Daftar
                     </x-button>
                 @endif
 
 
                 @if ($show_detail)
-                    <a href="#" class="text-[11px] items-end text-sky-600 font-medium">
+                    <a href="{{ route('event_detail', ['id'=>$index]) }}" class="text-[11px] items-end text-sky-600 font-medium">
                         Lihat detail →
                     </a>
                 @endif
@@ -131,7 +131,7 @@
         <!-- CTA Mobile -->
         @if ($status === 'open')
             <div class="mt-3 flex md:hidden justify-between pt-3 border-t border-slate-100">
-                <x-button variant="primary-sm">
+                <x-button href="{{ route('event_detail', ['id'=>$index]) }}" variant="primary-sm">
                     Lihat detail
                 </x-button>
             </div>
@@ -176,7 +176,7 @@
 
         <div class="p-3.5 space-y-1.5">
             <h2 class="text-sm font-semibold text-slate-900 group-hover:text-sky-700 line-clamp-2">
-                {{ $event['title'] }}
+                <a href="{{ route('event_detail', ['id'=>$index]) }}">{{ $event['title'] }}</a>
             </h2>
 
             <p class="text-[11px] text-slate-500">
@@ -192,7 +192,7 @@
                     👥 {{ $event['registered'] }} peserta
                 </x-badge>
 
-                <x-button variant="primary-sm">
+                <x-button href="{{ route('event_detail', ['id'=>$index]) }}" variant="primary-sm">
                     Daftar
                 </x-button>
             </div>

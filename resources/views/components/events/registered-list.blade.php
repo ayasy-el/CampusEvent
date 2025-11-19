@@ -76,7 +76,7 @@
 
         <div class="space-y-3 md:space-y-4">
             @foreach ($events as $i => $event)
-                <x-events.event-card :event="$event" :index="$i" variant="list" status="registered"
+                <x-events.event-card :event="$event" :index="$i+1" variant="list" status="registered"
                     show_detail="true" />
             @endforeach
         </div>
@@ -97,7 +97,7 @@
 
         <div class="space-y-3 md:space-y-4">
             @foreach ($events as $i => $event)
-                <x-events.event-card :event="$event" :index="$i" variant="list" status="finished"
+                <x-events.event-card :event="$event" :index="$i+1" variant="list" status="finished"
                     show_detail="true" />
             @endforeach
         </div>

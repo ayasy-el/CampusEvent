@@ -15,7 +15,7 @@
             </p>
 
             <div class="mt-5 flex flex-wrap items-center gap-3">
-                <x-button href="#">Jelajahi Event</x-button>
+                <x-button href="{{ route('events') }}">Jelajahi Event</x-button>
             </div>
 
             <div class="mt-5 flex flex-wrap gap-3 text-[11px] md:text-xs text-slate-500">
