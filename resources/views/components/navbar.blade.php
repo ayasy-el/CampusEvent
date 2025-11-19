@@ -1,4 +1,4 @@
-<header class="pt-4 md:pt-6 mb-4 md:mb-8 relative z-[9999]">
+<header class="sticky top-0 pt-4 md:pt-6 mb-4 md:mb-8 z-[9999]">
     <div class="flex items-center justify-between bg-white/80 backdrop-blur rounded-full px-4 md:px-6 py-2.5 shadow-sm border border-slate-100 relative z-[9999]">
         <a href="{{ route('home') }}" class="flex items-center gap-2 md:gap-3">
             <div
