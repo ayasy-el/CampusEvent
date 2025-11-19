@@ -3,7 +3,7 @@
         <h2 class="text-lg md:text-2xl font-semibold text-slate-900">
             Upcoming Campus Events
         </h2>
-        <x-button variant="link-sm" href="#">
+        <x-button variant="link-sm" href="{{ route('events') }}">
             Lihat semua
         </x-button>
     </div>

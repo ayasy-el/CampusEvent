@@ -24,7 +24,7 @@
             </div>
         </div>
         <div class="flex flex-wrap gap-2 md:gap-3 items-center">
-            <a href="profile-edit.html"
+            <a href="{{ route('edit_profile') }}"
                 class="inline-flex items-center px-3.5 py-1.5 rounded-full bg-slate-900 text-white text-[11px] md:text-xs font-semibold hover:bg-slate-800">
                 Edit Profil
             </a>

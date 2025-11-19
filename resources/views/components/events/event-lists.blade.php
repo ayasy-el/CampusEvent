@@ -66,13 +66,13 @@
         <!-- LIST VIEW -->
         <div class="view-list space-y-3 md:space-y-4">
             @foreach ($events as $i => $event)
-                <x-events.event-card :event="$event" :index="$i" variant="list" />
+                <x-events.event-card :event="$event" :index="$i+1" variant="list" />
             @endforeach
         </div>
 
         <div class="view-grid grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
             @foreach ($events as $i => $event)
-                <x-events.event-card :event="$event" :index="$i" variant="grid" />
+                <x-events.event-card :event="$event" :index="$i+1" variant="grid" />
             @endforeach
         </div>
     </div>

@@ -1,6 +1,6 @@
 <header class="pt-4 md:pt-6 mb-4 md:mb-8 relative z-[9999]">
     <div class="flex items-center justify-between bg-white/80 backdrop-blur rounded-full px-4 md:px-6 py-2.5 shadow-sm border border-slate-100 relative z-[9999]">
-        <a href="/" class="flex items-center gap-2 md:gap-3">
+        <a href="{{ route('home') }}" class="flex items-center gap-2 md:gap-3">
             <div
                 class="w-9 h-9 md:w-10 md:h-10 rounded-2xl bg-gradient-to-tr from-sky-400 to-indigo-500 flex items-center justify-center text-white text-xs md:text-sm font-bold">
                 EC
@@ -22,7 +22,7 @@
             <div class="relative z-[99999]" id="userMenuWrapper">
                 <!-- Trigger -->
                 <button id="userMenuButton" type="button"
-                    class="flex items-center gap-2 rounded-full bg-slate-900 text-white pl-1.5 pr-2.5 py-1.5 text-xs md:text-sm shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400/60">
+                    class="cursor-pointer flex items-center gap-2 rounded-full bg-slate-900 text-white pl-1.5 pr-2.5 py-1.5 text-xs md:text-sm shadow-sm hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-400/60">
                     <span
                         class="w-7 h-7 md:w-8 md:h-8 rounded-full bg-[url('https://images.pexels.com/photos/1181395/pexels-photo-1181395.jpeg?auto=compress&cs=tinysrgb&w=800')] bg-cover bg-center border border-white/80"></span>
                     <span class="hidden sm:flex flex-col items-start leading-tight">
@@ -48,11 +48,11 @@
                     </div>
 
                     <nav class="py-1">
-                        <a href="/profile" class="flex items-center gap-2 px-3 py-1.5 hover:bg-slate-50">
+                        <a href="{{ route('profile') }}" class="flex items-center gap-2 px-3 py-1.5 hover:bg-slate-50">
                             <span>👤</span>
                             <span>Profile Saya</span>
                         </a>
-                        <a href="/my-events" class="flex items-center gap-2 px-3 py-1.5 hover:bg-slate-50">
+                        <a href="{{ route('my_events') }}" class="flex items-center gap-2 px-3 py-1.5 hover:bg-slate-50">
                             <span>📅</span>
                             <span>My Events</span>
                         </a>
