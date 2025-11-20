@@ -23,10 +23,19 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $angkatan = fake()->year();
+
         return [
             'name' => fake()->name(),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
+            'nrp' => fake()->unique()->bothify('05########'),
+            'program_studi' => fake()->randomElement(['Informatika', 'Sistem Informasi', 'Teknik Komputer', 'Manajemen Bisnis']),
+            'angkatan' => $angkatan,
+            'no_telepon' => fake()->phoneNumber(),
+            'kota' => fake()->city(),
+            'bio' => fake()->sentence(12),
+            'role' =>  'mahasiswa',
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
         ];
@@ -37,7 +46,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }
