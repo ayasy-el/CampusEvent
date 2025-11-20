@@ -12,7 +12,11 @@ class CategoryForm
         return $schema
             ->components([
                 TextInput::make('name')
-                    ->required(),
+                    ->label('Nama Kategori')
+                    ->placeholder('Contoh: Seminar, Workshop, Webinar, dll.')
+                    ->required()
+                    ->maxLength(255)
+                    ->autocomplete(false),
             ]);
     }
 }

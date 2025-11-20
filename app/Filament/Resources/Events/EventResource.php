@@ -32,6 +32,11 @@ class EventResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'title';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return 'Manajemen Event';
