@@ -58,14 +58,14 @@
                     <li>Sharing pengalaman riset &amp; project nyata</li>
                 </ul>
             </div>
-            <div class="space-y-1.5">
+            {{-- <div class="space-y-1.5">
                 <p class="font-semibold text-slate-900 text-xs md:text-sm">Benefit Peserta:</p>
                 <ul class="list-disc list-inside space-y-1">
                     <li>E-sertifikat kehadiran</li>
                     <li>Materi presentasi (PDF)</li>
                     <li>Networking dengan pembicara &amp; komunitas</li>
                 </ul>
-            </div>
+            </div> --}}
         </div>
     </section>
 
@@ -151,9 +151,9 @@
                 Untuk peserta online, link Zoom akan dikirimkan maksimal H-1 ke email terdaftar.
             </p>
         </div>
-        <div
+        {{-- <div
             class="mt-3 h-40 md:h-52 rounded-2xl bg-slate-100 border border-dashed border-slate-200 flex items-center justify-center text-[11px] md:text-xs text-slate-500">
             <span>Placeholder peta kampus / embed maps</span>
-        </div>
+        </div> --}}
     </section>
 </section>

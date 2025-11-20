@@ -29,7 +29,7 @@
             Daftar Sekarang
         </button>
 
-        <div class="mt-3 flex flex-col gap-1.5 text-[11px] text-slate-500">
+        {{-- <div class="mt-3 flex flex-col gap-1.5 text-[11px] text-slate-500">
             <div class="flex items-center gap-2">
                 <span
                     class="w-4 h-4 rounded-full bg-sky-100 flex items-center justify-center text-[10px]">📄</span>
@@ -40,7 +40,7 @@
                     class="w-4 h-4 rounded-full bg-sky-100 flex items-center justify-center text-[10px]">🔔</span>
                 <span>Pengingat otomatis H-1 &amp; H-0</span>
             </div>
-        </div>
+        </div> --}}
     </section>
 
     <!-- Info tambahan / contact -->

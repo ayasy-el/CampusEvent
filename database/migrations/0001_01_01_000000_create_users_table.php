@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {
@@ -13,13 +14,27 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
+
             $table->string('name');
             $table->string('email')->unique();
+            $table->string('nrp')->nullable();
+            $table->string('program_studi')->nullable();
+            $table->string('angkatan')->nullable();
+            $table->string('no_telepon')->nullable();
+            $table->string('kota')->nullable();
+            $table->text('bio')->nullable();
+            $table->enum('role', ['admin', 'mahasiswa'])->default('mahasiswa');
+
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });
+
+        // jika nrp tidak null, maka harus unik
+        DB::statement('CREATE UNIQUE INDEX users_nrp_unique
+               ON users (nrp)
+               WHERE nrp IS NOT NULL;');
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
