@@ -20,9 +20,22 @@ class SpeakerResource extends Resource
 {
     protected static ?string $model = Speaker::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMicrophone;
 
-    protected static ?string $recordTitleAttribute = 'Speaker';
+    protected static ?string $navigationLabel = 'Pembicara';
+
+    protected static ?string $modelLabel = 'Pembicara';
+
+    protected static ?string $pluralModelLabel = 'Pembicara';
+
+    protected static ?int $navigationSort = 3;
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Manajemen Event';
+    }
 
     public static function form(Schema $schema): Schema
     {

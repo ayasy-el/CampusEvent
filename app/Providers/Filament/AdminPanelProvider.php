@@ -28,6 +28,9 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            ->brandName('CampusEvent')
+            ->maxContentWidth('full')
+            ->favicon(asset('favicon.ico'))
             ->colors([
                 'primary' => Color::Amber,
             ])
@@ -40,6 +43,11 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
+            ])
+            ->sidebarCollapsibleOnDesktop()
+            ->navigationGroups([
+                'Manajemen Event',
+                'Manajemen Pengguna',
             ])
             ->middleware([
                 EncryptCookies::class,
