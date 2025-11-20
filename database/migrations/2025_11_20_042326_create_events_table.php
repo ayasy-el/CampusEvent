@@ -38,6 +38,14 @@ return new class extends Migration
             $table->enum('status', ['draft', 'published', 'closed'])->default('published');
             $table->timestamps();
         });
+
+        Schema::create('events_user', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('event_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->unique(['event_id', 'user_id']);
+            $table->timestamps();
+        });
     }
 
     /**
@@ -46,5 +54,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('events');
+        Schema::dropIfExists('events_user');
     }
 };
