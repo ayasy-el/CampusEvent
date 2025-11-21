@@ -6,7 +6,7 @@
     <x-page-header title="Semua Event Kampus" description="Filter berdasarkan kategori, tanggal, lokasi, dan urutkan sesuai kebutuhanmu ✨">
         <x-slot:badge>
             <x-badge variant="default" size="sm">
-                <x-dot /> 50 event aktif
+                <x-dot /> {{ $eventsCount }} event aktif
             </x-badge>
         </x-slot:badge>
 
@@ -23,7 +23,7 @@
 
     <main class="grid gap-4 md:grid-cols-[300px_minmax(0,1fr)] lg:grid-cols-[320px_minmax(0,1fr)] md:gap-6">
         <x-events.filter-sidebar />
-        <x-events.event-lists />
+        <x-events.event-lists :events="$events" :events-count="$eventsCount" />
     </main>
     <x-events.registered-event />
 

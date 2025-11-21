@@ -35,7 +35,7 @@ return new class extends Migration
             $table->string('contact_email')->nullable();
             $table->string('contact_phone')->nullable();
 
-            $table->enum('status', ['draft', 'published', 'closed'])->default('published');
+            $table->enum('status', ['draft', 'published'])->default('published');
             $table->timestamps();
         });
 

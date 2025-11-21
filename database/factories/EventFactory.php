@@ -57,7 +57,7 @@ class EventFactory extends Factory
             'contact_email' => fake()->boolean(70) ? fake()->companyEmail() : null,
             'contact_phone' => fake()->boolean(70) ? fake()->phoneNumber() : null,
 
-            'status' => Arr::random(['draft', 'published', 'closed']),
+            'status' => Arr::random(['draft', 'published']),
         ];
     }
 }

@@ -1,14 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\EventController;
 
 Route::get('/', function () {
     return view('pages.home');
 })->name('home');
 
-Route::get('/events', function () {
-    return view('pages.events.index');
-})->name('events');
+Route::get('/events', [EventController::class, 'index'])->name('events');
 
 Route::get('/events/{id}', function (string $id) {
     return view('pages.events.show');
