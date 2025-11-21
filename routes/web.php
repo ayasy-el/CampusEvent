@@ -9,13 +9,9 @@ Route::get('/', function () {
 
 Route::get('/events', [EventController::class, 'index'])->name('events');
 
-Route::get('/events/{id}', function (string $id) {
-    return view('pages.events.show');
-})->name('event_detail');
+Route::get('/events/{slug}', [EventController::class, 'show'])->name('event_detail');
 
-Route::get('/my-events', function () {
-    return view('pages.events.registered');
-})->name('my_events');
+Route::get('/my-events', [EventController::class, 'registered'])->name('my_events');
 
 Route::get('/profile', function () {
     return view('pages.profile.show');

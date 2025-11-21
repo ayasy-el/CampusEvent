@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="flex gap-2">
-                    <x-button href="{{ route('event_detail', ['id'=>1]) }}" variant="white-action">
+                    <x-button href="{{ route('events') }}" variant="white-action">
                         <span>📌 Lihat Detail</span>
                     </x-button>
                 </div>

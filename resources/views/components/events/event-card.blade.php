@@ -67,7 +67,7 @@
             <div class="flex-1 min-w-0">
                 <div class="flex justify-between items-start mb-1">
                     <h2 class="text-xs md:text-sm font-semibold text-slate-900 group-hover:text-sky-700 line-clamp-2">
-                        <a href="{{ route('event_detail', ['id' => $detailParam]) }}">{{ $event['title'] }}</a>
+                        <a href="{{ route('event_detail', ['slug' => $detailParam]) }}">{{ $event['title'] }}</a>
                     </h2>
                     @if ($cardStatus === 'open')
                         <x-badge variant="subtle-info" size="xs">
@@ -117,14 +117,14 @@
                 @elseif ($cardStatus === 'finished')
                     <x-badge variant="subtle-gray" size="xxs"> Selesai</x-badge>
                 @elseif ($cardStatus === 'open')
-                    <x-button href="{{ route('event_detail', ['id' => $detailParam]) }}" variant="primary-sm">
+                    <x-button href="{{ route('event_detail', ['slug' => $detailParam]) }}" variant="primary-sm">
                         Daftar
                     </x-button>
                 @endif
 
 
                 @if ($show_detail)
-                    <a href="{{ route('event_detail', ['id' => $detailParam]) }}" class="text-[11px] items-end text-sky-600 font-medium">
+                    <a href="{{ route('event_detail', ['slug' => $detailParam]) }}" class="text-[11px] items-end text-sky-600 font-medium">
                         Lihat detail →
                     </a>
                 @endif
@@ -134,7 +134,7 @@
         <!-- CTA Mobile -->
         @if ($cardStatus === 'open')
             <div class="mt-3 flex md:hidden justify-between pt-3 border-t border-slate-100">
-                <x-button href="{{ route('event_detail', ['id' => $detailParam]) }}" variant="primary-sm">
+                <x-button href="{{ route('event_detail', ['slug' => $detailParam]) }}" variant="primary-sm">
                     Lihat detail
                 </x-button>
             </div>
@@ -179,7 +179,7 @@
 
         <div class="p-3.5 space-y-1.5">
             <h2 class="text-sm font-semibold text-slate-900 group-hover:text-sky-700 line-clamp-2">
-                <a href="{{ route('event_detail', ['id' => $detailParam]) }}">{{ $event['title'] }}</a>
+                <a href="{{ route('event_detail', ['slug' => $detailParam]) }}">{{ $event['title'] }}</a>
             </h2>
 
             <p class="text-[11px] text-slate-500">
@@ -195,7 +195,7 @@
                     👥 {{ $event['registered'] ?? 0 }} peserta
                 </x-badge>
 
-                <x-button href="{{ route('event_detail', ['id' => $detailParam]) }}" variant="primary-sm">
+                <x-button href="{{ route('event_detail', ['slug' => $detailParam]) }}" variant="primary-sm">
                     Daftar
                 </x-button>
             </div>
