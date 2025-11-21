@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProfileController;
 
 Route::get('/', [HomeController::class, 'home'])->name('home');
 
@@ -12,10 +13,8 @@ Route::get('/events/{slug}', [EventController::class, 'show'])->name('event_deta
 
 Route::get('/my-events', [EventController::class, 'registered'])->name('my_events');
 
-Route::get('/profile', function () {
-    return view('pages.profile.show');
-})->name('profile');
+Route::get('/profile', [ProfileController::class, 'show'])->name('profile');
 
-Route::get('/edit-profile', function () {
-    return view('pages.profile.edit');
-})->name('edit_profile');
+Route::get('/edit-profile', [ProfileController::class, 'edit'])->name('edit_profile');
+
+Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');

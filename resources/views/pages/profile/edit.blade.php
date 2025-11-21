@@ -2,58 +2,55 @@
 
 @section('title', 'Edit Profile')
 
-@php
-    static $student = (object) [
-    'nama' => 'Aulia Pratama',
-    'nim' => '220145678',
-    'prodi' => 'Teknik Informatika',
-    'angkatan' => '2022',
-    'photo_url' => 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?auto=compress&cs=tinysrgb&w=800',
-    'email_kampus' => 'aulia.pratama@kampus.ac.id',
-    'email_pribadi' => 'auliapratama@gmail.com',
-    'telepon' => '081234567890',
-    'kota' => 'Yogyakarta',
-    'bio' => 'Mahasiswa yang tertarik pada pengembangan aplikasi, machine learning, dan kegiatan komunitas kampus.',
-];
-@endphp
-
 @section('content')
     <x-page-header title="Edit Profil"
         description="Perbarui data pribadi dan preferensi notifikasi untuk pengalaman event yang lebih relevan ✨" />
 
     <main>
-    <x-profile.profile-form
-        action="#"
-        method="POST"
-    >
-        <x-profile.header-form
-            :photo-url="$student->photo_url"
-            :full-name="$student->nama"
-            :prodi="$student->prodi"
-        />
+        <x-profile.profile-form :action="route('profile.update')" method="PUT">
+            <x-profile.header-form
+                :photo-url="$user?->avatar_url ??
+                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png?20170328184010'"
+                :full-name="$user?->name ?? ''"
+                :program-studi="$user?->program_studi ?? ''"
+                :show-avatar="true"
+                :enable-upload="true"
+            />
 
-        <x-profile.student-form
-            :full-name="$student->nama"
-            :nim="$student->nim"
-            :prodi="$student->prodi"
-            :angkatan="$student->angkatan"
-        />
+            <x-profile.student-form :full-name="$user?->name ?? ''" :nrp="$user?->nrp ?? ''" :program-studi="$user?->program_studi ?? ''" :angkatan="$user?->angkatan ?? ''" />
 
-        <x-profile.contact-form
-            :email-kampus="$student->email_kampus"
-            :email-pribadi="$student->email_pribadi"
-            :telepon="$student->telepon"
-            :kota="$student->kota"
-        />
+            <x-profile.contact-form :email="$user?->email ?? ''" :telepon="$user?->no_telepon" :kota="$user?->kota" />
 
-        <x-profile.bio-form
-            :bio="$student->bio"
-        />
+            <x-profile.bio-form :bio="$user?->bio" />
 
-        <x-profile.profile-actions
-            cancel-url="{{ route('profile') }}"
-        />
-    </x-student.profile-form>
-</main>
+            <x-profile.profile-actions cancel-url="{{ route('profile') }}" />
+        </x-profile.profile-form>
+    </main>
+
+    @push('scripts')
+        <script>
+            (function() {
+                const input = document.getElementById('avatarInput');
+                const preview = document.getElementById('avatarPreview');
+                const cancel = document.getElementById('avatarCancel');
+                if (!input || !preview || !cancel) return;
+
+                const original = preview.style.backgroundImage;
+
+                input.addEventListener('change', () => {
+                    const file = input.files?.[0];
+                    if (file) {
+                        const url = URL.createObjectURL(file);
+                        preview.style.backgroundImage = `url('${url}')`;
+                    }
+                });
+
+                cancel.addEventListener('click', () => {
+                    input.value = '';
+                    preview.style.backgroundImage = original;
+                });
+            })();
+        </script>
+    @endpush
 
 @endsection

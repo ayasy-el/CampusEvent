@@ -14,7 +14,7 @@ class EventSeeder extends Seeder
     {
         $categories = Category::all();
         $speakers = Speaker::all();
-        $users = User::all();
+        $users = User::where('role', '!=', 'admin')->get();
 
         // Pastikan minimal ada beberapa user untuk menjadi peserta
         if ($users->count() < 10) {
