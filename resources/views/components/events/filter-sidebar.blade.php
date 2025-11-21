@@ -1,65 +1,71 @@
+@props([
+    'filters' => [
+        'categories' => collect(),
+        'dateFilters' => collect(),
+        'modeFilters' => collect(),
+        'priceFilters' => collect(),
+        'registrationStatus' => collect(),
+    ],
+    'selected' => [],
+])
+
 @php
-    // Data filter (bisa juga kamu kirim dari Controller)
-    $categoryFilters = [
-        ['value' => 'all', 'label' => 'Semua'],
-        ['value' => 'seminar', 'label' => 'Seminar'],
-        ['value' => 'workshop', 'label' => 'Workshop'],
-        ['value' => 'kompetisi', 'label' => 'Kompetisi'],
-        ['value' => 'pelatihan', 'label' => 'Pelatihan'],
-        ['value' => 'komunitas', 'label' => 'Komunitas'],
-    ];
-
-    $dateFilters = [
-        ['value' => 'upcoming', 'label' => 'Semua'],
-        ['value' => 'today', 'label' => 'Hari ini'],
-        ['value' => 'week', 'label' => 'Minggu ini'],
-        ['value' => 'month', 'label' => 'Bulan ini'],
-    ];
-
-    $modeFilters = [
-        ['value' => 'all', 'label' => 'Semua'],
-        ['value' => 'onsite', 'label' => 'On-site'],
-        ['value' => 'online', 'label' => 'Online'],
-        ['value' => 'hybrid', 'label' => 'Hybrid'],
-    ];
-
-    $priceFilters = [
-        ['value' => 'open', 'label' => 'Gratis'],
-        ['value' => 'internal', 'label' => 'Berbayar'],
-    ];
-
-    $registrationStatus = [
-        ['value' => 'upcoming', 'label' => 'Masih Dibuka'],
-        ['value' => 'closed', 'label' => 'Ditutup'],
+    $current = [
+        'categories' => collect($selected['categories'] ?? request()->query('categories', []))
+            ->when(!is_array(request()->query('categories')), fn($c) => collect(explode(',', (string) request()->query('categories', ''))))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all(),
+        'date' => $selected['date'] ?? request('date'),
+        'mode' => $selected['mode'] ?? request('mode'),
+        'price' => $selected['price'] ?? request('price'),
+        'status' => $selected['status'] ?? request('status'),
+        'date_from' => $selected['date_from'] ?? request('date_from'),
+        'date_to' => $selected['date_to'] ?? request('date_to'),
+        'location' => $selected['location'] ?? request('location'),
     ];
 @endphp
 
 <aside id="filters"
-    class="space-y-3 md:sticky md:top-6 md:self-start md:max-h-[calc(100vh-120px)] md:overflow-y-auto md:pr-2 hidden md:block">
+    class="space-y-3 md:sticky md:top-30 md:self-start md:pr-2 hidden md:block">
 
     <div class="bg-white/50 border border-slate-100 rounded-2xl p-4 shadow-sm space-y-4">
         <!-- Header with Reset All -->
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
             <p class="text-sm font-bold text-slate-800">Filter Event</p>
-            <button class="text-xs text-sky-600 hover:text-sky-700 font-medium transition">
+            <a href="{{ route('events') }}" class="text-xs text-sky-600 hover:text-sky-700 font-medium transition">
                 Reset Semua
-            </button>
+            </a>
         </div>
 
         {{-- ==================== KATEGORI ==================== --}}
         <div class="space-y-2.5">
-            <p class="text-xs font-semibold text-slate-800">Kategori</p>
-            <div class="flex flex-wrap gap-1.5">
-                @foreach ($categoryFilters as $item)
+            <p class="text-xs font-semibold text-slate-800">
+                Kategori
+                @if (!empty($current['categories']))
+                    <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+                        data-clear="categories">
+                        Clear
+                    </button>
+                @endif
+            </p>
+            <div class="flex items-center gap-2 flex-wrap">
+                @forelse (collect($filters['categories'] ?? []) as $item)
                     <button
-                        class="px-3 py-1.5 rounded-full text-xs border font-medium transition
-                        {{ $loop->first
+                        class="px-3 py-1.5 rounded-full text-xs border font-medium transition cursor-pointer flex items-center gap-1
+                        {{ in_array($item['value'], $current['categories'] ?? [])
                             ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
                             : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
                         data-filter-category="{{ $item['value'] }}">
-                        {{ $item['label'] }}
+                        @if (in_array($item['value'], $current['categories'] ?? []))
+                            <span class="text-[10px]">×</span>
+                        @endif
+                        <span>{{ $item['label'] }}</span>
                     </button>
-                @endforeach
+                @empty
+                    <span class="text-[11px] text-slate-400">Kategori belum tersedia.</span>
+                @endforelse
             </div>
         </div>
 
@@ -67,28 +73,46 @@
 
         {{-- ==================== TANGGAL ==================== --}}
         <div class="space-y-2.5">
-            <p class="text-xs font-semibold text-slate-800">Tanggal</p>
-            <div class="flex flex-wrap gap-1.5">
-                @foreach ($dateFilters as $item)
+            <div class="flex items-center gap-2">
+                <p class="text-xs font-semibold text-slate-800">Tanggal</p>
+                @if (!empty($current['date']) || $current['date_from'] || $current['date_to'])
+                    <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+                        data-clear="date">
+                        Clear
+                    </button>
+                @endif
+            </div>
+            <div class="flex flex-wrap gap-1.5 items-center">
+                @foreach (collect($filters['dateFilters'] ?? []) as $item)
                     <button
-                        class="px-3 py-1.5 rounded-full text-xs border font-medium transition
-                        {{ $loop->first
+                        class="px-3 py-1.5 rounded-full text-xs border font-medium transition cursor-pointer flex items-center gap-1
+                        {{ ($current['date'] ?? null) === $item['value']
                             ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
                             : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
                         data-filter-date="{{ $item['value'] }}">
-                        {{ $item['label'] }}
+                        @if (($current['date'] ?? null) === $item['value'])
+                            <span class="text-[10px]">×</span>
+                        @endif
+                        <span>{{ $item['label'] }}</span>
                     </button>
                 @endforeach
             </div>
 
             <div class="space-y-1.5 pt-1">
                 <p class="text-[11px] text-slate-500 font-medium">Rentang tanggal:</p>
-                <div class="grid grid-cols-2 gap-2">
-                    <input type="date"
+                <form method="GET" class="grid grid-cols-2 gap-2">
+                    @foreach (request()->except(['date_from', 'date_to']) as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                    <input type="date" name="date_from" value="{{ $current['date_from'] }}"
                         class="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-[11px] text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-400/60 focus:border-transparent" />
-                    <input type="date"
+                    <input type="date" name="date_to" value="{{ $current['date_to'] }}"
                         class="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-[11px] text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-400/60 focus:border-transparent" />
-                </div>
+                    <button type="submit"
+                        class="col-span-2 mt-1 px-3 py-1.5 rounded-full bg-slate-900 text-white text-[11px] font-semibold hover:bg-slate-800 transition cursor-pointer">
+                        Terapkan Rentang
+                    </button>
+                </form>
             </div>
         </div>
 
@@ -96,24 +120,53 @@
 
         {{-- ==================== MODE EVENT & LOKASI ==================== --}}
         <div class="space-y-2.5">
-            <p class="text-xs font-semibold text-slate-800">Mode Event</p>
+            <div class="flex items-center gap-2">
+                <p class="text-xs font-semibold text-slate-800">Mode Event</p>
+                @if (!empty($current['mode']))
+                    <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+                        data-clear="mode">
+                        Clear
+                    </button>
+                @endif
+            </div>
             <div class="flex flex-wrap gap-1.5">
-                @foreach ($modeFilters as $item)
+                @foreach (collect($filters['modeFilters'] ?? []) as $item)
                     <button
-                        class="px-3 py-1.5 rounded-full text-xs border font-medium transition
-                        {{ $loop->first
+                        class="px-3 py-1.5 rounded-full text-xs border font-medium transition cursor-pointer flex items-center gap-1
+                        {{ ($current['mode'] ?? null) === $item['value']
                             ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
                             : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
                         data-filter-mode="{{ $item['value'] }}">
-                        {{ $item['label'] }}
+                        @if (($current['mode'] ?? null) === $item['value'])
+                            <span class="text-[10px]">×</span>
+                        @endif
+                        <span>{{ $item['label'] }}</span>
                     </button>
                 @endforeach
             </div>
 
             <div class="space-y-1.5 pt-1">
-                <p class="text-[11px] text-slate-500 font-medium">Lokasi:</p>
-                <input type="text" placeholder="Contoh: Aula Utama, FTI..."
-                    class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-700 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400/60 focus:border-transparent" />
+                <div class="flex items-center gap-2">
+                    <p class="text-[11px] text-slate-500 font-medium">Lokasi:</p>
+                    @if (!empty($current['location']))
+                        <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+                            data-clear="location">
+                            Clear
+                        </button>
+                    @endif
+                </div>
+                <form method="GET" class="flex items-center gap-2">
+                    @foreach (request()->except(['location']) as $key => $value)
+                        <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+                    @endforeach
+                    <input type="text" name="location" value="{{ $current['location'] }}"
+                        placeholder="Contoh: Aula Utama, FTI..."
+                        class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-700 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400/60 focus:border-transparent" />
+                    <button type="submit"
+                        class="px-3 py-1.5 rounded-full bg-slate-900 text-white text-[11px] font-semibold hover:bg-slate-800 transition cursor-pointer">
+                        Cari
+                    </button>
+                </form>
             </div>
         </div>
 
@@ -125,16 +178,26 @@
 
             {{-- Harga --}}
             <div class="space-y-1.5">
-                <p class="text-[11px] text-slate-500 font-medium">Harga</p>
+                <div class="flex items-center gap-2">
+                    <p class="text-[11px] text-slate-500 font-medium">Harga</p>
+                    @if (!empty($current['price']))
+                        <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer" data-clear="price">
+                            Clear
+                        </button>
+                    @endif
+                </div>
                 <div class="flex flex-wrap gap-1.5">
-                @foreach ($priceFilters as $item)
+                @foreach (collect($filters['priceFilters'] ?? []) as $item)
                     <button
-                        class="px-3 py-1.5 rounded-full text-xs border font-medium transition
-                        {{ $loop->first
+                        class="px-3 py-1.5 rounded-full text-xs border font-medium transition cursor-pointer flex items-center gap-1
+                        {{ ($current['price'] ?? null) === $item['value']
                             ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
                             : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
-                        data-filter-mode="{{ $item['value'] }}">
-                        {{ $item['label'] }}
+                        data-filter-price="{{ $item['value'] }}">
+                        @if (($current['price'] ?? null) === $item['value'])
+                            <span class="text-[10px]">×</span>
+                        @endif
+                        <span>{{ $item['label'] }}</span>
                     </button>
                 @endforeach
             </div>
@@ -142,20 +205,113 @@
 
             {{-- Status Pendaftaran --}}
             <div class="space-y-2.5">
-                <p class="text-[11px] text-slate-500 font-medium">Status Pendaftaran</p>
+                <div class="flex items-center gap-2">
+                    <p class="text-[11px] text-slate-500 font-medium">Status Pendaftaran</p>
+                    @if (!empty($current['status']))
+                        <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer" data-clear="status">
+                            Clear
+                        </button>
+                    @endif
+                </div>
                 <div class="flex flex-wrap gap-1.5">
-                    @foreach ($registrationStatus as $item)
+                    @foreach (collect($filters['registrationStatus'] ?? []) as $item)
                         <button
                             class="px-3 py-1.5 rounded-full text-xs border font-medium transition
-                            {{ $loop->first
+                            cursor-pointer flex items-center gap-1
+                            {{ ($current['status'] ?? null) === $item['value']
                                 ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
                                 : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
-                            data-filter-mode="{{ $item['value'] }}">
-                            {{ $item['label'] }}
+                            data-filter-status="{{ $item['value'] }}">
+                            @if (($current['status'] ?? null) === $item['value'])
+                                <span class="text-[10px]">×</span>
+                            @endif
+                            <span>{{ $item['label'] }}</span>
                         </button>
                     @endforeach
                 </div>
             </div>
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const params = new URLSearchParams(window.location.search);
+
+                const parseCategories = () => {
+                    const raw = params.get('categories');
+                    if (!raw) return [];
+                    return raw.split(',').filter(Boolean);
+                };
+
+                const updateAndGo = () => {
+                    const query = params.toString();
+                    const dest = query ? `${location.pathname}?${query}` : location.pathname;
+                    window.location = dest;
+                };
+
+                const toggleSingle = (key, value) => {
+                    const current = params.get(key);
+                    if (current === value) {
+                        params.delete(key);
+                    } else {
+                        params.set(key, value);
+                    }
+                    updateAndGo();
+                };
+
+                document.querySelectorAll('[data-filter-category]').forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        const slug = btn.getAttribute('data-filter-category');
+                        const categories = parseCategories();
+                        const idx = categories.indexOf(slug);
+                        if (idx >= 0) {
+                            categories.splice(idx, 1);
+                        } else {
+                            categories.push(slug);
+                        }
+
+                        if (categories.length) {
+                            params.set('categories', categories.join(','));
+                        } else {
+                            params.delete('categories');
+                        }
+                        updateAndGo();
+                    });
+                });
+
+                document.querySelectorAll('[data-clear]').forEach((btn) => {
+                    btn.addEventListener('click', () => {
+                        const key = btn.getAttribute('data-clear');
+                        if (key === 'categories') {
+                            params.delete('categories');
+                        } else if (key === 'date') {
+                            params.delete('date');
+                            params.delete('date_from');
+                            params.delete('date_to');
+                        } else {
+                            params.delete(key);
+                        }
+                        updateAndGo();
+                    });
+                });
+
+                document.querySelectorAll('[data-filter-date]').forEach((btn) => {
+                    btn.addEventListener('click', () => toggleSingle('date', btn.getAttribute('data-filter-date')));
+                });
+
+                document.querySelectorAll('[data-filter-mode]').forEach((btn) => {
+                    btn.addEventListener('click', () => toggleSingle('mode', btn.getAttribute('data-filter-mode')));
+                });
+
+                document.querySelectorAll('[data-filter-price]').forEach((btn) => {
+                    btn.addEventListener('click', () => toggleSingle('price', btn.getAttribute('data-filter-price')));
+                });
+
+                document.querySelectorAll('[data-filter-status]').forEach((btn) => {
+                    btn.addEventListener('click', () => toggleSingle('status', btn.getAttribute('data-filter-status')));
+                });
+            });
+        </script>
+    @endpush
 </aside>

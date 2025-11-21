@@ -1,32 +1,40 @@
+@props(['event'])
+@php use Illuminate\Support\Str; @endphp
+
 <section class="space-y-5 md:space-y-6">
     <!-- Organizer & meta -->
     <div class="bg-white/90 rounded-3xl border border-slate-100 p-3.5 md:p-4 shadow-sm">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
             <div class="flex items-center gap-3">
                 <div
-                    class="w-9 h-9 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-500 flex items-center justify-center text-white text-xs font-bold">
-                    BT
+                    class="w-15 h-15 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-500 flex items-center justify-center text-white text-lg font-bold">
+                    {{ strtoupper(substr($event['organizer'] ?? 'EV', 0, 2)) }}
                 </div>
                 <div>
                     <p class="text-xs font-semibold text-slate-900">
-                        Diselenggarakan oleh BEM Teknik
+                        Diselenggarakan oleh {{ $event['organizer'] ?? '-' }}
                     </p>
-                    <p class="text-[11px] text-slate-500">
-                        Kolaborasi dengan Lab AI &amp; Inkubator Bisnis Kampus
-                    </p>
+                    @if (!empty($event['category']))
+                        <p class="text-[11px] text-slate-500 capitalize">
+                            {{ $event['category_icon'] ?? '📅' }} {{ $event['category'] }} • {{ $event['mode'] ?? 'hybrid' }}
+                        </p>
+                    @endif
+                    @if (!empty($event['benefit']))
+                    <span class="inline-flex mt-1 text-[11px] text-slate-500 items-center px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200">
+                        {{ $event['benefit'] }}
+                    </span>
+                @endif
                 </div>
             </div>
             <div class="flex flex-wrap gap-2 text-[11px] text-slate-500">
                 <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200">
-                    👥 120 terdaftar
+                    👥 {{ $event['registered'] ?? 0 }} terdaftar
                 </span>
                 <span
                     class="inline-flex items-center px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-emerald-700">
-                    Kuota tersedia
+                    {{ $event['quota_info'] ?? 'Kuota tersedia' }}
                 </span>
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200">
-                    Sertifikat &amp; snack
-                </span>
+
             </div>
         </div>
     </div>
@@ -37,36 +45,25 @@
         <h2 class="text-sm md:text-base font-semibold text-slate-900">
             Deskripsi Event
         </h2>
-        <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
-            Perkembangan Artificial Intelligence (AI) semakin cepat dan mulai terintegrasi ke berbagai aspek
-            kehidupan, termasuk dunia kampus dan industri.
-            Melalui seminar ini, peserta akan mendapatkan gambaran menyeluruh mengenai tren AI terkini, peluang
-            riset di perguruan tinggi, serta kompetensi yang dibutuhkan oleh industri teknologi.
-        </p>
-        <p class="text-xs md:text-sm text-slate-600 leading-relaxed">
-            Sesi akan dibagi menjadi paparan materi, studi kasus implementasi AI di perusahaan, dan sesi tanya jawab
-            interaktif. Event ini cocok untuk mahasiswa
-            dari berbagai jurusan yang tertarik dengan AI, data science, maupun teknologi digital secara umum.
-        </p>
-
-        <div class="grid gap-3 md:grid-cols-2 text-[11px] md:text-xs text-slate-600">
-            <div class="space-y-1.5">
-                <p class="font-semibold text-slate-900 text-xs md:text-sm">Highlight:</p>
-                <ul class="list-disc list-inside space-y-1">
-                    <li>Tren dan roadmap AI di kampus &amp; industri</li>
-                    <li>Skill yang dibutuhkan untuk karier di bidang AI</li>
-                    <li>Sharing pengalaman riset &amp; project nyata</li>
-                </ul>
-            </div>
-            {{-- <div class="space-y-1.5">
-                <p class="font-semibold text-slate-900 text-xs md:text-sm">Benefit Peserta:</p>
-                <ul class="list-disc list-inside space-y-1">
-                    <li>E-sertifikat kehadiran</li>
-                    <li>Materi presentasi (PDF)</li>
-                    <li>Networking dengan pembicara &amp; komunitas</li>
-                </ul>
-            </div> --}}
+        <div class="space-y-2 text-xs md:text-sm text-slate-600 leading-relaxed">
+            {!! nl2br(e($event['description'] ?? 'Detail event belum tersedia.')) !!}
         </div>
+
+        @php
+            $benefits = array_filter(array_map('trim', explode(',', $event['benefit'] ?? '')));
+        @endphp
+        @if (!empty($benefits))
+            <div class="grid gap-3 md:grid-cols-2 text-[11px] md:text-xs text-slate-600">
+                <div class="space-y-1.5">
+                    <p class="font-semibold text-slate-900 text-xs md:text-sm">Benefit Peserta:</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        @foreach ($benefits as $b)
+                            <li>{{ $b }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            </div>
+        @endif
     </section>
 
     <!-- Agenda -->
@@ -75,28 +72,20 @@
         <h2 class="text-sm md:text-base font-semibold text-slate-900">
             Agenda &amp; Rundown
         </h2>
-        <div class="space-y-2 text-[11px] md:text-xs text-slate-600">
-            <div class="flex gap-3">
-                <div class="w-20 md:w-24 font-semibold text-slate-800">09.00 – 09.15</div>
-                <p>Pembukaan &amp; sambutan panitia</p>
+        @if (!empty($event['agenda']))
+            <div class="space-y-2 text-[11px] md:text-xs text-slate-600">
+                @foreach ($event['agenda'] as $item)
+                    <div class="flex gap-3">
+                        <div class="w-20 md:w-24 font-semibold text-slate-800">
+                            {{ $item['time'] ?? '-' }}
+                        </div>
+                        <p>{{ $item['title'] ?? '-' }}</p>
+                    </div>
+                @endforeach
             </div>
-            <div class="flex gap-3">
-                <div class="w-20 md:w-24 font-semibold text-slate-800">09.15 – 10.00</div>
-                <p>Sesi 1 – “Landscape AI di Kampus &amp; Industri”</p>
-            </div>
-            <div class="flex gap-3">
-                <div class="w-20 md:w-24 font-semibold text-slate-800">10.00 – 10.15</div>
-                <p>Coffee Break &amp; networking</p>
-            </div>
-            <div class="flex gap-3">
-                <div class="w-20 md:w-24 font-semibold text-slate-800">10.15 – 11.00</div>
-                <p>Sesi 2 – Studi kasus implementasi AI di perusahaan</p>
-            </div>
-            <div class="flex gap-3">
-                <div class="w-20 md:w-24 font-semibold text-slate-800">11.00 – 12.00</div>
-                <p>Sesi tanya jawab &amp; penutupan</p>
-            </div>
-        </div>
+        @else
+            <p class="text-[11px] md:text-xs text-slate-500">Agenda belum dicantumkan.</p>
+        @endif
     </section>
 
     <!-- Pembicara -->
@@ -105,32 +94,32 @@
         <h2 class="text-sm md:text-base font-semibold text-slate-900">
             Pembicara &amp; Moderator
         </h2>
-        <div class="grid gap-3 md:grid-cols-2">
-            <div class="flex gap-3">
-                <div
-                    class="w-12 h-12 rounded-2xl bg-[url('https://images.pexels.com/photos/1181395/pexels-photo-1181395.jpeg?auto=compress&cs=tinysrgb&w=800')] bg-cover bg-center">
-                </div>
-                <div class="text-xs md:text-sm text-slate-700">
-                    <p class="font-semibold text-slate-900">Dr. Andi Pratama</p>
-                    <p class="text-[11px] text-slate-500">AI Researcher &amp; Dosen Teknik Informatika</p>
-                    <p class="text-[11px] text-slate-500 mt-1">
-                        Fokus di bidang machine learning, computer vision, dan penerapan AI di industri.
-                    </p>
-                </div>
+        @php $speakers = collect($event['speakers'] ?? []); @endphp
+        @if ($speakers->isNotEmpty())
+            <div class="grid gap-3 md:grid-cols-2">
+                @foreach ($speakers as $speaker)
+                    <div class="flex gap-3">
+                        <div
+                            class="w-12 h-12 min-w-12 rounded-2xl bg-slate-200 bg-cover bg-center"
+                            @if (!empty($speaker['photo'])) style="background-image: url('{{ $speaker['photo'] }}')" @endif>
+                        </div>
+                        <div class="text-xs md:text-sm text-slate-700">
+                            <p class="font-semibold text-slate-900">{{ $speaker['name'] }}</p>
+                            @if (!empty($speaker['title']))
+                                <p class="text-[11px] text-slate-500">{{ $speaker['title'] }}</p>
+                            @endif
+                            @if (!empty($speaker['bio']))
+                                <p class="text-[11px] text-slate-500 mt-1">
+                                    {{ Str::limit($speaker['bio'], 140) }}
+                                </p>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
             </div>
-            <div class="flex gap-3">
-                <div
-                    class="w-12 h-12 rounded-2xl bg-[url('https://images.pexels.com/photos/1181400/pexels-photo-1181400.jpeg?auto=compress&cs=tinysrgb&w=800')] bg-cover bg-center">
-                </div>
-                <div class="text-xs md:text-sm text-slate-700">
-                    <p class="font-semibold text-slate-900">Rani Putri</p>
-                    <p class="text-[11px] text-slate-500">Moderator • Ketua BEM Teknik</p>
-                    <p class="text-[11px] text-slate-500 mt-1">
-                        Aktif menginisiasi forum diskusi teknologi dan pengembangan minat riset mahasiswa.
-                    </p>
-                </div>
-            </div>
-        </div>
+        @else
+            <p class="text-[11px] md:text-xs text-slate-500">Pembicara belum ditambahkan.</p>
+        @endif
     </section>
 
     <!-- Lokasi -->
@@ -140,20 +129,16 @@
             Lokasi &amp; Akses
         </h2>
         <div class="space-y-2 text-xs md:text-sm text-slate-600">
-            <p class="font-semibold text-slate-900">
-                Aula Utama Kampus • Gedung Pusat Lantai 2
-            </p>
-            <p>
-                Jl. Contoh No. 123, Kota Pendidikan, Indonesia. Lokasi mudah dijangkau dari gerbang utama kampus,
-                tersedia area parkir dan akses lift.
+            <p class="font-semibold text-slate-900 capitalize">
+                @if (($event['location_type'] ?? 'hybrid') === 'online')
+                    Online Event
+                @else
+                    {{ $event['location'] ?? 'Lokasi belum ditentukan' }}
+                @endif
             </p>
             <p class="text-[11px] md:text-xs text-slate-500">
-                Untuk peserta online, link Zoom akan dikirimkan maksimal H-1 ke email terdaftar.
+                Mode: {{ ucfirst($event['mode'] ?? '-') }}
             </p>
         </div>
-        {{-- <div
-            class="mt-3 h-40 md:h-52 rounded-2xl bg-slate-100 border border-dashed border-slate-200 flex items-center justify-center text-[11px] md:text-xs text-slate-500">
-            <span>Placeholder peta kampus / embed maps</span>
-        </div> --}}
     </section>
 </section>

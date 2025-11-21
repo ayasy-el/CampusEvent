@@ -11,12 +11,25 @@ class CategoryInfolist
     {
         return $schema
             ->components([
-                TextEntry::make('name'),
+                TextEntry::make('name')
+                    ->label('Nama Kategori')
+                    ->size('lg')
+                    ->weight('bold'),
+
+                TextEntry::make('events_count')
+                    ->label('Jumlah Event')
+                    ->default(0)
+                    ->badge()
+                    ->color('success'),
+
                 TextEntry::make('created_at')
-                    ->dateTime()
+                    ->label('Dibuat Pada')
+                    ->dateTime('d M Y, H:i')
                     ->placeholder('-'),
+
                 TextEntry::make('updated_at')
-                    ->dateTime()
+                    ->label('Diperbarui Pada')
+                    ->dateTime('d M Y, H:i')
                     ->placeholder('-'),
             ]);
     }

@@ -1,3 +1,5 @@
+@props(['events' => collect()])
+
 <section class="mb-10 md:mb-14">
     <div class="flex items-center justify-between mb-3">
         <h2 class="text-lg md:text-2xl font-semibold text-slate-900">
@@ -10,32 +12,15 @@
 
     <div class="-mx-4 px-4 md:mx-0 md:px-0">
         <div class="flex md:grid md:grid-cols-3 lg:grid-cols-4 gap-4 overflow-x-auto md:overflow-visible pb-2 md:pb-0">
-            @php
-                $events = [
-                    [
-                        'title' => 'Tech Talk: AI di Kampus',
-                        'datetime' => 'Jumat, 22 Nov • 15.00',
-                        'organizer' => 'BEM FTE • Zoom & Aula',
-                        'bg' => 'from-sky-400 to-indigo-500',
-                    ],
-                    [
-                        'title' => 'Workshop UI/UX Dasar',
-                        'datetime' => 'Sabtu, 23 Nov • 09.00',
-                        'organizer' => 'HIMA Informatika',
-                        'bg' => 'from-pink-400 to-orange-400',
-                    ],
-                    [
-                        'title' => 'Lomba Startup Digital',
-                        'datetime' => 'Minggu, 24 Nov • 13.00',
-                        'organizer' => 'Inkubator Bisnis Kampus',
-                        'bg' => 'from-emerald-400 to-teal-500',
-                    ],
-                ];
-            @endphp
-
-            @foreach ($events as $event)
-                <x-card :title="$event['title']" :datetime="$event['datetime']" :organizer="$event['organizer']" :bg="$event['bg']" />
-            @endforeach
+            @forelse ($events as $event)
+                <x-events.event-card :event="$event" variant="grid" :index="$loop->index" :show_badges="false"
+                    :show_actions="false" :show_schedule="false" />
+            @empty
+                <article class="bg-white rounded-2xl shadow-md shadow-slate-200/60 border border-dashed border-slate-200 p-5">
+                    <p class="text-sm text-slate-600 mb-2">Belum ada event terjadwal.</p>
+                    <x-button href="{{ route('events') }}" variant="dark-sm">Lihat semua event</x-button>
+                </article>
+            @endforelse
 
             <article
                 class="hidden lg:block bg-white rounded-2xl shadow-md shadow-slate-200/60 border border-dashed border-slate-200">
@@ -43,7 +28,7 @@
                     <p class="text-xs text-slate-500 mb-2">
                         Punya event kampus?
                     </p>
-                    <x-button href="#" variant="dark-sm">
+                    <x-button href="{{ route('events') }}" variant="dark-sm">
                         Daftarkan Eventmu
                     </x-button>
                 </div>

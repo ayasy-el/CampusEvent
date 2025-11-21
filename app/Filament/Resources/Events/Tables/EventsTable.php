@@ -16,48 +16,120 @@ class EventsTable
     {
         return $table
             ->columns([
+                ImageColumn::make('image')
+                    ->label('Gambar')
+                    ->circular()
+                    ->size(40)
+                    ->defaultImageUrl(url('/images/placeholder.png'))
+                    ->grow(false),
                 TextColumn::make('title')
-                    ->searchable(),
-                TextColumn::make('slug')
-                    ->searchable(),
-                TextColumn::make('excerpt')
-                    ->searchable(),
+                    ->label('Judul')
+                    ->searchable()
+                    ->sortable()
+                    ->wrap()
+                    ->lineClamp(2)
+                    ->grow()
+                    ->tooltip(function (TextColumn $column): ?string {
+                        $state = $column->getState();
+                        return $state;
+                    }),
                 TextColumn::make('organizer')
-                    ->searchable(),
-                ImageColumn::make('image'),
-                TextColumn::make('benefits')
-                    ->searchable(),
+                    ->label('Penyelenggara')
+                    ->searchable()
+                    ->sortable()
+                    ->wrap()
+                    ->limit(20)
+                    ->toggleable(),
                 TextColumn::make('date')
-                    ->date()
-                    ->sortable(),
+                    ->label('Tanggal')
+                    ->date('d M Y')
+                    ->sortable()
+                    ->alignCenter()
+                    ->grow(false),
                 TextColumn::make('start_time')
-                    ->time()
-                    ->sortable(),
-                TextColumn::make('end_time')
-                    ->time()
-                    ->sortable(),
-                TextColumn::make('quota')
-                    ->numeric()
-                    ->sortable(),
+                    ->label('Waktu')
+                    ->time('H:i')
+                    ->sortable()
+                    ->alignCenter()
+                    ->grow(false)
+                    ->toggleable(),
                 TextColumn::make('location_type')
-                    ->searchable(),
-                TextColumn::make('location_address')
-                    ->searchable(),
+                    ->label('Tipe Lokasi')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'online' => 'info',
+                        'offline' => 'success',
+                        'hybrid' => 'warning',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn(string $state): string => ucfirst($state))
+                    ->sortable()
+                    ->alignCenter()
+                    ->grow(false),
+                TextColumn::make('quota')
+                    ->label('Kuota')
+                    ->numeric()
+                    ->sortable()
+                    ->alignCenter()
+                    ->grow(false)
+                    ->toggleable(),
                 TextColumn::make('price')
-                    ->money()
-                    ->sortable(),
-                TextColumn::make('contact_email')
-                    ->searchable(),
-                TextColumn::make('contact_phone')
-                    ->searchable(),
+                    ->label('Harga')
+                    ->money('IDR')
+                    ->sortable()
+                    ->alignEnd()
+                    ->grow(false)
+                    ->toggleable(),
                 TextColumn::make('status')
-                    ->searchable(),
+                    ->label('Status')
+                    ->badge()
+                    ->color(fn(string $state): string => match ($state) {
+                        'draft' => 'gray',
+                        'published' => 'success',
+                        'cancelled' => 'danger',
+                        'completed' => 'info',
+                        default => 'gray',
+                    })
+                    ->formatStateUsing(fn(string $state): string => match ($state) {
+                        'draft' => 'Draft',
+                        'published' => 'Terbit',
+                        'cancelled' => 'Dibatalkan',
+                        'completed' => 'Selesai',
+                        default => ucfirst($state),
+                    })
+                    ->sortable()
+                    ->alignCenter()
+                    ->grow(false),
+                TextColumn::make('slug')
+                    ->label('Slug')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('excerpt')
+                    ->label('Kutipan')
+                    ->searchable()
+                    ->limit(30)
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('location_address')
+                    ->label('Alamat Lokasi')
+                    ->searchable()
+                    ->limit(40)
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('contact_email')
+                    ->label('Email Kontak')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('contact_phone')
+                    ->label('No. Telepon')
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
-                    ->dateTime()
+                    ->label('Dibuat Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('updated_at')
-                    ->dateTime()
+                    ->label('Diperbarui Pada')
+                    ->dateTime('d M Y H:i')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -68,10 +140,13 @@ class EventsTable
                 ViewAction::make(),
                 EditAction::make(),
             ])
-            ->toolbarActions([
+            ->bulkActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('date', 'desc')
+            ->striped()
+            ->paginated([10, 25, 50, 100]);
     }
 }

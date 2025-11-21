@@ -20,9 +20,27 @@ class EventResource extends Resource
 {
     protected static ?string $model = Event::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCalendar;
 
-    protected static ?string $recordTitleAttribute = 'Event';
+    protected static ?string $navigationLabel = 'Event';
+
+    protected static ?string $modelLabel = 'Event';
+
+    protected static ?string $pluralModelLabel = 'Event';
+
+    protected static ?int $navigationSort = 1;
+
+    protected static ?string $recordTitleAttribute = 'title';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Manajemen Event';
+    }
 
     public static function form(Schema $schema): Schema
     {

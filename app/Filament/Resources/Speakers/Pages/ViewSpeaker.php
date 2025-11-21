@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Speakers\Pages;
 
 use App\Filament\Resources\Speakers\SpeakerResource;
-use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\ViewRecord;
 
 class ViewSpeaker extends ViewRecord
@@ -13,7 +13,8 @@ class ViewSpeaker extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            EditAction::make(),
+            DeleteAction::make()
+                ->requiresConfirmation(),
         ];
     }
 }

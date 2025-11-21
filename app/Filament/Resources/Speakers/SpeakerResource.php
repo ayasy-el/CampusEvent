@@ -3,7 +3,6 @@
 namespace App\Filament\Resources\Speakers;
 
 use App\Filament\Resources\Speakers\Pages\CreateSpeaker;
-use App\Filament\Resources\Speakers\Pages\EditSpeaker;
 use App\Filament\Resources\Speakers\Pages\ListSpeakers;
 use App\Filament\Resources\Speakers\Pages\ViewSpeaker;
 use App\Filament\Resources\Speakers\Schemas\SpeakerForm;
@@ -20,9 +19,27 @@ class SpeakerResource extends Resource
 {
     protected static ?string $model = Speaker::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedMicrophone;
 
-    protected static ?string $recordTitleAttribute = 'Speaker';
+    protected static ?string $navigationLabel = 'Pembicara';
+
+    protected static ?string $modelLabel = 'Pembicara';
+
+    protected static ?string $pluralModelLabel = 'Pembicara';
+
+    protected static ?int $navigationSort = 3;
+
+    protected static ?string $recordTitleAttribute = 'name';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Manajemen Event';
+    }
 
     public static function form(Schema $schema): Schema
     {
@@ -52,7 +69,6 @@ class SpeakerResource extends Resource
             'index' => ListSpeakers::route('/'),
             'create' => CreateSpeaker::route('/create'),
             'view' => ViewSpeaker::route('/{record}'),
-            'edit' => EditSpeaker::route('/{record}/edit'),
         ];
     }
 }

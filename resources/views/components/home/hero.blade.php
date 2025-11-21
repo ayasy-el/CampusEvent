@@ -1,3 +1,5 @@
+@props(['count' => 0])
+
 <section class="mt-4 mb-10 md:mb-14">
     <div class="flex flex-col md:grid md:grid-cols-2 md:items-center md:gap-10 lg:gap-14">
         <!-- Text -->
@@ -20,11 +22,11 @@
 
             <div class="mt-5 flex flex-wrap gap-3 text-[11px] md:text-xs text-slate-500">
                 <x-badge variant="default" size="sm">
-                    <x-dot /> +50 event minggu ini
+                    <x-dot /> &nbsp; {{ $count }} event aktif
                 </x-badge>
-                <x-badge variant="default" size="sm">
+                {{-- <x-badge variant="default" size="sm">
                     📄 Sertifikat &amp; e-ticket
-                </x-badge>
+                </x-badge> --}}
             </div>
         </div>
 
@@ -35,7 +37,7 @@
                 <div class="grid grid-cols-3 gap-2 md:gap-3">
                     <div class="col-span-2 space-y-2 md:space-y-3">
                         <div
-                            class="h-24 md:h-32 rounded-2xl md:rounded-3xl bg-gradient-to-tr from-sky-400 to-indigo-500 flex items-end p-3 md:p-4 text-xs md:text-sm font-semibold text-white">
+                            class="h-24 md:h-32 rounded-2xl md:rounded-3xl bg-gradient-to-tr from-sky-400 to-indigo-500 flex items-center p-3 md:p-4 text-xs md:text-sm font-bold text-white justify-center">
                             Seminar Teknologi Kampus
                         </div>
                         <div class="grid grid-cols-2 gap-2 md:gap-3">
@@ -56,16 +58,16 @@
                         </div>
                         <div
                             class="h-24 md:h-32 rounded-3xl bg-pastelLilac flex flex-col items-center justify-center text-[10px] md:text-xs text-slate-700 px-2">
-                            <span class="font-semibold mb-1 md:mb-2 text-sm md:text-base">+50 Event</span>
-                            <span class="text-[10px]">minggu ini</span>
-                            <span class="mt-1 text-[10px] text-slate-500">on-site &amp; online</span>
+                            <span class="font-semibold mb-1 md:mb-2 text-sm text-center md:text-base">Jelajahi Beragam</span>
+                            <span class="text-md text-center">Event Kampus</span>
+                            <span class="mt-1 text-xxs text-center text-slate-500">on-site &amp; online</span>
                         </div>
                     </div>
                 </div>
             </div>
             <x-badge variant="minimalist" size="sm"
                 class="absolute -top-3 right-0 md:-top-4 md:-right-3">
-                🔔 Reminder event hari ini
+                🔔 Reminder
         </x-badge>
         </div>
     </div>
