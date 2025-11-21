@@ -93,17 +93,20 @@
                 </p>
 
                 <!-- Badges -->
-                @if ($cardStatus === 'open')
-                    <div class="mt-2 flex gap-2 flex-wrap">
-                        <x-badge variant="outline-dark" size="xxs">
-                            👥 {{ $event['registered'] ?? 0 }} terdaftar
-                        </x-badge>
+                <div class="mt-2 flex gap-2 flex-wrap">
+                    <x-badge variant="outline-dark" size="xxs">
+                        👥 {{ $event['registered'] ?? 0 }} terdaftar
+                    </x-badge>
 
-                        <x-badge size="xxs" variant="{{ $style }}">
-                            {{ $event['quota_info'] }}
-                        </x-badge>
-                    </div>
-                @endif
+                    <x-badge size="xxs" variant="{{ $style }}">
+                        {{ $event['quota_info'] }}
+                    </x-badge>
+
+                    @php $isFree = ($event['price'] ?? 0) == 0; @endphp
+                    <x-badge size="xxs" variant="{{ $isFree ? 'subtle-success' : 'subtle-info' }}">
+                        {{ $isFree ? 'Gratis' : 'Rp ' . number_format($event['price'], 0, ',', '.') }}
+                    </x-badge>
+                </div>
             </div>
 
             <!-- CTA Desktop -->
@@ -191,9 +194,15 @@
             </p>
 
             <div class="flex justify-between items-center mt-2">
-                <x-badge variant="outline-dark" size="xxs">
-                    👥 {{ $event['registered'] ?? 0 }} peserta
-                </x-badge>
+                <div class="flex gap-1 items-center">
+                    <x-badge variant="outline-dark" size="xxs">
+                        👥 {{ $event['registered'] ?? 0 }} peserta
+                    </x-badge>
+                    @php $isFree = ($event['price'] ?? 0) == 0; @endphp
+                    <x-badge size="xxs" variant="{{ $isFree ? 'subtle-success' : 'subtle-info' }}">
+                        {{ $isFree ? 'Gratis' : 'Rp ' . number_format($event['price'], 0, ',', '.') }}
+                    </x-badge>
+                </div>
 
                 <x-button href="{{ route('event_detail', ['slug' => $detailParam]) }}" variant="primary-sm">
                     Daftar

@@ -196,6 +196,7 @@ class EventService
 
         $registered = $event->attendees_count;
         $quotaInfo = $this->getQuotaInfo($event->quota, $registered);
+        $price = $event->price ?? 0;
 
         return [
             'id' => $event->id,
@@ -212,6 +213,8 @@ class EventService
             'benefit' => $event->benefits ?? '',
             'registered' => $registered,
             'quota_info' => $quotaInfo,
+            'price' => $price,
+            'price_display' => $price > 0 ? 'Rp ' . number_format($price, 0, ',', '.') : 'Gratis',
             'date' => $event->date,
             'card_status' => $this->resolveCardStatus($event),
             'start_time_obj' => $event->start_time,
