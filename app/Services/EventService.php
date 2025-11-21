@@ -15,13 +15,15 @@ class EventService
     /**
      * Ambil daftar event yang sudah dipublikasikan dengan data siap pakai untuk komponen.
      * $filters:
-     *  - category: slug string
+     *  - category: slug string (boleh list, dipisah koma)
      *  - date: upcoming|today|week|month|all
      *  - mode: onsite|online|hybrid|all
      *  - price: free|paid
      *  - status: open|closed
      *  - date_from/date_to: Y-m-d
      *  - location: string (search)
+     *  - q: keyword
+     *  - sort: upcoming|newest|popular|az
      */
     public function getPublishedEvents(array $filters = []): Collection
     {
@@ -33,12 +35,21 @@ class EventService
         $dateFrom = $filters['date_from'] ?? null;
         $dateTo = $filters['date_to'] ?? null;
         $location = $filters['location'] ?? null;
+        $search = $filters['q'] ?? $filters['search'] ?? null;
+        $sort = $filters['sort'] ?? 'upcoming';
 
         $event = Event::query()
             ->with('categories')
             ->withCount('attendees')
-            ->where('status', 'published')
-            ->orderBy('date');
+            ->where('status', 'published');
+
+        if ($search) {
+            $event->where(function ($q) use ($search) {
+                $q->where('title', 'ILIKE', "%{$search}%")
+                    ->orWhere('organizer', 'ILIKE', "%{$search}%")
+                    ->orWhere('excerpt', 'ILIKE', "%{$search}%");
+            });
+        }
 
         // Quick date filters
         if ($dateFilter) {
@@ -65,7 +76,7 @@ class EventService
                 : explode(',', (string) $categoryFilter)
         )
             ->filter()
-            ->map(fn ($cat) => Str::slug($cat))
+            ->map(fn($cat) => Str::slug($cat))
             ->unique()
             ->values();
 
@@ -109,6 +120,23 @@ class EventService
         // Location search
         if ($location) {
             $event->where('location_address', 'like', '%' . $location . '%');
+        }
+
+        // Sorting
+        switch ($sort) {
+            case 'newest':
+                $event->orderByDesc('created_at');
+                break;
+            case 'popular':
+                $event->orderByDesc('attendees_count')->orderBy('date');
+                break;
+            case 'az':
+                $event->orderBy('title');
+                break;
+            case 'upcoming':
+            default:
+                $event->orderBy('date');
+                break;
         }
 
         return $event
@@ -192,7 +220,7 @@ class EventService
     {
         $category = $event->categories->first();
         $categoryName = $category?->name ?? 'Umum';
-        $categorySlug = Str::slug($categoryName); // Todo: nanti ganti pakai query filter saja
+        $categorySlug = Str::slug($categoryName);
 
         $registered = $event->attendees_count;
         $quotaInfo = $this->getQuotaInfo($event->quota, $registered);

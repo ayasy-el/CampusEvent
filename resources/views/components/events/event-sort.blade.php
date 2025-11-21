@@ -1,14 +1,20 @@
-<div class="flex items-center gap-2 md:gap-3">
+@props(['selected' => 'upcoming', 'hidden' => collect()])
+
+<form method="GET" class="flex items-center gap-2 md:gap-3">
+    @foreach (collect($hidden) as $key => $val)
+        <input type="hidden" name="{{ $key }}" value="{{ $val }}">
+    @endforeach
     <label for="sort" class="text-[11px] md:text-xs text-slate-500 whitespace-nowrap">
         Urutkan:
     </label>
     <div class="relative">
-        <select id="sort"
-            class="appearance-none text-xs md:text-sm pl-3 pr-8 py-2 rounded-2xl bg-white/70 border border-slate-100 text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400/60 cursor-pointer">
-            <option value="upcoming">Paling dekat (Upcoming)</option>
-            <option value="newest">Terbaru ditambahkan</option>
-            <option value="popular">Paling populer</option>
-            <option value="az">Judul A-Z</option>
+        <select id="sort" name="sort"
+            class="appearance-none text-xs md:text-sm pl-3 pr-8 py-2 rounded-2xl bg-white/70 border border-slate-100 text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400/60 cursor-pointer"
+            onchange="this.form.submit()">
+            <option value="upcoming" @selected($selected === 'upcoming')>Paling dekat (Upcoming)</option>
+            <option value="newest" @selected($selected === 'newest')>Terbaru ditambahkan</option>
+            <option value="popular" @selected($selected === 'popular')>Paling populer</option>
+            <option value="az" @selected($selected === 'az')>Judul A-Z</option>
         </select>
         <span class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-slate-400 text-xs">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
@@ -17,85 +23,4 @@
             </svg>
         </span>
     </div>
-</div>
-
-@once
-    @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                const sortSelect = document.getElementById('sort');
-                const listContainer = document.querySelector('.view-list');
-                const gridContainer = document.querySelector('.view-grid');
-
-                if (!sortSelect || !listContainer || !gridContainer) return;
-
-                // jaga-jaga kalau index belum di-set dari backend
-                function ensureIndex(container) {
-                    Array.from(container.querySelectorAll('article')).forEach((el, i) => {
-                        if (!el.dataset.index) {
-                            el.dataset.index = i;
-                        }
-                    });
-                }
-
-                ensureIndex(listContainer);
-                ensureIndex(gridContainer);
-
-                function sortArticles(container, compareFn) {
-                    const items = Array.from(container.querySelectorAll('article'));
-                    items.sort(compareFn);
-                    items.forEach(el => container.appendChild(el));
-                }
-
-                function getComparator(type) {
-                    switch (type) {
-                        case 'upcoming':
-                            // tanggal terdekat dulu (ascending)
-                            return (a, b) => {
-                                const da = a.dataset.date || '';
-                                const db = b.dataset.date || '';
-                                if (da < db) return -1;
-                                if (da > db) return 1;
-                                return 0;
-                            };
-                        case 'newest':
-                            // yang index terbesar (paling akhir ditambahkan) di atas
-                            return (a, b) => {
-                                const ia = parseInt(a.dataset.index || '0', 10);
-                                const ib = parseInt(b.dataset.index || '0', 10);
-                                return ib - ia;
-                            };
-                        case 'popular':
-                            // paling banyak peserta dulu
-                            return (a, b) => {
-                                const ra = parseInt(a.dataset.registered || '0', 10);
-                                const rb = parseInt(b.dataset.registered || '0', 10);
-                                return rb - ra;
-                            };
-                        case 'az':
-                            // judul A-Z
-                            return (a, b) => {
-                                const ta = (a.dataset.title || '').toLocaleLowerCase();
-                                const tb = (b.dataset.title || '').toLocaleLowerCase();
-                                return ta.localeCompare(tb);
-                            };
-                        default:
-                            return () => 0;
-                    }
-                }
-
-                function applySort() {
-                    const type = sortSelect.value;
-                    const comparator = getComparator(type);
-                    sortArticles(listContainer, comparator);
-                    sortArticles(gridContainer, comparator);
-                }
-
-                sortSelect.addEventListener('change', applySort);
-
-                // optional: apply default sort on load (misal upcoming)
-                applySort();
-            });
-        </script>
-    @endpush
-@endonce
+</form>

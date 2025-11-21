@@ -1,9 +1,13 @@
 @props([
     'event',
-    'variant' => 'list',
+    'variant' => 'list', // 'list', 'grid'
     'index' => 0,
     'show_detail' => false,
     'status' => 'open', // 'open', 'registered', 'finished'
+    'show_badges' => true,
+    'show_actions' => true,
+    'show_subtitle' => true,
+    'show_schedule' => true,
 ])
 
 @php
@@ -76,66 +80,74 @@
                     @endif
                 </div>
 
-                <p class="text-[11px] text-slate-500">
-                    {{ $event['organizer'] }}
-                    @if ($event['location'] && $event['organizer'])
-                        •
-                    @endif
-                    {{ $event['location'] }}
-                </p>
+                @if ($show_subtitle)
+                    <p class="text-[11px] text-slate-500">
+                        {{ $event['organizer'] }}
+                        @if ($event['location'] && $event['organizer'])
+                            •
+                        @endif
+                        {{ $event['location'] }}
+                    </p>
+                @endif
 
-                <p class="mt-1 text-[11px] text-slate-500">
-                    {{ $event['time'] }} WIB
-                    @if ($event['benefit'] && $event['time'])
-                        •
-                    @endif
-                    {{ $event['benefit'] }}
-                </p>
+                @if ($show_schedule)
+                    <p class="mt-1 text-[11px] text-slate-500">
+                        {{ $event['time'] }} WIB
+                        @if ($event['benefit'] && $event['time'])
+                            •
+                        @endif
+                        {{ $event['benefit'] }}
+                    </p>
+                @endif
 
                 <!-- Badges -->
-                <div class="mt-2 flex gap-2 flex-wrap">
-                    <x-badge variant="outline-dark" size="xxs">
-                        👥 {{ $event['registered'] ?? 0 }} terdaftar
-                    </x-badge>
+                @if ($show_badges)
+                    <div class="mt-2 flex gap-2 flex-wrap">
+                        <x-badge variant="outline-dark" size="xxs">
+                            👥 {{ $event['registered'] ?? 0 }} terdaftar
+                        </x-badge>
 
-                    <x-badge size="xxs" variant="{{ $style }}">
-                        {{ $event['quota_info'] }}
-                    </x-badge>
+                        <x-badge size="xxs" variant="{{ $style }}">
+                            {{ $event['quota_info'] }}
+                        </x-badge>
 
-                    @php $isFree = ($event['price'] ?? 0) == 0; @endphp
-                    <x-badge size="xxs" variant="{{ $isFree ? 'subtle-success' : 'subtle-info' }}">
-                        {{ $isFree ? 'Gratis' : 'Rp ' . number_format($event['price'], 0, ',', '.') }}
-                    </x-badge>
-                </div>
+                        @php $isFree = ($event['price'] ?? 0) == 0; @endphp
+                        <x-badge size="xxs" variant="{{ $isFree ? 'subtle-success' : 'subtle-info' }}">
+                            {{ $isFree ? 'Gratis' : 'Rp ' . number_format($event['price'], 0, ',', '.') }}
+                        </x-badge>
+                    </div>
+                @endif
             </div>
 
             <!-- CTA Desktop -->
-            <div @class([
-                'hidden md:flex' => $cardStatus === 'open',
-                'flex' => $cardStatus === 'registered' || $cardStatus === 'finished',
-                'flex-col items-end justify-between',
-            ])>
-                @if ($cardStatus === 'registered')
-                    <x-badge size="xxs" variant="subtle-success">Sudah Terdaftar</x-badge>
-                @elseif ($cardStatus === 'finished')
-                    <x-badge variant="subtle-gray" size="xxs"> Selesai</x-badge>
-                @elseif ($cardStatus === 'open')
-                    <x-button href="{{ route('event_detail', ['slug' => $detailParam]) }}" variant="primary-sm">
-                        Daftar
-                    </x-button>
-                @endif
+            @if ($show_actions)
+                <div @class([
+                    'hidden md:flex' => $cardStatus === 'open',
+                    'flex' => $cardStatus === 'registered' || $cardStatus === 'finished',
+                    'flex-col items-end justify-between',
+                ])>
+                    @if ($cardStatus === 'registered')
+                        <x-badge size="xxs" variant="subtle-success">Sudah Terdaftar</x-badge>
+                    @elseif ($cardStatus === 'finished')
+                        <x-badge variant="subtle-gray" size="xxs"> Selesai</x-badge>
+                    @elseif ($cardStatus === 'open')
+                        <x-button href="{{ route('event_detail', ['slug' => $detailParam]) }}" variant="primary-sm">
+                            Daftar
+                        </x-button>
+                    @endif
 
 
-                @if ($show_detail)
-                    <a href="{{ route('event_detail', ['slug' => $detailParam]) }}" class="text-[11px] items-end text-sky-600 font-medium">
-                        Lihat detail →
-                    </a>
-                @endif
-            </div>
+                    @if ($show_detail)
+                        <a href="{{ route('event_detail', ['slug' => $detailParam]) }}" class="text-[11px] items-end text-sky-600 font-medium">
+                            Lihat detail →
+                        </a>
+                    @endif
+                </div>
+            @endif
         </div>
 
         <!-- CTA Mobile -->
-        @if ($cardStatus === 'open')
+        @if ($cardStatus === 'open' && $show_actions)
             <div class="mt-3 flex md:hidden justify-between pt-3 border-t border-slate-100">
                 <x-button href="{{ route('event_detail', ['slug' => $detailParam]) }}" variant="primary-sm">
                     Lihat detail
@@ -185,28 +197,36 @@
                 <a href="{{ route('event_detail', ['slug' => $detailParam]) }}">{{ $event['title'] }}</a>
             </h2>
 
-            <p class="text-[11px] text-slate-500">
-                {{ $event['organizer'] }} • {{ $event['location'] }}
-            </p>
+            @if ($show_subtitle)
+                <p class="text-[11px] text-slate-500">
+                    {{ $event['organizer'] }} • {{ $event['location'] }}
+                </p>
+            @endif
 
-            <p class="text-[11px] text-slate-500">
-                {{ $event['time'] }} WIB • {{ $event['benefit'] }}
-            </p>
+            @if ($show_schedule)
+                <p class="text-[11px] text-slate-500">
+                    {{ $event['time'] }} WIB • {{ $event['benefit'] }}
+                </p>
+            @endif
 
             <div class="flex justify-between items-center mt-2">
                 <div class="flex gap-1 items-center">
-                    <x-badge variant="outline-dark" size="xxs">
-                        👥 {{ $event['registered'] ?? 0 }} peserta
-                    </x-badge>
-                    @php $isFree = ($event['price'] ?? 0) == 0; @endphp
-                    <x-badge size="xxs" variant="{{ $isFree ? 'subtle-success' : 'subtle-info' }}">
-                        {{ $isFree ? 'Gratis' : 'Rp ' . number_format($event['price'], 0, ',', '.') }}
-                    </x-badge>
+                    @if ($show_badges)
+                        <x-badge variant="outline-dark" size="xxs">
+                            👥 {{ $event['registered'] ?? 0 }} peserta
+                        </x-badge>
+                        @php $isFree = ($event['price'] ?? 0) == 0; @endphp
+                        <x-badge size="xxs" variant="{{ $isFree ? 'subtle-success' : 'subtle-info' }}">
+                            {{ $isFree ? 'Gratis' : 'Rp ' . number_format($event['price'], 0, ',', '.') }}
+                        </x-badge>
+                    @endif
                 </div>
 
-                <x-button href="{{ route('event_detail', ['slug' => $detailParam]) }}" variant="primary-sm">
-                    Daftar
-                </x-button>
+                @if ($show_actions)
+                    <x-button href="{{ route('event_detail', ['slug' => $detailParam]) }}" variant="primary-sm">
+                        Daftar
+                    </x-button>
+                @endif
             </div>
         </div>
     @endif

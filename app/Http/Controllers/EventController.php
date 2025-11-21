@@ -12,9 +12,14 @@ class EventController extends Controller
 
     public function index()
     {
+        $user = User::first();
+        $registeredEvents = $user
+            ? $this->eventService->getRegisteredEventsForUser($user, 'upcoming')->take(3)
+            : collect();
+
         $selectedFilters = [
             'categories' => collect(request()->query('categories'))
-                ->when(!is_array(request()->query('categories')), fn ($c) => collect(explode(',', request()->query('categories', ''))))
+                ->when(!is_array(request()->query('categories')), fn($c) => collect(explode(',', request()->query('categories', ''))))
                 ->filter()
                 ->unique()
                 ->values()
@@ -26,13 +31,15 @@ class EventController extends Controller
             'date_from' => request()->query('date_from'),
             'date_to' => request()->query('date_to'),
             'location' => request()->query('location'),
+            'q' => request()->query('q'),
+            'sort' => request()->query('sort', 'upcoming'),
         ];
 
         $events = $this->eventService->getPublishedEvents($selectedFilters);
         $eventsCount = $events->count();
         $filters = $this->eventService->getFilterOptions();
 
-        return view('pages.events.index', compact('events', 'eventsCount', 'filters', 'selectedFilters'));
+        return view('pages.events.index', compact('events', 'eventsCount', 'filters', 'selectedFilters', 'registeredEvents'));
     }
 
     public function show(string $slug)
