@@ -5,7 +5,7 @@
 
         <!-- Background image + gradient -->
         <div class="absolute inset-0">
-            <div class="w-full h-full bg-[url('https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?auto=format&fit=crop&w=1200&q=80')] bg-cover bg-center opacity-80"></div>
+            <div class="w-full h-full bg-[url('{{ $event['image'] }}')] bg-cover bg-center opacity-80"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-slate-900/90 via-slate-900/40 to-transparent"></div>
         </div>
 
@@ -24,7 +24,8 @@
                     </span>
                 </div>
 
-                <h1 class="text-lg leading-snug font-extrabold text-white
+                <h1
+                    class="text-lg leading-snug font-extrabold text-white
                            sm:text-xl md:text-3xl lg:text-4xl">
                     {{ $event['title'] ?? 'Event Kampus' }}
                 </h1>
@@ -42,9 +43,12 @@
                         <p>{{ $event['time'] ?? '-' }} WIB • {{ $event['location'] ?? '-' }}</p>
                     </div>
                     <div class="px-3 py-2 rounded-2xl bg-white/95 text-center min-w-[70px]">
-                        <span class="text-[10px] uppercase tracking-wide text-slate-500 block">{{ $event['date']?->translatedFormat('D') }}</span>
-                        <span class="text-lg md:text-xl font-bold leading-none block text-slate-900">{{ $event['date']?->format('d') }}</span>
-                        <span class="text-[10px] text-slate-500 block mt-0.5">{{ $event['date']?->translatedFormat('M') }}</span>
+                        <span
+                            class="text-[10px] uppercase tracking-wide text-slate-500 block">{{ $event['date']?->translatedFormat('D') }}</span>
+                        <span
+                            class="text-lg md:text-xl font-bold leading-none block text-slate-900">{{ $event['date']?->format('d') }}</span>
+                        <span
+                            class="text-[10px] text-slate-500 block mt-0.5">{{ $event['date']?->translatedFormat('M') }}</span>
                     </div>
                 </div>
             </div>

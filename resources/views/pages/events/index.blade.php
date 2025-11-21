@@ -6,7 +6,7 @@
     <x-page-header title="Semua Event Kampus" description="Filter berdasarkan kategori, tanggal, lokasi, dan urutkan sesuai kebutuhanmu ✨">
         <x-slot:badge>
             <x-badge variant="default" size="sm">
-                <x-dot /> {{ $eventsCount }} event aktif
+                <x-dot /> &nbsp; {{ $eventsCount }} event aktif
             </x-badge>
         </x-slot:badge>
 

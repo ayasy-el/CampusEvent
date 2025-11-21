@@ -4,7 +4,7 @@
     <div class="flex items-end justify-between mb-3 md:mb-4">
         <div>
             <h2 class="text-lg md:text-xl font-bold text-slate-900">
-                Event yang Kamu Daftarkan
+                Event Terdaftar
             </h2>
             <p class="text-[11px] md:text-xs text-slate-500">
                 Daftar event yang sudah kamu pilih. Datang tepat waktu ya ✨

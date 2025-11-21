@@ -4,10 +4,12 @@
 
 @section('content')
 <main>
-    <x-home.hero />
-    <x-home.upcoming-events />
-    <x-home.featured-event />
-    <x-home.explore-categories/>
+    <x-home.hero :count="$eventsCount"/>
+    <x-home.upcoming-events :events="$upcomingEvents" />
+    @if ($featuredEvent)
+        <x-home.featured-event :event="$featuredEvent" />
+    @endif
+    <x-home.explore-categories :categories="$categories" />
     {{-- <x-home.organizations/> --}}
     <x-home.how-it-works/>
     <x-home.benefits/>

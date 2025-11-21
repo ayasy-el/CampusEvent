@@ -46,8 +46,9 @@ class EventController extends Controller
     {
         $event = $this->eventService->getEventBySlug($slug);
         $relatedEvents = $this->eventService
-            ->getPublishedEvents()
+            ->getPublishedEvents(['date' => 'upcoming'])
             ->reject(fn($item) => $item['slug'] === $slug)
+            ->shuffle()
             ->take(3);
 
         return view('pages.events.show', compact('event', 'relatedEvents'));

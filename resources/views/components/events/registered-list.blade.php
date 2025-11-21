@@ -41,7 +41,7 @@
                     Riwayat Event (History)
                 </h2>
                 <p class="text-[11px] md:text-xs text-slate-500">
-                    Event yang sudah kamu ikuti atau sudah lewat. Cocok untuk cek sertifikat atau materi.
+                    Event yang sudah kamu ikuti atau sudah lewat.
                 </p>
             </div>
             <x-badge variant="subtle-gray" size='xs'> 📚 {{ $pastEvents->count() }} event selesai </x-badge>
