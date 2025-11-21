@@ -12,10 +12,27 @@ class EventController extends Controller
 
     public function index()
     {
-        $events = $this->eventService->getPublishedEvents();
-        $eventsCount = $events->count();
+        $selectedFilters = [
+            'categories' => collect(request()->query('categories'))
+                ->when(!is_array(request()->query('categories')), fn ($c) => collect(explode(',', request()->query('categories', ''))))
+                ->filter()
+                ->unique()
+                ->values()
+                ->all(),
+            'date' => request()->query('date'),
+            'mode' => request()->query('mode'),
+            'price' => request()->query('price'),
+            'status' => request()->query('status'),
+            'date_from' => request()->query('date_from'),
+            'date_to' => request()->query('date_to'),
+            'location' => request()->query('location'),
+        ];
 
-        return view('pages.events.index', compact('events', 'eventsCount'));
+        $events = $this->eventService->getPublishedEvents($selectedFilters);
+        $eventsCount = $events->count();
+        $filters = $this->eventService->getFilterOptions();
+
+        return view('pages.events.index', compact('events', 'eventsCount', 'filters', 'selectedFilters'));
     }
 
     public function show(string $slug)

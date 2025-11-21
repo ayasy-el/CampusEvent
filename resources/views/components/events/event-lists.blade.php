@@ -6,6 +6,8 @@
 @php
     $events = collect($events);
     $eventsCount = $eventsCount ?? $events->count();
+    $showingFrom = $events->isEmpty() ? 0 : 1;
+    $showingTo = $events->count();
 @endphp
 
 <section class="space-y-3 md:space-y-4">
@@ -14,7 +16,7 @@
         <div class="flex items-center justify-between text-[11px] md:text-xs text-slate-500">
             <p>
                 Menampilkan
-                <span class="font-semibold text-slate-700">1–{{ $events->count() }}</span>
+                <span class="font-semibold text-slate-700">{{ $showingFrom }}–{{ $showingTo }}</span>
                 dari
                 <span class="font-semibold text-slate-700">{{ $eventsCount }}</span>
                 event

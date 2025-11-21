@@ -22,7 +22,7 @@
     <x-events.filter-toolbar />
 
     <main class="grid gap-4 md:grid-cols-[300px_minmax(0,1fr)] lg:grid-cols-[320px_minmax(0,1fr)] md:gap-6">
-        <x-events.filter-sidebar />
+        <x-events.filter-sidebar :filters="$filters" :selected="$selectedFilters" />
         <x-events.event-lists :events="$events" :events-count="$eventsCount" />
     </main>
     <x-events.registered-event />

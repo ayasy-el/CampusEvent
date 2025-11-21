@@ -2,8 +2,11 @@
 
 namespace App\Services;
 
+use Carbon\Carbon;
 use App\Models\Event;
 use App\Models\User;
+use App\Models\Category;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -11,25 +14,106 @@ class EventService
 {
     /**
      * Ambil daftar event yang sudah dipublikasikan dengan data siap pakai untuk komponen.
-     * $status : "upcoming" | "past" | "all"
+     * $filters:
+     *  - category: slug string
+     *  - date: upcoming|today|week|month|all
+     *  - mode: onsite|online|hybrid|all
+     *  - price: free|paid
+     *  - status: open|closed
+     *  - date_from/date_to: Y-m-d
+     *  - location: string (search)
      */
-    public function getPublishedEvents(string $status = "upcoming"): Collection
+    public function getPublishedEvents(array $filters = []): Collection
     {
+        $dateFilter = $filters['date'] ?? null;
+        $categoryFilter = $filters['categories'] ?? [];
+        $modeFilter = $filters['mode'] ?? null;
+        $priceFilter = $filters['price'] ?? null;
+        $registrationStatus = $filters['status'] ?? null;
+        $dateFrom = $filters['date_from'] ?? null;
+        $dateTo = $filters['date_to'] ?? null;
+        $location = $filters['location'] ?? null;
+
         $event = Event::query()
             ->with('categories')
             ->withCount('attendees')
             ->where('status', 'published')
             ->orderBy('date');
 
-        if ($status === 'upcoming') {
-            $event->whereDate('date', '>=', now()->toDateString());
-        } elseif ($status === 'past') {
-            $event->whereDate('date', '<', now()->toDateString());
+        // Quick date filters
+        if ($dateFilter) {
+            match ($dateFilter) {
+                'today' => $event->whereDate('date', Carbon::today()),
+                'week' => $event->whereBetween('date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]),
+                'month' => $event->whereBetween('date', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()]),
+                'upcoming' => $event->whereDate('date', '>=', Carbon::today()),
+                default => null,
+            };
+        }
+
+        // Range date filter overrides quick ones when provided
+        if ($dateFrom || $dateTo) {
+            $start = $dateFrom ? Carbon::parse($dateFrom) : Carbon::today();
+            $end = $dateTo ? Carbon::parse($dateTo) : Carbon::today()->addYears(5);
+            $event->whereBetween('date', [$start, $end]);
+        }
+
+        // Category filter
+        $categoryFilters = collect(
+            is_array($categoryFilter)
+                ? $categoryFilter
+                : explode(',', (string) $categoryFilter)
+        )
+            ->filter()
+            ->map(fn ($cat) => Str::slug($cat))
+            ->unique()
+            ->values();
+
+        if ($categoryFilters->isNotEmpty()) {
+            $event->whereHas('categories', function ($q) use ($categoryFilters) {
+                $q->whereIn(
+                    DB::raw("LOWER(REPLACE(name, ' ', '-'))"),
+                    $categoryFilters->all()
+                );
+            });
+        }
+
+        // Mode filter
+        $modeMap = [
+            'onsite' => 'offline',
+            'online' => 'online',
+            'hybrid' => 'hybrid',
+        ];
+        if ($modeFilter && isset($modeMap[$modeFilter])) {
+            $event->where('location_type', $modeMap[$modeFilter]);
+        }
+
+        // Price filter
+        if ($priceFilter === 'free') {
+            $event->where('price', 0);
+        } elseif ($priceFilter === 'paid') {
+            $event->where('price', '>', 0);
+        }
+
+        // Registration status filter
+        if ($registrationStatus === 'open') {
+            $event->whereDate('date', '>=', Carbon::today())
+                ->where('status', 'published');
+        } elseif ($registrationStatus === 'closed') {
+            $event->where(function ($q) {
+                $q->where('status', 'closed')
+                    ->orWhereDate('date', '<', Carbon::today());
+            });
+        }
+
+        // Location search
+        if ($location) {
+            $event->where('location_address', 'like', '%' . $location . '%');
         }
 
         return $event
             ->get()
-            ->map(fn (Event $event) => $this->transformEvent($event));
+            ->map(fn(Event $event) => $this->transformEvent($event));
     }
 
     /**
@@ -52,7 +136,7 @@ class EventService
     public function getRegisteredEventsForUser(User $user, string $status = 'all'): Collection
     {
         $query = Event::query()
-            ->whereHas('attendees', fn ($q) => $q->where('user_id', $user->id))
+            ->whereHas('attendees', fn($q) => $q->where('user_id', $user->id))
             ->with('categories')
             ->withCount('attendees')
             ->orderBy('date');
@@ -68,6 +152,40 @@ class EventService
             $data['card_status'] = $this->resolveCardStatusForRegistered($event);
             return $data;
         });
+    }
+
+    /**
+     * Data opsi filter untuk halaman daftar event.
+     */
+    public function getFilterOptions(): array
+    {
+        return [
+            'categories' => Category::query()
+                ->orderBy('name')
+                ->get()
+                ->map(fn(Category $cat) => [
+                    'value' => Str::slug($cat->name),
+                    'label' => $cat->name,
+                ]),
+            'dateFilters' => collect([
+                ['value' => 'today', 'label' => 'Hari ini'],
+                ['value' => 'week', 'label' => 'Minggu ini'],
+                ['value' => 'month', 'label' => 'Bulan ini'],
+            ]),
+            'modeFilters' => collect([
+                ['value' => 'onsite', 'label' => 'On-site'],
+                ['value' => 'online', 'label' => 'Online'],
+                ['value' => 'hybrid', 'label' => 'Hybrid'],
+            ]),
+            'priceFilters' => collect([
+                ['value' => 'free', 'label' => 'Gratis'],
+                ['value' => 'paid', 'label' => 'Berbayar'],
+            ]),
+            'registrationStatus' => collect([
+                ['value' => 'open', 'label' => 'Masih Dibuka'],
+                ['value' => 'closed', 'label' => 'Ditutup'],
+            ]),
+        ];
     }
 
     protected function transformEvent(Event $event): array
