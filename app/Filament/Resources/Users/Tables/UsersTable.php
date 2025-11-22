@@ -95,6 +95,16 @@ class UsersTable
                     ->alignCenter()
                     ->size('sm'),
 
+                TextColumn::make('events_count')
+                    ->label('Event Diikuti')
+                    ->badge()
+                    ->color('info')
+                    ->icon('heroicon-m-ticket')
+                    ->counts('events')
+                    ->alignCenter()
+                    ->sortable()
+                    ->size('sm'),
+
                 TextColumn::make('email_verified_at')
                     ->label('Email Terverifikasi')
                     ->dateTime('d M Y H:i')

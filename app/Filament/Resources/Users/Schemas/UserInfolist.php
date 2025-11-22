@@ -58,6 +58,14 @@ class UserInfolist
                     ->dateTime('d M Y H:i')
                     ->placeholder('Belum Terverifikasi'),
 
+                TextEntry::make('events_count')
+                    ->label('Total Event Diikuti')
+                    ->badge()
+                    ->color('success')
+                    ->icon('heroicon-m-ticket')
+                    ->formatStateUsing(fn($state): string => ($state ?? 0) . ' Event')
+                    ->default('0 Event'),
+
                 TextEntry::make('nrp')
                     ->label('NRP')
                     ->placeholder('-')

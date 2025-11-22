@@ -16,4 +16,13 @@ class ViewUser extends ViewRecord
             EditAction::make(),
         ];
     }
+
+    protected function mutateFormDataBeforeFill(array $data): array
+    {
+        // Load events count
+        $this->record->loadCount('events');
+        $data['events_count'] = $this->record->events_count;
+        
+        return $data;
+    }
 }
