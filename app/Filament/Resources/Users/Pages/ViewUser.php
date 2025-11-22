@@ -22,7 +22,7 @@ class ViewUser extends ViewRecord
         // Load events count
         $this->record->loadCount('events');
         $data['events_count'] = $this->record->events_count;
-        
+
         return $data;
     }
 }

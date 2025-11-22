@@ -48,7 +48,7 @@ class EventInfolist
                                     })
                                     ->formatStateUsing(fn(string $state): string => match ($state) {
                                         'draft' => 'Draft',
-                                        'published' => 'Terbit',
+                                        'published' => 'Published',
                                         'cancelled' => 'Dibatalkan',
                                         'completed' => 'Selesai',
                                         default => ucfirst($state),
