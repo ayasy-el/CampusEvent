@@ -80,7 +80,7 @@ class EventController extends Controller
 
         if (!$user) {
             return redirect()
-                ->route('filament.admin.auth.login')
+                ->route('login')
                 ->with('error', 'Silakan login untuk mendaftar event.');
         }
 

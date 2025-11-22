@@ -19,7 +19,7 @@
 
         <div class="flex items-center gap-2 md:gap-3">
             @if (!$authUser)
-                <a href="{{ route('filament.admin.auth.login') }}"
+                <a href="{{ route('login') }}"
                     class="text-sm font-semibold hidden md:inline-flex px-4 py-2 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-100">
                     Login
                 </a>
@@ -75,7 +75,7 @@
                         @endif
 
                         <div class="border-t border-slate-100 mt-1 pt-1">
-                            <form method="POST" action="{{ route('filament.admin.auth.logout') }}">
+                            <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button type="submit"
                                     class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-red-500 hover:bg-red-50">

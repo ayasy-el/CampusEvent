@@ -46,7 +46,7 @@
 
         <div class="mt-2">
             @if (!$user)
-                <a href="{{ route('filament.admin.auth.login') }}"
+                <a href="{{ route('login') }}"
                     class="block text-center w-full px-4 py-2.5 rounded-full text-sm font-semibold bg-sky-500 text-white shadow-lg shadow-sky-500/30 hover:bg-sky-600">
                     Login untuk daftar
                 </a>
