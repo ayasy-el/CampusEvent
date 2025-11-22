@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\FilamentAuthService;
+use App\Services\EventService;
 use App\Services\ProfileService;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -13,7 +14,8 @@ class ProfileController extends Controller
 {
     public function __construct(
         private FilamentAuthService $filamentAuthService,
-        private ProfileService $profileService
+        private ProfileService $profileService,
+        private EventService $eventService,
     ) {}
 
     public function show(): View|RedirectResponse
@@ -24,7 +26,13 @@ class ProfileController extends Controller
             return redirect()->route('home');
         }
 
-        return view('pages.profile.show', compact('user'));
+        $registeredEvents = $this->eventService->getRegisteredEventsForUser($user);
+        $stats = [
+            'total_events' => $registeredEvents->count(),
+            'upcoming_events' => $this->eventService->getRegisteredEventsForUser($user, 'upcoming')->count(),
+        ];
+
+        return view('pages.profile.show', compact('user', 'stats'));
     }
 
     public function edit(): View|RedirectResponse
