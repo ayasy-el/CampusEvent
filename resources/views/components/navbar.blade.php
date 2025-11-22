@@ -15,17 +15,11 @@
 
         @php
             $authUser = app(\App\Services\FilamentAuthService::class)->getAuthenticatedUser();
-            $loginRoute = collect(['filament.auth.login', 'filament.admin.auth.login', 'login'])->first(
-                fn($route) => \Illuminate\Support\Facades\Route::has($route),
-            );
-            $logoutRoute = collect(['filament.auth.logout', 'filament.admin.auth.logout', 'logout'])->first(
-                fn($route) => \Illuminate\Support\Facades\Route::has($route),
-            );
         @endphp
 
         <div class="flex items-center gap-2 md:gap-3">
-            @if (!$authUser && $loginRoute)
-                <a href="{{ route($loginRoute) }}"
+            @if (!$authUser)
+                <a href="{{ route('filament.admin.auth.login') }}"
                     class="text-sm font-semibold hidden md:inline-flex px-4 py-2 rounded-full border border-slate-200 text-slate-700 hover:bg-slate-100">
                     Login
                 </a>
@@ -59,31 +53,37 @@
                             <p class="text-[11px] text-slate-500 truncate">{{ $authUser->email ?? '-' }}</p>
                         </div>
 
-                        <nav class="py-1">
-                            <a href="{{ route('profile') }}"
+                        @if ($authUser->role === 'admin')
+                            <a href="{{ route('filament.admin.pages.dashboard') }}"
                                 class="flex items-center gap-2 px-3 py-1.5 hover:bg-slate-50">
-                                <span>👤</span>
-                                <span>Profile Saya</span>
+                                <span>🛠️</span>
+                                <span>Admin Dashboard</span>
                             </a>
-                            <a href="{{ route('my_events') }}"
-                                class="flex items-center gap-2 px-3 py-1.5 hover:bg-slate-50">
-                                <span>📅</span>
-                                <span>My Events</span>
-                            </a>
-                        </nav>
-
-                        @if ($logoutRoute)
-                            <div class="border-t border-slate-100 mt-1 pt-1">
-                                <form method="POST" action="{{ route($logoutRoute) }}">
-                                    @csrf
-                                    <button type="submit"
-                                        class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-red-500 hover:bg-red-50">
-                                        <span>🚪</span>
-                                        <span>Logout</span>
-                                    </button>
-                                </form>
-                            </div>
+                        @elseif ($authUser->role === 'mahasiswa')
+                            <nav class="py-1">
+                                <a href="{{ route('profile') }}"
+                                    class="flex items-center gap-2 px-3 py-1.5 hover:bg-slate-50">
+                                    <span>👤</span>
+                                    <span>Profile Saya</span>
+                                </a>
+                                <a href="{{ route('my_events') }}"
+                                    class="flex items-center gap-2 px-3 py-1.5 hover:bg-slate-50">
+                                    <span>📅</span>
+                                    <span>My Events</span>
+                                </a>
+                            </nav>
                         @endif
+
+                        <div class="border-t border-slate-100 mt-1 pt-1">
+                            <form method="POST" action="{{ route('filament.admin.auth.logout') }}">
+                                @csrf
+                                <button type="submit"
+                                    class="w-full flex items-center gap-2 px-3 py-1.5 text-left text-red-500 hover:bg-red-50">
+                                    <span>🚪</span>
+                                    <span>Logout</span>
+                                </button>
+                            </form>
+                        </div>
                     </div>
                 </div>
             @endif

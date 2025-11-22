@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 /**
@@ -57,7 +56,7 @@ class EventFactory extends Factory
             'contact_email' => fake()->boolean(70) ? fake()->companyEmail() : null,
             'contact_phone' => fake()->boolean(70) ? fake()->phoneNumber() : null,
 
-            'status' => Arr::random(['draft', 'published']),
+            'status' => 'published',
         ];
     }
 }

@@ -4,15 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Services\EventService;
-use Illuminate\Http\Request;
+use App\Services\FilamentAuthService;
 
 class EventController extends Controller
 {
-    public function __construct(protected EventService $eventService) {}
+    public function __construct(protected EventService $eventService, private FilamentAuthService $filamentAuthService) {}
 
     public function index()
     {
-        $user = User::first();
+        $user = $this->filamentAuthService->getAuthenticatedUser();
         $registeredEvents = $user
             ? $this->eventService->getRegisteredEventsForUser($user, 'upcoming')->take(3)
             : collect();
@@ -39,11 +39,13 @@ class EventController extends Controller
         $eventsCount = $events->count();
         $filters = $this->eventService->getFilterOptions();
 
-        return view('pages.events.index', compact('events', 'eventsCount', 'filters', 'selectedFilters', 'registeredEvents'));
+        return view('pages.events.index', compact('user', 'events', 'eventsCount', 'filters', 'selectedFilters', 'registeredEvents'));
     }
 
     public function show(string $slug)
     {
+        $user = $this->filamentAuthService->getAuthenticatedUser();
+
         $event = $this->eventService->getEventBySlug($slug);
         $relatedEvents = $this->eventService
             ->getPublishedEvents(['date' => 'upcoming'])
@@ -51,12 +53,16 @@ class EventController extends Controller
             ->shuffle()
             ->take(3);
 
-        return view('pages.events.show', compact('event', 'relatedEvents'));
+        return view('pages.events.show', compact('user', 'event', 'relatedEvents'));
     }
 
     public function registered()
     {
-        $user = User::first();
+        $user = $this->filamentAuthService->getAuthenticatedUser();
+
+        if (!$user || $user->role !== 'mahasiswa') {
+            return redirect()->route('home');
+        }
 
         $upcomingEvents = $user
             ? $this->eventService->getRegisteredEventsForUser($user, 'upcoming')

@@ -1,8 +1,7 @@
-@props(['event'])
+@props(['event', 'user'])
 
 <aside class="space-y-4 md:space-y-5 md:sticky md:top-20 h-max">
-    <section
-        class="bg-white rounded-3xl border border-slate-100 shadow-md shadow-slate-200/80 p-4 md:p-5 space-y-3">
+    <section class="bg-white rounded-3xl border border-slate-100 shadow-md shadow-slate-200/80 p-4 md:p-5 space-y-3">
         <div class="flex items-center justify-between">
             <p class="text-xs font-semibold text-slate-900">
                 {{ $event['date']?->translatedFormat('l, d F Y') }}
@@ -28,8 +27,15 @@
             </p>
         </div>
 
-        <a href="#"
-            class="block text-center w-full mt-2 px-4 py-2.5 rounded-full bg-sky-500 text-white text-sm font-semibold shadow-lg shadow-sky-500/30 hover:bg-sky-600">
+        <a href=@if ($user) "#" {{-- TODO: ganti dengan link pendaftaran actual --}}
+                @else "{{ route('filament.admin.auth.login') }}" @endif
+            @class([
+                'block text-center w-full mt-2 px-4 py-2.5 rounded-full text-sm font-semibold',
+                'bg-sky-500 text-white shadow-lg shadow-sky-500/30 hover:bg-sky-600' =>
+                    !$user || $user->role === 'mahasiswa',
+                'cursor-not-allowed bg-slate-200 text-slate-500 hover:bg-slate-200 shadow-none' =>
+                    $user && $user->role === 'admin',
+            ]) @if ($user && $user->role === 'admin') inactive @endif>
             Daftar Sekarang
         </a>
     </section>

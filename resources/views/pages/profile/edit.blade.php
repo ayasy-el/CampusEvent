@@ -8,14 +8,9 @@
 
     <main>
         <x-profile.profile-form :action="route('profile.update')" method="PUT">
-            <x-profile.header-form
-                :photo-url="$user?->avatar_url ??
-                    'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png?20170328184010'"
-                :full-name="$user?->name ?? ''"
-                :program-studi="$user?->program_studi ?? ''"
-                :show-avatar="true"
-                :enable-upload="true"
-            />
+            <x-profile.header-form :photo-url="$user?->avatar_url ??
+                'https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png?20170328184010'" :full-name="$user?->name ?? ''" :program-studi="$user?->program_studi ?? ''" :show-avatar="true"
+                :enable-upload="true" />
 
             <x-profile.student-form :full-name="$user?->name ?? ''" :nrp="$user?->nrp ?? ''" :program-studi="$user?->program_studi ?? ''" :angkatan="$user?->angkatan ?? ''" />
 

@@ -16,16 +16,24 @@ class ProfileController extends Controller
         private ProfileService $profileService
     ) {}
 
-    public function show(): View
+    public function show(): View|RedirectResponse
     {
         $user = $this->filamentAuthService->getAuthenticatedUser();
+
+        if (!$user || $user->role !== 'mahasiswa') {
+            return redirect()->route('home');
+        }
 
         return view('pages.profile.show', compact('user'));
     }
 
-    public function edit(): View
+    public function edit(): View|RedirectResponse
     {
         $user = $this->filamentAuthService->getAuthenticatedUser();
+
+        if (!$user || $user->role !== 'mahasiswa') {
+            return redirect()->route('home');
+        }
 
         return view('pages.profile.edit', compact('user'));
     }
