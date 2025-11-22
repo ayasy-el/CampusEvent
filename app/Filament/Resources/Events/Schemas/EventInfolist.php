@@ -23,6 +23,7 @@ class EventInfolist
                         Flex::make([
                             ImageEntry::make('image')
                                 ->label('Gambar Event')
+                                ->disk('public')
                                 ->defaultImageUrl(url('/images/placeholder.png'))
                                 ->height(300)
                                 ->grow(false),

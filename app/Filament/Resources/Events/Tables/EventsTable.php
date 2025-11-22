@@ -18,6 +18,7 @@ class EventsTable
             ->columns([
                 ImageColumn::make('image')
                     ->label('Gambar')
+                    ->disk('public')
                     ->circular()
                     ->size(40)
                     ->defaultImageUrl(url('/images/placeholder.png'))

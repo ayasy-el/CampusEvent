@@ -18,6 +18,7 @@ class SpeakersTable
             ->columns([
                 ImageColumn::make('photo')
                     ->label('Foto')
+                    ->disk('public')
                     ->circular()
                     ->defaultImageUrl(url('/images/default-avatar.png'))
                     ->size(50),

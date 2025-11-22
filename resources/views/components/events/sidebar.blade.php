@@ -1,6 +1,13 @@
 @props(['event', 'user'])
 
 <aside class="space-y-4 md:space-y-5 md:sticky md:top-20 h-max">
+    @if (!empty($event['image']))
+        <div class="overflow-hidden rounded-3xl border border-slate-100 shadow-sm shadow-slate-200/60">
+            <img src="{{ $event['image'] }}" alt="{{ $event['title'] ?? 'Poster event' }}"
+                class="w-full h-48 md:h-56 lg:h-64 object-cover">
+        </div>
+    @endif
+
     <section class="bg-white rounded-3xl border border-slate-100 shadow-md shadow-slate-200/80 p-4 md:p-5 space-y-3">
         <div class="flex items-center justify-between">
             <p class="text-xs font-semibold text-slate-900">
