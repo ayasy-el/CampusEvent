@@ -7,7 +7,7 @@
         description="Filter berdasarkan kategori, tanggal, lokasi, dan urutkan sesuai kebutuhanmu ✨">
         <x-slot:badge>
             <x-badge variant="default" size="sm">
-                <x-dot /> &nbsp; {{ $eventsCount }} event aktif
+                <x-dot /> &nbsp; {{ $totalActiveEvents ?? $eventsCount }} event aktif
             </x-badge>
         </x-slot:badge>
 
@@ -17,7 +17,7 @@
                 href="{{ route('my_events') }}">
                 Lihat Semua Event Terdaftar
                 <span class="inline-flex items-center justify-center ml-1 px-2 py-0.5 rounded-full bg-white/20 text-[11px]">
-                    {{ $registeredEvents->count() }} event
+                    {{ $registeredEventsCount ?? $registeredEvents->count() }} event
                 </span>
             </x-info-banner>
         @endif

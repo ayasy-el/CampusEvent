@@ -147,7 +147,7 @@ class EventService
     /**
      * Ambil detail event berdasarkan slug.
      */
-    public function getEventBySlug(string $slug): array
+    public function getEventBySlug(string $slug, ?User $user = null): array
     {
         $event = Event::query()
             ->with(['categories', 'speakers'])
@@ -155,7 +155,7 @@ class EventService
             ->where('slug', $slug)
             ->firstOrFail();
 
-        return $this->transformEventDetail($event);
+        return $this->transformEventDetail($event, $user);
     }
 
     /**
@@ -180,6 +180,69 @@ class EventService
             $data['card_status'] = $this->resolveCardStatusForRegistered($event);
             return $data;
         });
+    }
+
+    /**
+     * Daftarkan user ke event tertentu.
+     */
+    public function registerUserForEvent(User $user, string $slug): array
+    {
+        if ($user->role !== 'mahasiswa') {
+            return [
+                'status' => 'forbidden',
+                'message' => 'Hanya mahasiswa yang dapat mendaftar event.',
+            ];
+        }
+
+        return DB::transaction(function () use ($user, $slug) {
+            $event = Event::query()
+                ->where('slug', $slug)
+                ->where('status', 'published')
+                ->lockForUpdate()
+                ->withCount('attendees')
+                ->firstOrFail();
+
+            if ($event->date->isPast()) {
+                return [
+                    'status' => 'closed',
+                    'message' => 'Pendaftaran sudah ditutup karena event telah berlangsung.',
+                ];
+            }
+
+            $alreadyRegistered = $event->attendees()
+                ->where('user_id', $user->id)
+                ->exists();
+
+            if ($alreadyRegistered) {
+                return [
+                    'status' => 'already_registered',
+                    'message' => 'Kamu sudah terdaftar di event ini.',
+                ];
+            }
+
+            $isQuotaFull = $event->quota > 0 && $event->attendees_count >= $event->quota;
+            if ($isQuotaFull) {
+                return [
+                    'status' => 'quota_full',
+                    'message' => 'Kuota event sudah penuh.',
+                ];
+            }
+
+            $event->attendees()->attach($user->id);
+
+            return [
+                'status' => 'success',
+                'message' => 'Pendaftaran berhasil! Sampai jumpa di acara.',
+            ];
+        });
+    }
+
+    /**
+     * Ambil daftar ID event yang sudah diikuti user.
+     */
+    public function getRegisteredEventIds(User $user): array
+    {
+        return $user->events()->pluck('events.id')->all();
     }
 
     /**
@@ -222,7 +285,7 @@ class EventService
         $categoryName = $category?->name ?? 'Umum';
         $categorySlug = Str::slug($categoryName);
 
-        $registered = $event->attendees_count;
+        $registered = $event->attendees_count ?? $event->attendees()->count();
         $quotaInfo = $this->getQuotaInfo($event->quota, $registered);
         $price = $event->price ?? 0;
 
@@ -250,10 +313,13 @@ class EventService
         ];
     }
 
-    protected function transformEventDetail(Event $event): array
+    protected function transformEventDetail(Event $event, ?User $user = null): array
     {
         $base = $this->transformEvent($event);
         $price = $event->price ?? 0;
+        $isRegistered = $user
+            ? $event->attendees()->where('user_id', $user->id)->exists()
+            : false;
 
         return array_merge($base, [
             'excerpt' => $event->excerpt,
@@ -278,6 +344,8 @@ class EventService
             'contact_email' => $event->contact_email,
             'contact_phone' => $event->contact_phone,
             'attendees_count' => $event->attendees_count,
+            'registration_status' => $this->resolveRegistrationStatus($event, $isRegistered),
+            'is_registered' => $isRegistered,
         ]);
     }
 
@@ -353,5 +421,27 @@ class EventService
         return $event->date->isPast() || $event->status === 'closed'
             ? 'finished'
             : 'registered';
+    }
+
+    protected function resolveRegistrationStatus(Event $event, bool $isRegistered): string
+    {
+        if ($isRegistered) {
+            return 'registered';
+        }
+
+        if ($event->date->isPast()) {
+            return 'finished';
+        }
+
+        if ($event->status !== 'published') {
+            return 'closed';
+        }
+
+        $registeredCount = $event->attendees_count ?? $event->attendees()->count();
+        if ($event->quota > 0 && $registeredCount >= $event->quota) {
+            return 'full';
+        }
+
+        return 'open';
     }
 }

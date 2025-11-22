@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
 use App\Services\EventService;
 use App\Services\FilamentAuthService;
 
@@ -16,6 +15,9 @@ class EventController extends Controller
         $registeredEvents = $user
             ? $this->eventService->getRegisteredEventsForUser($user, 'upcoming')->take(3)
             : collect();
+        $registeredEventsCount = $user
+            ? $this->eventService->getRegisteredEventsForUser($user)->count()
+            : 0;
 
         $selectedFilters = [
             'categories' => collect(request()->query('categories'))
@@ -36,17 +38,33 @@ class EventController extends Controller
         ];
 
         $events = $this->eventService->getPublishedEvents($selectedFilters);
+        $totalActiveEvents = $events->count();
+        if ($user) {
+            $registeredEventIds = $this->eventService->getRegisteredEventIds($user);
+            $events = $events
+                ->reject(fn($event) => in_array($event['id'], $registeredEventIds));
+        }
+
         $eventsCount = $events->count();
         $filters = $this->eventService->getFilterOptions();
 
-        return view('pages.events.index', compact('user', 'events', 'eventsCount', 'filters', 'selectedFilters', 'registeredEvents'));
+        return view('pages.events.index', compact(
+            'user',
+            'events',
+            'eventsCount',
+            'filters',
+            'selectedFilters',
+            'registeredEvents',
+            'registeredEventsCount',
+            'totalActiveEvents'
+        ));
     }
 
     public function show(string $slug)
     {
         $user = $this->filamentAuthService->getAuthenticatedUser();
 
-        $event = $this->eventService->getEventBySlug($slug);
+        $event = $this->eventService->getEventBySlug($slug, $user);
         $relatedEvents = $this->eventService
             ->getPublishedEvents(['date' => 'upcoming'])
             ->reject(fn($item) => $item['slug'] === $slug)
@@ -54,6 +72,25 @@ class EventController extends Controller
             ->take(3);
 
         return view('pages.events.show', compact('user', 'event', 'relatedEvents'));
+    }
+
+    public function register(string $slug)
+    {
+        $user = $this->filamentAuthService->getAuthenticatedUser();
+
+        if (!$user) {
+            return redirect()
+                ->route('filament.admin.auth.login')
+                ->with('error', 'Silakan login untuk mendaftar event.');
+        }
+
+        $result = $this->eventService->registerUserForEvent($user, $slug);
+        $flashKey = $result['status'] === 'success' ? 'success' : 'error';
+
+        return redirect()
+            ->route('event_detail', ['slug' => $slug])
+            ->with($flashKey, $result['message'])
+            ->with('registration_status', $result['status']);
     }
 
     public function registered()
