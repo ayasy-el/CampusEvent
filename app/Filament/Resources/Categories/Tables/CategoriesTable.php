@@ -4,9 +4,11 @@ namespace App\Filament\Resources\Categories\Tables;
 
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Table;
+use Filament\Forms\Components\TextInput;
 
 class CategoriesTable
 {
@@ -14,12 +16,12 @@ class CategoriesTable
     {
         return $table
             ->columns([
-                TextInputColumn::make('name')
+                TextColumn::make('name')
                     ->label('Nama Kategori')
                     ->searchable()
                     ->sortable()
-                    ->rules(['required', 'max:255'])
-                    ->placeholder('Masukkan nama kategori'),
+                    ->weight('medium')
+                    ->size('sm'),
 
                 TextColumn::make('events_count')
                     ->label('Jumlah Event')
@@ -47,7 +49,31 @@ class CategoriesTable
                 //
             ])
             ->recordActions([
-                //
+                EditAction::make()
+                    ->label('Edit')
+                    ->icon('heroicon-m-pencil-square')
+                    ->color('primary')
+                    ->form([
+                        TextInput::make('name')
+                            ->label('Nama Kategori')
+                            ->required()
+                            ->maxLength(255)
+                            ->placeholder('Masukkan nama kategori'),
+                    ])
+                    ->modalHeading('Edit Kategori')
+                    ->modalSubmitActionLabel('Simpan')
+                    ->modalCancelActionLabel('Batal')
+                    ->successNotificationTitle('Kategori berhasil diperbarui'),
+                DeleteAction::make()
+                    ->label('Hapus')
+                    ->icon('heroicon-m-trash')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->modalHeading('Hapus Kategori')
+                    ->modalDescription('Apakah Anda yakin ingin menghapus kategori ini?')
+                    ->modalSubmitActionLabel('Ya, Hapus')
+                    ->modalCancelActionLabel('Batal')
+                    ->successNotificationTitle('Kategori berhasil dihapus'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

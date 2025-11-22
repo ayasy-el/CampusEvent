@@ -32,6 +32,16 @@ class UserResource extends Resource
 
     protected static ?string $recordTitleAttribute = 'name';
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'success';
+    }
+
     public static function getNavigationGroup(): ?string
     {
         return 'Manajemen Pengguna';
@@ -55,7 +65,7 @@ class UserResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\EventsRelationManager::class,
         ];
     }
 

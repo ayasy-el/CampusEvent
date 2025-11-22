@@ -42,7 +42,7 @@ class EventForm
                                             ->label('Slug URL')
                                             ->required()
                                             ->maxLength(255)
-                                            ->unique(ignoreRecord: false)
+                                            ->unique(ignoreRecord: true)
                                             ->helperText('default Otomatis dari judul')
                                             ->dehydrated()
                                             ->columnSpan(1),

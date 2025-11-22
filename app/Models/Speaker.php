@@ -15,6 +15,8 @@ class Speaker extends Model
         'title',
         'bio',
         'photo',
+        'email',
+        'phone',
     ];
 
     public function events(): BelongsToMany
