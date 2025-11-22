@@ -37,15 +37,17 @@ class EventController extends Controller
             'sort' => request()->query('sort', 'upcoming'),
         ];
 
-        $events = $this->eventService->getPublishedEvents($selectedFilters);
-        $totalActiveEvents = $events->count();
-        if ($user) {
-            $registeredEventIds = $this->eventService->getRegisteredEventIds($user);
-            $events = $events
-                ->reject(fn($event) => in_array($event['id'], $registeredEventIds));
-        }
+        $registeredEventIds = $user
+            ? $this->eventService->getRegisteredEventIds($user)
+            : [];
 
-        $eventsCount = $events->count();
+        $events = $this->eventService->getPublishedEvents([
+            ...$selectedFilters,
+            'exclude_event_ids' => $registeredEventIds,
+        ], true, 6);
+
+        $totalActiveEvents = $this->eventService->getPublishedEvents($selectedFilters)->count();
+        $eventsCount = $events->total();
         $filters = $this->eventService->getFilterOptions();
 
         return view('pages.events.index', compact(

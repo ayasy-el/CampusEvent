@@ -25,7 +25,7 @@ class EventService
      *  - q: keyword
      *  - sort: upcoming|newest|popular|az
      */
-    public function getPublishedEvents(array $filters = []): Collection
+    public function getPublishedEvents(array $filters = [], bool $paginate = false, int $perPage = 12)
     {
         $dateFilter = $filters['date'] ?? null;
         $categoryFilter = $filters['categories'] ?? [];
@@ -37,6 +37,7 @@ class EventService
         $location = $filters['location'] ?? null;
         $search = $filters['q'] ?? $filters['search'] ?? null;
         $sort = $filters['sort'] ?? 'upcoming';
+        $excludeIds = collect($filters['exclude_event_ids'] ?? [])->filter()->values();
 
         $event = Event::query()
             ->with('categories')
@@ -122,6 +123,10 @@ class EventService
             $event->where('location_address', 'like', '%' . $location . '%');
         }
 
+        if ($excludeIds->isNotEmpty()) {
+            $event->whereNotIn('id', $excludeIds->all());
+        }
+
         // Sorting
         switch ($sort) {
             case 'newest':
@@ -137,6 +142,12 @@ class EventService
             default:
                 $event->orderBy('date');
                 break;
+        }
+
+        if ($paginate) {
+            return $event
+                ->paginate($perPage)
+                ->through(fn(Event $event) => $this->transformEvent($event));
         }
 
         return $event
