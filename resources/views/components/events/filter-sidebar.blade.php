@@ -10,25 +10,41 @@
 ])
 
 @php
+    $parseMulti = function ($raw, $default = []) {
+        $value = $raw ?? $default;
+
+        if (is_array($value)) {
+            return collect($value);
+        }
+
+        return collect(explode(',', (string) $value));
+    };
+
     $current = [
-        'categories' => collect($selected['categories'] ?? request()->query('categories', []))
-            ->when(!is_array(request()->query('categories')), fn($c) => collect(explode(',', (string) request()->query('categories', ''))))
+        'categories' => $parseMulti($selected['categories'] ?? request()->query('categories'))
             ->filter()
             ->unique()
             ->values()
             ->all(),
         'date' => $selected['date'] ?? request('date'),
-        'mode' => $selected['mode'] ?? request('mode'),
+        'mode' => $parseMulti($selected['mode'] ?? request()->query('mode'))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all(),
         'price' => $selected['price'] ?? request('price'),
-        'status' => $selected['status'] ?? request('status'),
+        'status' => $parseMulti($selected['status'] ?? request()->query('status', 'open'), ['open'])
+            ->filter()
+            ->unique()
+            ->values()
+            ->all(),
         'date_from' => $selected['date_from'] ?? request('date_from'),
         'date_to' => $selected['date_to'] ?? request('date_to'),
         'location' => $selected['location'] ?? request('location'),
     ];
 @endphp
 
-<aside id="filters"
-    class="space-y-3 md:sticky md:top-30 md:self-start md:pr-2 hidden md:block">
+<aside id="filters" class="space-y-3 md:sticky md:top-30 md:self-start md:pr-2 hidden md:block">
 
     <div class="bg-white/50 border border-slate-100 rounded-2xl p-4 shadow-sm space-y-4">
         <!-- Header with Reset All -->
@@ -133,11 +149,11 @@
                 @foreach (collect($filters['modeFilters'] ?? []) as $item)
                     <button
                         class="px-3 py-1.5 rounded-full text-xs border font-medium transition cursor-pointer flex items-center gap-1
-                        {{ ($current['mode'] ?? null) === $item['value']
+                        {{ in_array($item['value'], $current['mode'] ?? [])
                             ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
                             : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
                         data-filter-mode="{{ $item['value'] }}">
-                        @if (($current['mode'] ?? null) === $item['value'])
+                        @if (in_array($item['value'], $current['mode'] ?? []))
                             <span class="text-[10px]">×</span>
                         @endif
                         <span>{{ $item['label'] }}</span>
@@ -181,26 +197,27 @@
                 <div class="flex items-center gap-2">
                     <p class="text-[11px] text-slate-500 font-medium">Harga</p>
                     @if (!empty($current['price']))
-                        <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer" data-clear="price">
+                        <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+                            data-clear="price">
                             Clear
                         </button>
                     @endif
                 </div>
                 <div class="flex flex-wrap gap-1.5">
-                @foreach (collect($filters['priceFilters'] ?? []) as $item)
-                    <button
-                        class="px-3 py-1.5 rounded-full text-xs border font-medium transition cursor-pointer flex items-center gap-1
+                    @foreach (collect($filters['priceFilters'] ?? []) as $item)
+                        <button
+                            class="px-3 py-1.5 rounded-full text-xs border font-medium transition cursor-pointer flex items-center gap-1
                         {{ ($current['price'] ?? null) === $item['value']
                             ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
                             : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
-                        data-filter-price="{{ $item['value'] }}">
-                        @if (($current['price'] ?? null) === $item['value'])
-                            <span class="text-[10px]">×</span>
-                        @endif
-                        <span>{{ $item['label'] }}</span>
-                    </button>
-                @endforeach
-            </div>
+                            data-filter-price="{{ $item['value'] }}">
+                            @if (($current['price'] ?? null) === $item['value'])
+                                <span class="text-[10px]">×</span>
+                            @endif
+                            <span>{{ $item['label'] }}</span>
+                        </button>
+                    @endforeach
+                </div>
             </div>
 
             {{-- Status Pendaftaran --}}
@@ -208,7 +225,8 @@
                 <div class="flex items-center gap-2">
                     <p class="text-[11px] text-slate-500 font-medium">Status Pendaftaran</p>
                     @if (!empty($current['status']))
-                        <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer" data-clear="status">
+                        <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+                            data-clear="status">
                             Clear
                         </button>
                     @endif
@@ -218,11 +236,11 @@
                         <button
                             class="px-3 py-1.5 rounded-full text-xs border font-medium transition
                             cursor-pointer flex items-center gap-1
-                            {{ ($current['status'] ?? null) === $item['value']
+                            {{ in_array($item['value'], $current['status'] ?? [])
                                 ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
                                 : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
                             data-filter-status="{{ $item['value'] }}">
-                            @if (($current['status'] ?? null) === $item['value'])
+                            @if (in_array($item['value'], $current['status'] ?? []) && $item['value'] !== 'open')
                                 <span class="text-[10px]">×</span>
                             @endif
                             <span>{{ $item['label'] }}</span>
@@ -256,6 +274,22 @@
                         params.delete(key);
                     } else {
                         params.set(key, value);
+                    }
+                    updateAndGo();
+                };
+
+                const toggleMulti = (key, value) => {
+                    const raw = params.get(key);
+                    let items = raw ? raw.split(',').filter(Boolean) : [];
+                    if (items.includes(value)) {
+                        items = items.filter((i) => i !== value);
+                    } else {
+                        items.push(value);
+                    }
+                    if (items.length) {
+                        params.set(key, items.join(','));
+                    } else {
+                        params.delete(key);
                     }
                     updateAndGo();
                 };
@@ -297,19 +331,23 @@
                 });
 
                 document.querySelectorAll('[data-filter-date]').forEach((btn) => {
-                    btn.addEventListener('click', () => toggleSingle('date', btn.getAttribute('data-filter-date')));
+                    btn.addEventListener('click', () => toggleSingle('date', btn.getAttribute(
+                        'data-filter-date')));
                 });
 
                 document.querySelectorAll('[data-filter-mode]').forEach((btn) => {
-                    btn.addEventListener('click', () => toggleSingle('mode', btn.getAttribute('data-filter-mode')));
+                    btn.addEventListener('click', () => toggleMulti('mode', btn.getAttribute(
+                        'data-filter-mode')));
                 });
 
                 document.querySelectorAll('[data-filter-price]').forEach((btn) => {
-                    btn.addEventListener('click', () => toggleSingle('price', btn.getAttribute('data-filter-price')));
+                    btn.addEventListener('click', () => toggleSingle('price', btn.getAttribute(
+                        'data-filter-price')));
                 });
 
                 document.querySelectorAll('[data-filter-status]').forEach((btn) => {
-                    btn.addEventListener('click', () => toggleSingle('status', btn.getAttribute('data-filter-status')));
+                    btn.addEventListener('click', () => toggleMulti('status', btn.getAttribute(
+                        'data-filter-status')));
                 });
             });
         </script>

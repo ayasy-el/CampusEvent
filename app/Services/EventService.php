@@ -321,6 +321,7 @@ class EventService
             'card_status' => $this->resolveCardStatus($event),
             'start_time_obj' => $event->start_time,
             'end_time_obj' => $event->end_time,
+            'categories_collection' => $event->categories,
         ];
     }
 

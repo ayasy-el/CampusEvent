@@ -13,16 +13,21 @@
 @php
     $cardStatus = $status ?? 'open';
     $categorySlug = $event['category_slug'] ?? 'umum';
-    $detailParam = $event['slug'] ?? $event['id'] ?? $index;
+    $detailParam = $event['slug'] ?? ($event['id'] ?? $index);
     $style = match (strtolower($event['quota_info'])) {
         'kuota penuh' => 'subtle-danger',
         'kuota hampir penuh' => 'subtle-warning',
         default => 'subtle-success',
     };
+    $categoriesCollection = collect($event['categories_collection'] ?? []);
+    $extraCategories = $categoriesCollection->skip(1);
+    $extraCount = $extraCategories->count();
+    $extraNames = $extraCategories->take(3)->pluck('name');
+    $extraLabel = $extraNames->implode(', ');
 @endphp
 
 <article @class([
-    'bg-white/95 border border-slate-100 shadow-sm hover:shadow-md transition group',
+    'bg-white/95 h-full border border-slate-100 shadow-sm hover:shadow-md transition group',
 
     'rounded-2xl p-4' => $variant === 'list',
     'rounded-3xl overflow-hidden' => $variant !== 'list',
@@ -38,7 +43,7 @@
             <!-- Date -->
 
             @if ($event['image'])
-                <div class="relative w-25 h-25 rounded-2xl overflow-hidden bg-slate-200 flex-shrink-0">
+                <div class="relative hidden md:flex w-25 h-25 rounded-2xl overflow-hidden bg-slate-200 flex-shrink-0">
                     <img src="{{ $event['image'] }}" alt="{{ $event['title'] }}" @class([
                         'w-full h-full object-cover',
                         'grayscale' => $cardStatus === 'finished',
@@ -54,7 +59,7 @@
                 </div>
             @else
                 <div
-                    class="flex flex-col items-center justify-center px-9 py-2 bg-slate-900 text-white rounded-xl min-w-[68px]">
+                    class="hidden md:flex flex-col items-center justify-center px-9 py-2 bg-slate-900 text-white rounded-xl min-w-[68px]">
                     <span class="text-[11px] uppercase text-slate-300">
                         {{ $event['date']->translatedFormat('D') }}
                     </span>
@@ -74,9 +79,32 @@
                         <a href="{{ route('event_detail', ['slug' => $detailParam]) }}">{{ $event['title'] }}</a>
                     </h2>
                     @if ($cardStatus === 'open')
-                        <x-badge variant="subtle-info" size="xs">
-                            {{ $event['category_icon'] }} {{ ucfirst($event['category']) }}
-                        </x-badge>
+                        <div class="flex items-center gap-1 relative group/extra">
+                            <x-badge variant="subtle-info" size="xs">
+                                {{ $event['category_icon'] }} {{ ucfirst($event['category']) }}
+                            </x-badge>
+                            @if ($extraCount > 0)
+                                <span
+                                    class="text-[10px] text-slate-500 leading-none bg-slate-100 px-1.5 py-0.5 rounded-full cursor-default js-extra-cats"
+                                    data-extra="{{ $extraLabel }}">
+                                    +{{ $extraCount }}
+                                </span>
+                                <div
+                                    class="hidden group-hover/extra:flex absolute top-full left-0 mt-1 bg-white text-slate-800 text-[10px] rounded-xl px-2.5 py-2 shadow-lg shadow-slate-200 border border-slate-100 pointer-events-none js-extra-tooltip">
+
+                                    <div class="flex flex-wrap gap-1">
+                                        @foreach ($extraNames as $name)
+                                            <span
+                                                class="px-1.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px]">{{ $name }}</span>
+                                        @endforeach
+                                        @if ($extraCount > $extraNames->count())
+                                            <span
+                                                class="px-1.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px]">dll.</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
                     @endif
                 </div>
 
@@ -138,7 +166,8 @@
 
 
                     @if ($show_detail)
-                        <a href="{{ route('event_detail', ['slug' => $detailParam]) }}" class="text-[11px] items-end text-sky-600 font-medium">
+                        <a href="{{ route('event_detail', ['slug' => $detailParam]) }}"
+                            class="text-[11px] items-end text-sky-600 font-medium">
                             Lihat detail →
                         </a>
                     @endif
@@ -186,10 +215,33 @@
                     </span>
                 </div>
             @endif
-
-            <x-badge variant="subtle-info" size="xs" class="absolute bottom-2 right-2">
-                {{ $event['category_icon'] }} {{ ucfirst($event['category']) }}
-            </x-badge>
+            <div class="absolute inset-x-2 bottom-2 flex justify-end flex-wrap gap-1">
+                <div class="flex items-center gap-1 relative group/extra">
+                    <x-badge variant="subtle-info" size="xs">
+                        {{ $event['category_icon'] }} {{ ucfirst($event['category']) }}
+                    </x-badge>
+                    @if ($extraCount > 0)
+                        <span
+                            class="text-[10px] text-slate-200 bg-slate-900/70 rounded-full px-1.5 py-0.5 leading-none cursor-default js-extra-cats"
+                            data-extra="{{ $extraLabel }}">
+                            +{{ $extraCount }}
+                        </span>
+                        <div
+                            class="hidden group-hover/extra:flex absolute bottom-full right-0 mb-1 bg-white text-slate-800 text-[10px] rounded-xl px-2.5 py-2 shadow-lg shadow-slate-200 border border-slate-100 pointer-events-none js-extra-tooltip">
+                            <div class="flex flex-wrap gap-1">
+                                @foreach ($extraNames as $name)
+                                    <span
+                                        class="px-1.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px]">{{ $name }}</span>
+                                @endforeach
+                                @if ($extraCount > $extraNames->count())
+                                    <span
+                                        class="px-1.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px]">dll.</span>
+                                @endif
+                            </div>
+                        </div>
+                    @endif
+                </div>
+            </div>
         </div>
 
         <div class="p-3.5 space-y-1.5">
@@ -231,3 +283,28 @@
         </div>
     @endif
 </article>
+
+@once
+    @push('scripts')
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                document.querySelectorAll('.js-extra-cats').forEach((el) => {
+                    const tooltip = el.closest('.group\\/extra')?.querySelector('.js-extra-tooltip');
+                    if (!tooltip) return;
+
+                    const show = () => tooltip.classList.remove('hidden');
+                    const hide = () => tooltip.classList.add('hidden');
+
+                    el.addEventListener('mouseenter', show);
+                    el.addEventListener('mouseleave', hide);
+                    el.addEventListener('focus', show);
+                    el.addEventListener('blur', hide);
+                    el.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        tooltip.classList.toggle('hidden');
+                    });
+                });
+            });
+        </script>
+    @endpush
+@endonce

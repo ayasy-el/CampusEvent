@@ -29,7 +29,7 @@ class EventController extends Controller
             'date' => request()->query('date'),
             'mode' => request()->query('mode'),
             'price' => request()->query('price'),
-            'status' => request()->query('status'),
+            'status' => request()->query('status', 'open'),
             'date_from' => request()->query('date_from'),
             'date_to' => request()->query('date_to'),
             'location' => request()->query('location'),
