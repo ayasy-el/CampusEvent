@@ -29,6 +29,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandName('CampusEvent')
             ->maxContentWidth('full')
             ->favicon(asset('favicon.ico'))
+            ->darkMode(true)
             ->colors([
                 'primary' => Color::Amber,
             ])
