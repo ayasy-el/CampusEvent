@@ -1,8 +1,7 @@
-@props(['event'])
+@props(['event', 'user'])
 
 <aside class="space-y-4 md:space-y-5 md:sticky md:top-20 h-max">
-    <section
-        class="bg-white rounded-3xl border border-slate-100 shadow-md shadow-slate-200/80 p-4 md:p-5 space-y-3">
+    <section class="bg-white rounded-3xl border border-slate-100 shadow-md shadow-slate-200/80 p-4 md:p-5 space-y-3">
         <div class="flex items-center justify-between">
             <p class="text-xs font-semibold text-slate-900">
                 {{ $event['date']?->translatedFormat('l, d F Y') }}
@@ -28,10 +27,49 @@
             </p>
         </div>
 
-        <a href="#"
-            class="block text-center w-full mt-2 px-4 py-2.5 rounded-full bg-sky-500 text-white text-sm font-semibold shadow-lg shadow-sky-500/30 hover:bg-sky-600">
-            Daftar Sekarang
-        </a>
+        @php
+            $registrationStatus = $event['registration_status'] ?? $event['card_status'] ?? 'open';
+            $isRegistered = $event['is_registered'] ?? false;
+            $isAdmin = $user && $user->role === 'admin';
+            $isMahasiswa = $user && $user->role === 'mahasiswa';
+            $isQuotaFull = ($event['quota'] ?? 0) > 0 && ($event['registered'] ?? 0) >= ($event['quota'] ?? 0);
+
+            $buttonLabel = match (true) {
+                $isRegistered => 'Sudah Terdaftar',
+                $isQuotaFull || $registrationStatus === 'full' => 'Kuota Penuh',
+                in_array($registrationStatus, ['finished', 'closed']) => 'Pendaftaran Ditutup',
+                default => 'Daftar Sekarang',
+            };
+
+            $disabled = $isAdmin || $isRegistered || $isQuotaFull || in_array($registrationStatus, ['finished', 'closed']);
+        @endphp
+
+        <div class="mt-2">
+            @if (!$user)
+                <a href="{{ route('login') }}"
+                    class="block text-center w-full px-4 py-2.5 rounded-full text-sm font-semibold bg-sky-500 text-white shadow-lg shadow-sky-500/30 hover:bg-sky-600">
+                    Login untuk daftar
+                </a>
+            @elseif ($disabled)
+                <button type="button"
+                    class="w-full px-4 py-2.5 rounded-full text-sm font-semibold cursor-not-allowed bg-slate-200 text-slate-500 shadow-none">
+                    {{ $buttonLabel }}
+                </button>
+                @if ($isAdmin)
+                    <p class="mt-1 text-[11px] text-slate-500 text-center">Daftar hanya untuk akun mahasiswa.</p>
+                @elseif ($isRegistered)
+                    <p class="mt-1 text-[11px] text-emerald-600 text-center">Kamu sudah terdaftar pada event ini.</p>
+                @endif
+            @elseif ($isMahasiswa)
+                <form method="POST" action="{{ route('events.register', ['slug' => $event['slug']]) }}">
+                    @csrf
+                    <button type="submit"
+                        class="w-full px-4 py-2.5 rounded-full text-sm font-semibold bg-sky-500 text-white shadow-lg shadow-sky-500/30 hover:bg-sky-600">
+                        {{ $buttonLabel }}
+                    </button>
+                </form>
+            @endif
+        </div>
     </section>
 
     <!-- Info tambahan / contact -->

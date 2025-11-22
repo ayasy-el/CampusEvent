@@ -4,15 +4,16 @@
 ])
 
 @php
-    $events = collect($events);
-    $eventsCount = $eventsCount ?? $events->count();
-    $showingFrom = $events->isEmpty() ? 0 : 1;
-    $showingTo = $events->count();
+    $isPaginator = $events instanceof \Illuminate\Pagination\LengthAwarePaginator;
+    $eventsCollection = $isPaginator ? collect($events->items()) : collect($events);
+    $eventsCount = $eventsCount ?? ($isPaginator ? $events->total() : $eventsCollection->count());
+    $showingFrom = $eventsCollection->isEmpty() ? 0 : ($isPaginator ? $events->firstItem() ?? 0 : 1);
+    $showingTo = $isPaginator ? $events->lastItem() ?? 0 : $eventsCollection->count();
 @endphp
 
 <section class="space-y-3 md:space-y-4">
     <!-- Info summary -->
-    @if ($events->isNotEmpty())
+    @if ($eventsCollection->isNotEmpty())
         <div class="flex items-center justify-between text-[11px] md:text-xs text-slate-500">
             <p>
                 Menampilkan
@@ -25,20 +26,21 @@
     @endif
 
     <div id="eventsWrapper" class="space-y-3 md:space-y-4">
-        @if ($events->isEmpty())
-            <div class="bg-white/60 border border-dashed border-slate-200 rounded-xl p-6 text-center text-slate-500 text-sm">
+        @if ($eventsCollection->isEmpty())
+            <div
+                class="bg-white/60 border border-dashed border-slate-200 rounded-xl p-6 text-center text-slate-500 text-sm">
                 Belum ada event yang siap ditampilkan.
             </div>
         @else
             <!-- LIST VIEW -->
             <div class="view-list space-y-3 md:space-y-4">
-                @foreach ($events as $event)
+                @foreach ($eventsCollection as $event)
                     <x-events.event-card :event="$event" :index="$loop->iteration" variant="list" :status="$event['card_status'] ?? 'open'" />
                 @endforeach
             </div>
 
             <div class="view-grid grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-4">
-                @foreach ($events as $event)
+                @foreach ($eventsCollection as $event)
                     <x-events.event-card :event="$event" :index="$loop->iteration" variant="grid" :status="$event['card_status'] ?? 'open'" />
                 @endforeach
             </div>
@@ -46,25 +48,52 @@
     </div>
 
     <!-- Pagination -->
-    <div class="mt-4 flex items-center justify-between text-[11px] md:text-xs text-slate-500">
-        <p>Halaman 1 dari 1</p>
-        <div class="inline-flex items-center gap-1">
-            <button class="px-3 py-1 rounded-full border border-slate-200 bg-white hover:bg-slate-50 transition" disabled>
-                ‹
-            </button>
-            <button class="px-3 py-1 rounded-full bg-slate-900 text-white font-semibold">
-                1
-            </button>
-            <button class="px-3 py-1 rounded-full border border-slate-200 bg-white/70 text-slate-400" disabled>
-                2
-            </button>
-            <button class="px-3 py-1 rounded-full border border-slate-200 bg-white/70 text-slate-400" disabled>
-                3
-            </button>
-            <span class="px-1">...</span>
-            <button class="px-3 py-1 rounded-full border border-slate-200 bg-white/70 text-slate-400" disabled>
-                ›
-            </button>
+    @if ($isPaginator)
+        @php
+            $currentPage = $events->currentPage();
+            $lastPage = $events->lastPage();
+        @endphp
+        <div class="mt-4 flex items-center justify-between text-[11px] md:text-xs text-slate-500">
+            <p>Halaman {{ $currentPage }} dari {{ $lastPage }}</p>
+            <div class="inline-flex items-center gap-1">
+                <a href="{{ $events->previousPageUrl() ?? '#' }}" @class([
+                    'px-3 py-1 rounded-full border border-slate-200 transition',
+                    'bg-white hover:bg-slate-50' => $events->previousPageUrl(),
+                    'bg-white/70 text-slate-400 cursor-not-allowed' => !$events->previousPageUrl(),
+                ])>
+                    ‹
+                </a>
+
+                @foreach (range(max(1, $currentPage - 1), min($lastPage, $currentPage + 1)) as $page)
+                    <a href="{{ $events->url($page) }}" @class([
+                        'px-3 py-1 rounded-full',
+                        'bg-slate-900 text-white font-semibold' => $page === $currentPage,
+                        'border border-slate-200 bg-white hover:bg-slate-50' =>
+                            $page !== $currentPage,
+                    ])>
+                        {{ $page }}
+                    </a>
+                @endforeach
+
+                @if ($currentPage + 1 <= $lastPage)
+                    <span class="px-1">...</span>
+                @endif
+
+                @if ($lastPage > 1 && $currentPage !== $lastPage)
+                    <a href="{{ $events->url($lastPage) }}"
+                        class="px-3 py-1 rounded-full border border-slate-200 bg-white hover:bg-slate-50">
+                        {{ $lastPage }}
+                    </a>
+                @endif
+
+                <a href="{{ $events->nextPageUrl() ?? '#' }}" @class([
+                    'px-3 py-1 rounded-full border border-slate-200 transition',
+                    'bg-white hover:bg-slate-50' => $events->nextPageUrl(),
+                    'bg-white/70 text-slate-400 cursor-not-allowed' => !$events->nextPageUrl(),
+                ])>
+                    ›
+                </a>
+            </div>
         </div>
-    </div>
+    @endif
 </section>
