@@ -249,6 +249,44 @@ class EventService
     }
 
     /**
+     * Batalkan pendaftaran event untuk user (hapus relasi pivot).
+     */
+    public function cancelRegistration(User $user, string $slug): array
+    {
+        if ($user->role !== 'mahasiswa') {
+            return [
+                'status' => 'forbidden',
+                'message' => 'Hanya mahasiswa yang dapat membatalkan pendaftaran.',
+            ];
+        }
+
+        return DB::transaction(function () use ($user, $slug) {
+            $event = Event::query()
+                ->where('slug', $slug)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $isRegistered = $event->attendees()
+                ->where('user_id', $user->id)
+                ->exists();
+
+            if (!$isRegistered) {
+                return [
+                    'status' => 'not_registered',
+                    'message' => 'Kamu belum terdaftar di event ini.',
+                ];
+            }
+
+            $event->attendees()->detach($user->id);
+
+            return [
+                'status' => 'success',
+                'message' => 'Pendaftaran berhasil dibatalkan.',
+            ];
+        });
+    }
+
+    /**
      * Ambil daftar ID event yang sudah diikuti user.
      */
     public function getRegisteredEventIds(User $user): array

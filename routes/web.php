@@ -22,6 +22,7 @@ Route::get('/events', [EventController::class, 'index'])->name('events');
 
 Route::get('/events/{slug}', [EventController::class, 'show'])->name('event_detail');
 Route::post('/events/{slug}/register', [EventController::class, 'register'])->name('events.register');
+Route::delete('/events/{slug}/register', [EventController::class, 'cancel'])->name('events.cancel');
 
 Route::get('/my-events', [EventController::class, 'registered'])->name('my_events');
 

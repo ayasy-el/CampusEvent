@@ -13,7 +13,7 @@
 
         <article
             class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-sky-600 via-indigo-500 to-purple-500 text-white shadow-xl md:grid md:grid-cols-[2fr,3fr] md:items-stretch">
-            <div class="relative p-4 md:p-6 lg:p-7 flex flex-col justify-between">
+            <div class="relative p-4 pt-10 md:p-6 lg:p-7 flex flex-col justify-between">
                 <div
                     class="absolute top-3 right-3 bg-white/90 text-[10px] md:text-xs font-semibold text-sky-700 px-3 py-1 rounded-full shadow">
                     {{ $event['category_icon'] ?? '🎯' }} {{ ucfirst($event['category'] ?? 'Event') }}

@@ -15,7 +15,7 @@
                 'bg-red-50 border-red-100 text-red-700' => session('error'),
             ])>
                 <p class="font-semibold mb-0.5">
-                    {{ session('success') ? 'Pendaftaran Berhasil' : 'Pendaftaran Gagal' }}
+                    {{ session('success') ? 'Berhasil' : 'Gagal' }}
                 </p>
                 <p class="text-[12px] md:text-xs">
                     {{ session('success') ?? session('error') }}
