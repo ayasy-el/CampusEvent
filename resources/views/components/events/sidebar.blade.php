@@ -28,9 +28,8 @@
                 <span class="font-semibold text-slate-900">{{ $event['price_display'] ?? 'Gratis' }}</span>
             </div>
             <p class="text-[11px] text-slate-500">
-                Kuota peserta: maks.
-                {{ $event['quota'] ?? '-' }}
-                • Saat ini {{ $event['registered'] ?? 0 }} sudah terdaftar.
+                {{ $event['quota'] > 0 ? 'Kuota peserta: maks.' . $event['quota'] . ' • ' : '' }}
+                Saat ini {{ $event['registered'] ?? 0 }} sudah terdaftar.
             </p>
         </div>
 

@@ -110,12 +110,12 @@ class EventService
 
         // Registration status filter
         if ($registrationStatus === 'open') {
-            $event->whereDate('date', '>=', Carbon::today())
+            $event->whereDate('date', '>', Carbon::today())
                 ->where('status', 'published');
         } elseif ($registrationStatus === 'closed') {
             $event->where(function ($q) {
                 $q->where('status', 'closed')
-                    ->orWhereDate('date', '<', Carbon::today());
+                    ->orWhereDate('date', '<=', Carbon::today());
             });
         }
 
