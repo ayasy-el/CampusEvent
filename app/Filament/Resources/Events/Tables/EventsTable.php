@@ -18,6 +18,7 @@ class EventsTable
             ->columns([
                 ImageColumn::make('image')
                     ->label('Gambar')
+                    ->disk('public')
                     ->circular()
                     ->size(40)
                     ->defaultImageUrl(url('/images/placeholder.png'))
@@ -92,7 +93,7 @@ class EventsTable
                     })
                     ->formatStateUsing(fn(string $state): string => match ($state) {
                         'draft' => 'Draft',
-                        'published' => 'Terbit',
+                        'published' => 'Published',
                         'cancelled' => 'Dibatalkan',
                         'completed' => 'Selesai',
                         default => ucfirst($state),

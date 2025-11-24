@@ -1,6 +1,13 @@
 @props(['event', 'user'])
 
 <aside class="space-y-4 md:space-y-5 md:sticky md:top-20 h-max">
+    @if (!empty($event['image']))
+        <div class="overflow-hidden rounded-3xl border border-slate-100 shadow-sm shadow-slate-200/60">
+            <img src="{{ $event['image'] }}" alt="{{ $event['title'] ?? 'Poster event' }}"
+                class="w-full h-48 md:h-56 lg:h-64 object-cover">
+        </div>
+    @endif
+
     <section class="bg-white rounded-3xl border border-slate-100 shadow-md shadow-slate-200/80 p-4 md:p-5 space-y-3">
         <div class="flex items-center justify-between">
             <p class="text-xs font-semibold text-slate-900">
@@ -21,9 +28,8 @@
                 <span class="font-semibold text-slate-900">{{ $event['price_display'] ?? 'Gratis' }}</span>
             </div>
             <p class="text-[11px] text-slate-500">
-                Kuota peserta: maks.
-                {{ $event['quota'] ?? '-' }}
-                • Saat ini {{ $event['registered'] ?? 0 }} sudah terdaftar.
+                {{ $event['quota'] > 0 ? 'Kuota peserta: maks.' . $event['quota'] . ' • ' : '' }}
+                Saat ini {{ $event['registered'] ?? 0 }} sudah terdaftar.
             </p>
         </div>
 
@@ -33,6 +39,7 @@
             $isAdmin = $user && $user->role === 'admin';
             $isMahasiswa = $user && $user->role === 'mahasiswa';
             $isQuotaFull = ($event['quota'] ?? 0) > 0 && ($event['registered'] ?? 0) >= ($event['quota'] ?? 0);
+            $canCancel = $isMahasiswa && $isRegistered;
 
             $buttonLabel = match (true) {
                 $isRegistered => 'Sudah Terdaftar',
@@ -50,6 +57,19 @@
                     class="block text-center w-full px-4 py-2.5 rounded-full text-sm font-semibold bg-sky-500 text-white shadow-lg shadow-sky-500/30 hover:bg-sky-600">
                     Login untuk daftar
                 </a>
+            @elseif ($canCancel)
+                <form method="POST" action="{{ route('events.cancel', ['slug' => $event['slug']]) }}"
+                    class="flex flex-col gap-2">
+                    @csrf
+                    @method('DELETE')
+                    <p class="text-[11px] text-emerald-700 text-center">
+                        Kamu sudah terdaftar pada event ini.
+                    </p>
+                    <button type="submit"
+                        class="cursor-pointer w-full px-4 py-2.5 rounded-full text-sm font-semibold border border-red-200 text-red-600 bg-red-50 hover:bg-red-100">
+                        Batalkan Pendaftaran
+                    </button>
+                </form>
             @elseif ($disabled)
                 <button type="button"
                     class="w-full px-4 py-2.5 rounded-full text-sm font-semibold cursor-not-allowed bg-slate-200 text-slate-500 shadow-none">
@@ -64,7 +84,7 @@
                 <form method="POST" action="{{ route('events.register', ['slug' => $event['slug']]) }}">
                     @csrf
                     <button type="submit"
-                        class="w-full px-4 py-2.5 rounded-full text-sm font-semibold bg-sky-500 text-white shadow-lg shadow-sky-500/30 hover:bg-sky-600">
+                        class="cursor-pointer w-full px-4 py-2.5 rounded-full text-sm font-semibold bg-sky-500 text-white shadow-lg shadow-sky-500/30 hover:bg-sky-600">
                         {{ $buttonLabel }}
                     </button>
                 </form>

@@ -95,6 +95,25 @@ class EventController extends Controller
             ->with('registration_status', $result['status']);
     }
 
+    public function cancel(string $slug)
+    {
+        $user = $this->filamentAuthService->getAuthenticatedUser();
+
+        if (!$user) {
+            return redirect()
+                ->route('login')
+                ->with('error', 'Silakan login untuk membatalkan pendaftaran.');
+        }
+
+        $result = $this->eventService->cancelRegistration($user, $slug);
+        $flashKey = $result['status'] === 'success' ? 'success' : 'error';
+
+        return redirect()
+            ->route('event_detail', ['slug' => $slug])
+            ->with($flashKey, $result['message'])
+            ->with('registration_status', $result['status']);
+    }
+
     public function registered()
     {
         $user = $this->filamentAuthService->getAuthenticatedUser();

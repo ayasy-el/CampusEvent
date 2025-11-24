@@ -23,6 +23,7 @@ class EventInfolist
                         Flex::make([
                             ImageEntry::make('image')
                                 ->label('Gambar Event')
+                                ->disk('public')
                                 ->defaultImageUrl(url('/images/placeholder.png'))
                                 ->height(300)
                                 ->grow(false),
@@ -47,7 +48,7 @@ class EventInfolist
                                     })
                                     ->formatStateUsing(fn(string $state): string => match ($state) {
                                         'draft' => 'Draft',
-                                        'published' => 'Terbit',
+                                        'published' => 'Published',
                                         'cancelled' => 'Dibatalkan',
                                         'completed' => 'Selesai',
                                         default => ucfirst($state),

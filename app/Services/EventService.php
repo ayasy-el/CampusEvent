@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\User;
 use App\Models\Category;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -109,12 +110,12 @@ class EventService
 
         // Registration status filter
         if ($registrationStatus === 'open') {
-            $event->whereDate('date', '>=', Carbon::today())
+            $event->whereDate('date', '>', Carbon::today())
                 ->where('status', 'published');
         } elseif ($registrationStatus === 'closed') {
             $event->where(function ($q) {
                 $q->where('status', 'closed')
-                    ->orWhereDate('date', '<', Carbon::today());
+                    ->orWhereDate('date', '<=', Carbon::today());
             });
         }
 
@@ -249,6 +250,44 @@ class EventService
     }
 
     /**
+     * Batalkan pendaftaran event untuk user (hapus relasi pivot).
+     */
+    public function cancelRegistration(User $user, string $slug): array
+    {
+        if ($user->role !== 'mahasiswa') {
+            return [
+                'status' => 'forbidden',
+                'message' => 'Hanya mahasiswa yang dapat membatalkan pendaftaran.',
+            ];
+        }
+
+        return DB::transaction(function () use ($user, $slug) {
+            $event = Event::query()
+                ->where('slug', $slug)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $isRegistered = $event->attendees()
+                ->where('user_id', $user->id)
+                ->exists();
+
+            if (!$isRegistered) {
+                return [
+                    'status' => 'not_registered',
+                    'message' => 'Kamu belum terdaftar di event ini.',
+                ];
+            }
+
+            $event->attendees()->detach($user->id);
+
+            return [
+                'status' => 'success',
+                'message' => 'Pendaftaran berhasil dibatalkan.',
+            ];
+        });
+    }
+
+    /**
      * Ambil daftar ID event yang sudah diikuti user.
      */
     public function getRegisteredEventIds(User $user): array
@@ -308,7 +347,7 @@ class EventService
             'category_slug' => $categorySlug,
             'category_icon' => $this->getCategoryIcon($categorySlug),
             'mode' => $this->formatMode($event->location_type),
-            'image' => $event->image,
+            'image' => $this->resolveImageUrl($event->image),
             'organizer' => $event->organizer,
             'location' => $this->formatLocation($event),
             'time' => $this->formatTime($event->start_time, $event->end_time),
@@ -402,6 +441,37 @@ class EventService
         }
 
         return $start ?: '-';
+    }
+
+    /**
+     * Pastikan path gambar dari Filament dapat diakses publik.
+     */
+    protected function resolveImageUrl(?string $path): ?string
+    {
+        if (!$path) {
+            return null;
+        }
+
+        if (Str::startsWith($path, ['http://', 'https://', '/'])) {
+            return $path;
+        }
+
+        $disk = config('filament.default_filesystem_disk') ?? config('filesystems.default', 'public');
+
+        // Filament sering pakai default disk; jika masih "local" (private), pakai public agar bisa diakses.
+        if ($disk === 'local') {
+            $disk = 'public';
+        }
+
+        if (Storage::disk($disk)->exists($path)) {
+            return asset('storage/' . ltrim($path, '/'));
+        }
+
+        if (Storage::exists($path)) {
+            return Storage::url($path);
+        }
+
+        return $path;
     }
 
     protected function getQuotaInfo(int $quota, int $registered): string

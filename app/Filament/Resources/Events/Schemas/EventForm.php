@@ -42,7 +42,7 @@ class EventForm
                                             ->label('Slug URL')
                                             ->required()
                                             ->maxLength(255)
-                                            ->unique(ignoreRecord: false)
+                                            ->unique(ignoreRecord: true)
                                             ->helperText('default Otomatis dari judul')
                                             ->dehydrated()
                                             ->columnSpan(1),
@@ -53,7 +53,6 @@ class EventForm
                                             ->options([
                                                 'draft' => 'Draft',
                                                 'published' => 'Published',
-                                                'closed' => 'Closed',
                                             ])
                                             ->default('published')
                                             ->native(false)
@@ -82,6 +81,7 @@ class EventForm
                                         FileUpload::make('image')
                                             ->label('Gambar Event')
                                             ->image()
+                                            ->disk('public')
                                             ->imageEditor()
                                             ->imageEditorAspectRatios([
                                                 '16:9',
