@@ -3,7 +3,7 @@
 <section class="mb-10 md:mb-14">
     <div class="flex items-center justify-between mb-3">
         <h2 class="text-lg md:text-2xl font-semibold text-slate-900">
-            Upcoming Campus Events
+            Event Mendatang
         </h2>
         <x-button variant="link-sm" href="{{ route('events') }}">
             Lihat semua
@@ -31,7 +31,7 @@
                 class="hidden lg:block bg-white rounded-2xl shadow-md shadow-slate-200/60 border border-dashed border-slate-200">
                 <div class="h-full flex flex-col items-center justify-center px-4 py-5 text-center">
                     <p class="text-xs text-slate-500 mb-2">
-                        Punya event kampus?
+                        Ingin mengadakan event?
                     </p>
                     <x-button href="{{ route('events') }}" variant="dark-sm">
                         Daftarkan Eventmu

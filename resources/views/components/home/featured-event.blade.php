@@ -4,10 +4,10 @@
     <section class="mb-10 md:mb-14">
         <div class="flex items-center justify-between gap-2 mb-4">
             <h2 class="text-lg md:text-2xl font-semibold text-slate-900">
-                Featured Event This Week
+                Event Unggulan Pekan ini
             </h2>
             <x-badge variant="minimalist" size="sm">
-                🔔 Jangan lewatkan
+                Jangan lewatkan
             </x-badge>
         </div>
 
@@ -41,7 +41,7 @@
 
                     <div class="flex gap-2">
                         <x-button href="{{ route('event_detail', ['slug' => $event['slug']]) }}" variant="white-action">
-                            <span>📌 Lihat Detail</span>
+                            <span>Lihat Detail</span>
                         </x-button>
                     </div>
                 </div>

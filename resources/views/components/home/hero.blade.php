@@ -4,16 +4,16 @@
     <div class="flex flex-col md:grid md:grid-cols-2 md:items-center md:gap-10 lg:gap-14">
         <!-- Text -->
         <div class="order-2 md:order-1 mt-6 md:mt-0">
-            <x-badge variant="sky" size="md">
+            <!-- <x-badge variant="sky" size="md">
                 ✨ Portal Baru • Event Kampus
-            </x-badge>
+            </x-badge> -->
 
             <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
                 Portal Event Kampus
             </h1>
             <p class="mt-3 text-sm sm:text-base md:text-lg text-slate-600 leading-relaxed max-w-xl">
                 Temukan seminar, workshop, dan kegiatan kampus yang cocok dengan minatmu.
-                Bangun relasi dan pengalaman baru bersama teman-teman 🎓📚
+                Bangun relasi dan pengalaman baru bersama teman-teman
             </p>
 
             <div class="mt-5 flex flex-wrap items-center gap-3">
@@ -67,7 +67,7 @@
             </div>
             <x-badge variant="minimalist" size="sm"
                 class="absolute -top-3 right-0 md:-top-4 md:-right-3">
-                🔔 Reminder
+                    Pengingat
         </x-badge>
         </div>
     </div>

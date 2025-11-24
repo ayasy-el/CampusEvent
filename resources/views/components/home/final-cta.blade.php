@@ -5,7 +5,7 @@
             Mulai jelajahi dan daftar event kampus hari ini!
         </h2>
         <p class="mt-2 text-xs md:text-sm text-slate-500">
-            Temukan kegiatan yang relevan dengan minatmu dan jangan lewatkan kesempatan penting di kampus ✨
+            Temukan kegiatan yang relevan dengan minatmu dan jangan lewatkan kesempatan yang berharga.
         </p>
         <x-button class="mt-4" href="#">Gabung Sekarang</x-button>
     </div>
