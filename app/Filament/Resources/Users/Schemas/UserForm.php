@@ -8,7 +8,9 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Get;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Hash;
 
 class UserForm
 {
@@ -42,15 +44,29 @@ class UserForm
                     ->placeholder('email@example.com')
                     ->helperText('Email harus unik dan belum terdaftar'),
 
-                // TextInput::make('password')
-                //     ->label('Password')
-                //     ->password()
-                //     ->required()
-                //     ->minLength(8)
-                //     ->maxLength(255)
-                //     ->placeholder('Minimal 8 karakter')
-                //     ->revealable()
-                //     ->helperText('Password minimal 8 karakter'),
+                TextInput::make('password')
+                    ->label('Password')
+                    ->password()
+                    ->required()
+                    ->minLength(8)
+                    ->maxLength(255)
+                    ->placeholder('Minimal 8 karakter')
+                    ->revealable()
+                    ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                    ->helperText('Password minimal 8 karakter')
+                    ->hiddenOn('edit'),
+
+                TextInput::make('password_confirmation')
+                    ->label('Konfirmasi Password')
+                    ->password()
+                    ->required()
+                    ->minLength(8)
+                    ->same('password')
+                    ->placeholder('Ulangi password')
+                    ->revealable()
+                    ->dehydrated(false)
+                    ->helperText('Harus sama dengan password')
+                    ->hiddenOn('edit'),
 
                 TextInput::make('nrp')
                     ->label('NRP')

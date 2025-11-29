@@ -74,6 +74,24 @@ class EventsTable
                     ->alignCenter()
                     ->grow(false)
                     ->toggleable(),
+                TextColumn::make('attendees_count')
+                    ->label('Peserta')
+                    ->counts('attendees')
+                    ->badge()
+                    ->color('success')
+                    ->icon('heroicon-o-users')
+                    ->sortable()
+                    ->alignCenter()
+                    ->grow(false)
+                    ->tooltip(function ($record): string {
+                        $count = $record->attendees_count ?? 0;
+                        $quota = $record->quota ?? 0;
+                        if ($quota > 0) {
+                            $percentage = round(($count / $quota) * 100);
+                            return "{$count} dari {$quota} peserta ({$percentage}%)";
+                        }
+                        return "{$count} peserta terdaftar";
+                    }),
                 TextColumn::make('price')
                     ->label('Harga')
                     ->money('IDR')

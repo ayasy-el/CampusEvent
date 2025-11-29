@@ -59,6 +59,7 @@ class Event extends Model
     public function attendees(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'events_user')
+            ->withPivot('created_at', 'updated_at')
             ->withTimestamps();
     }
 }

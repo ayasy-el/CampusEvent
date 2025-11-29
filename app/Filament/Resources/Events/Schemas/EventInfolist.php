@@ -136,6 +136,47 @@ class EventInfolist
                     ])
                     ->collapsible(),
 
+                // Daftar Peserta
+                Section::make('Daftar Peserta')
+                    ->icon('heroicon-o-user-group')
+                    ->description('Mahasiswa yang mengikuti event ini')
+                    ->schema([
+                        TextEntry::make('attendees_count')
+                            ->label('Total Peserta Terdaftar')
+                            ->state(fn($record) => $record->attendees()->count())
+                            ->badge()
+                            ->icon('heroicon-o-users')
+                            ->color('success')
+                            ->weight(FontWeight::Bold),
+
+                        TextEntry::make('attendees_list')
+                            ->label('Daftar Mahasiswa')
+                            ->listWithLineBreaks()
+                            ->bulleted()
+                            ->limitList(10)
+                            ->expandableLimitedList()
+                            ->state(function ($record) {
+                                return $record->attendees->map(function ($user) {
+                                    $info = $user->name;
+                                    if ($user->nrp) {
+                                        $info .= " (NRP: {$user->nrp})";
+                                    }
+                                    if ($user->program_studi) {
+                                        $info .= " - {$user->program_studi}";
+                                    }
+                                    if ($user->angkatan) {
+                                        $info .= " Angkatan {$user->angkatan}";
+                                    }
+                                    return $info;
+                                })->toArray();
+                            })
+                            ->placeholder('Belum ada peserta yang terdaftar')
+                            ->columnSpanFull(),
+                    ])
+                    ->collapsible()
+                    ->collapsed(false)
+                    ->visible(fn($record) => $record->attendees()->count() > 0),
+
                 // Deskripsi Event
                 Section::make('Deskripsi Event')
                     ->icon('heroicon-o-document-text')
