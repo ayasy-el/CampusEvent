@@ -14,7 +14,12 @@
         'bg-sky-50 border border-sky-100',
     ];
 
-    $icons = ['🎓', '🛠️', '🏆', '📚', '🤝', '🎭', '✨', '📈', '🎶', '🎯'];
+    // Heroicons references: education, tools, trophy, book, handshake, theater, sparkles, chart, music, target
+    $icons = [
+        'academic-cap', 'wrench-screwdriver', 'trophy', 'book-open',
+        'users', 'face-smile', 'sparkles', 'chart-bar',
+        'musical-note', 'bullseye-arrow'
+    ];
 @endphp
 
 <section class="mb-10 md:mb-14">
@@ -27,12 +32,12 @@
             <div class="rounded-2xl {{ $wrappers[$i % count($wrappers)] }}
                  p-3 md:p-4 flex flex-col items-start hover:-translate-y-0.5 hover:shadow-md transition">
 
-                <div class="w-9 h-9 md:w-10 md:h-10 rounded-2xl bg-white/80 flex items-center justify-center mb-2 md:mb-3 text-lg">
-                    {{ $icons[$i % count($icons)] }}
+                <div class="w-9 h-9 md:w-10 md:h-10 rounded-2xl bg-white/80 flex items-center justify-center mb-2 md:mb-3">
+                    @php $icon = $icons[$i % count($icons)]; @endphp
+                    @svg('heroicon-o-' . $icon, 'w-5 h-5 md:w-6 md:h-6 text-slate-700')
                 </div>
 
                 <h3 class="text-xs md:text-sm font-semibold text-slate-800">{{ $category['title'] }}</h3>
-                {{-- <p class="text-[11px] md:text-xs text-slate-500 mt-1">{{ strtoupper($category['slug']) }}</p> --}}
             </div>
         @empty
             <p class="text-sm text-slate-600">Belum ada kategori yang terdaftar.</p>

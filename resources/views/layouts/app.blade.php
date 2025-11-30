@@ -6,8 +6,12 @@
     <title>@yield('title', 'Portal Event Kampus')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    {{-- @vite('resources/css/app.css') --}}
+    {{-- Tailwind CDN --}}
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+
+    {{-- Alpine.js for Interactivity --}}
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+
     @stack('styles')
 
     <script>
@@ -15,7 +19,7 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['system-ui', 'ui-sans-serif', 'Inter', 'sans-serif'],
+                        sans: ['Inter', 'system-ui', 'ui-sans-serif', 'sans-serif'],
                     },
                     colors: {
                         pastelBlue: '#E4F0FF',

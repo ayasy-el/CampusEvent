@@ -18,8 +18,7 @@
             </div>
         </div>
     </div>
-    <p class="mt-3 text-xs md:text-sm text-slate-600 max-w-2xl">
-        Bangun koneksi dan pengalaman baru melalui event kampus.
-        Temukan partner project, teman komunitas, hingga mentor karier
+    <p class="mt-3 text-xs md:text-sm text-slate-600 ">
+        Bangun koneksi dan pengalaman baru melalui event kampus. Temukan partner project, teman komunitas, hingga mentor karier
     </p>
 </section>
