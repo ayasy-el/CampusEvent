@@ -16,7 +16,7 @@ class EventInfolist
     {
         return $schema
             ->components([
-                // Header Section dengan Gambar dan Info Utama
+                // ================= HEADER =================
                 Section::make()
                     ->schema([
                         Flex::make([
@@ -25,7 +25,10 @@ class EventInfolist
                                 ->disk('public')
                                 ->defaultImageUrl(url('/images/placeholder.png'))
                                 ->height(300)
-                                ->grow(false),
+                                ->grow(false)
+                                ->extraAttributes([
+                                    'class' => 'w-full md:w-auto',
+                                ]),
 
                             Group::make([
                                 TextEntry::make('title')
@@ -41,14 +44,12 @@ class EventInfolist
                                     ->color(fn(string $state): string => match ($state) {
                                         'draft' => 'gray',
                                         'published' => 'success',
-                                        'cancelled' => 'danger',
                                         'completed' => 'info',
                                         default => 'gray',
                                     })
                                     ->formatStateUsing(fn(string $state): string => match ($state) {
                                         'draft' => 'Draft',
                                         'published' => 'Published',
-                                        'cancelled' => 'Dibatalkan',
                                         'completed' => 'Selesai',
                                         default => ucfirst($state),
                                     }),
@@ -65,15 +66,15 @@ class EventInfolist
                                     ->columnSpanFull(),
                             ])
                                 ->grow(true),
-                        ]),
+                        ])
+                            ->from('md'),
                     ])
-                    ->columnSpan('full'),                // Informasi Waktu & Lokasi
+                    ->columnSpan('full'),
 
-                // ============== 2 KOLOM FLEX ==============
+                // ================= 2 KOLOM KONTEN =================
                 Flex::make([
                     // KOLOM KIRI
                     Group::make([
-                        // Waktu & Lokasi
                         Section::make('Waktu & Lokasi')
                             ->icon('heroicon-o-clock')
                             ->description('Detail waktu dan tempat pelaksanaan event')
@@ -117,7 +118,6 @@ class EventInfolist
                             ])
                             ->collapsible(),
 
-                        // Daftar Peserta
                         Section::make('Daftar Peserta')
                             ->icon('heroicon-o-user-group')
                             ->description('Mahasiswa yang mengikuti event ini')
@@ -158,7 +158,6 @@ class EventInfolist
                             ->collapsed(false)
                             ->visible(fn($record) => $record->attendees()->count() > 0),
 
-                        // Deskripsi Event
                         Section::make('Deskripsi Event')
                             ->icon('heroicon-o-document-text')
                             ->description('Informasi lengkap tentang event')
@@ -175,7 +174,6 @@ class EventInfolist
 
                     // KOLOM KANAN
                     Group::make([
-                        // Kuota & Harga
                         Section::make('Kuota & Harga')
                             ->icon('heroicon-o-ticket')
                             ->description('Detail kuota peserta dan harga tiket')
@@ -199,7 +197,6 @@ class EventInfolist
                             ])
                             ->collapsible(),
 
-                        // Benefit
                         Section::make('Benefit Peserta')
                             ->icon('heroicon-o-gift')
                             ->description('Manfaat yang akan didapatkan peserta')
@@ -213,7 +210,6 @@ class EventInfolist
                             ->collapsible()
                             ->collapsed(),
 
-                        // Informasi Kontak
                         Section::make('Informasi Kontak')
                             ->icon('heroicon-o-phone')
                             ->description('Hubungi penyelenggara untuk informasi lebih lanjut')
@@ -238,7 +234,6 @@ class EventInfolist
                             ])
                             ->collapsible(),
 
-                        // Informasi Teknis
                         Section::make('Informasi Teknis')
                             ->icon('heroicon-o-cog')
                             ->description('Data teknis dan metadata event')
@@ -268,6 +263,7 @@ class EventInfolist
                             ->collapsed(),
                     ])->grow(true),
                 ])
+                    ->from('md')
                     ->columnSpan('full'),
             ]);
     }
