@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Categories\Schemas;
 
+use App\Models\Category;
 use Filament\Forms\Components\TextInput;
 use Filament\Schemas\Schema;
 
@@ -16,7 +17,9 @@ class CategoryForm
                     ->placeholder('Contoh: Seminar, Workshop, Webinar, dll.')
                     ->required()
                     ->maxLength(255)
-                    ->autocomplete(false),
+                    ->unique(table: Category::class, column: 'name', ignoreRecord: true)
+                    ->autocomplete(false)
+                    ->helperText('Nama kategori harus unik'),
             ]);
     }
 }
