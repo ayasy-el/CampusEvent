@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Categories\Tables;
 
+use App\Models\Category;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DeleteAction;
@@ -58,11 +59,15 @@ class CategoriesTable
                             ->label('Nama Kategori')
                             ->required()
                             ->maxLength(255)
-                            ->placeholder('Masukkan nama kategori'),
+                            ->unique(table: Category::class, column: 'name', ignoreRecord: true)
+                            ->placeholder('Contoh: Seminar, Workshop, Webinar, dll.')
+                            ->helperText('Nama kategori harus unik')
+                            ->autocomplete(false),
                     ])
                     ->modalHeading('Edit Kategori')
                     ->modalSubmitActionLabel('Simpan')
                     ->modalCancelActionLabel('Batal')
+                    ->modalWidth('md')
                     ->successNotificationTitle('Kategori berhasil diperbarui'),
                 DeleteAction::make()
                     ->label('Hapus')
@@ -70,9 +75,10 @@ class CategoriesTable
                     ->color('danger')
                     ->requiresConfirmation()
                     ->modalHeading('Hapus Kategori')
-                    ->modalDescription('Apakah Anda yakin ingin menghapus kategori ini?')
+                    ->modalDescription('Apakah Anda yakin ingin menghapus kategori ini? Tindakan ini tidak dapat dibatalkan.')
                     ->modalSubmitActionLabel('Ya, Hapus')
                     ->modalCancelActionLabel('Batal')
+                    ->modalWidth('md')
                     ->successNotificationTitle('Kategori berhasil dihapus'),
             ])
             ->toolbarActions([
