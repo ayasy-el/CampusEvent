@@ -13,6 +13,7 @@ use Filament\Forms\Components\TimePicker;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Tabs;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class EventForm
@@ -81,7 +82,6 @@ class EventForm
                                         FileUpload::make('image')
                                             ->label('Gambar Event')
                                             ->image()
-                                            ->disk('public')
                                             ->imageEditor()
                                             ->imageEditorAspectRatios([
                                                 '16:9',

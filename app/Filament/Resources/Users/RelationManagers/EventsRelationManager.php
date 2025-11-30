@@ -36,7 +36,6 @@ class EventsRelationManager extends RelationManager
             ->columns([
                 ImageColumn::make('image')
                     ->label('Gambar')
-                    ->disk('public')
                     ->size(60)
                     ->defaultImageUrl(url('/images/placeholder.png')),
 

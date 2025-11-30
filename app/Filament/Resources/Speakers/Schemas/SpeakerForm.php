@@ -17,7 +17,6 @@ class SpeakerForm
                 FileUpload::make('photo')
                     ->label('Foto Pembicara')
                     ->image()
-                    ->disk('public')
                     ->imageEditor()
                     ->circleCropper()
                     ->directory('speakers')

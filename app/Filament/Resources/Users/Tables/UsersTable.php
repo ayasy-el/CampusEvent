@@ -23,7 +23,6 @@ class UsersTable
             ->columns([
                 ImageColumn::make('avatar_url')
                     ->label('Avatar')
-                    ->disk('public')
                     ->circular()
                     ->defaultImageUrl(url('/images/default-avatar.png'))
                     ->size(40),
@@ -143,7 +142,6 @@ class UsersTable
                         FileUpload::make('avatar_url')
                             ->label('Avatar')
                             ->image()
-                            ->disk('public')
                             ->directory('avatars')
                             ->imageEditor()
                             ->circleCropper()

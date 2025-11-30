@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class User extends Authenticatable
@@ -57,15 +58,19 @@ class User extends Authenticatable
 
     public function getAvatarUrlAttribute(?string $value): ?string
     {
+        $value = $this->attributes['avatar_url'] ?? null;
+
         if (! $value) {
             return null;
         }
 
-        if (Str::startsWith($value, ['http://', 'https://'])) {
+        if (Str::startsWith($value, ['http://', 'https://', '/'])) {
             return $value;
         }
 
-        return asset('storage/' . ltrim($value, '/'));
+        $disk = config('filament.default_filesystem_disk', config('filesystems.default'));
+
+        return Storage::disk($disk)->url($value);
     }
 
     public function events(): BelongsToMany

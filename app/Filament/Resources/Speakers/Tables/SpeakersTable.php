@@ -22,7 +22,6 @@ class SpeakersTable
             ->columns([
                 ImageColumn::make('photo')
                     ->label('Foto')
-                    ->disk('public')
                     ->circular()
                     ->defaultImageUrl(url('/images/default-avatar.png'))
                     ->size(50),
@@ -80,7 +79,6 @@ class SpeakersTable
                         FileUpload::make('photo')
                             ->label('Foto')
                             ->image()
-                            ->disk('public')
                             ->directory('speakers')
                             ->imageEditor()
                             ->circleCropper()

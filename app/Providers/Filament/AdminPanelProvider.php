@@ -25,8 +25,9 @@ class AdminPanelProvider extends PanelProvider
             ->default()
             ->id('admin')
             ->path('admin')
-            ->login()
+            ->login(fn() => redirect()->route('login'))
             ->brandName('CampusEvent')
+            ->homeUrl(url('/'))
             ->maxContentWidth('full')
             ->favicon(asset('favicon.ico'))
             ->darkMode(true)
@@ -42,7 +43,8 @@ class AdminPanelProvider extends PanelProvider
             ->widgets([
                 // Custom dashboard widgets
             ])
-            ->sidebarCollapsibleOnDesktop()
+            // ->sidebarCollapsibleOnDesktop()
+            ->topNavigation()
             ->navigationGroups([
                 'Manajemen Event',
                 'Manajemen Pengguna',

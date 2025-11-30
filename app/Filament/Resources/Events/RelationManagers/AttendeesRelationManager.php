@@ -30,7 +30,6 @@ class AttendeesRelationManager extends RelationManager
             ->columns([
                 ImageColumn::make('avatar_url')
                     ->label('Avatar')
-                    ->disk('public')
                     ->circular()
                     ->defaultImageUrl(url('/images/default-avatar.png'))
                     ->size(40),

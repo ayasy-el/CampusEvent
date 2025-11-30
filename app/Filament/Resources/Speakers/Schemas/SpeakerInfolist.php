@@ -14,7 +14,6 @@ class SpeakerInfolist
             ->components([
                 ImageEntry::make('photo')
                     ->label('Foto')
-                    ->disk('public')
                     ->circular()
                     ->defaultImageUrl(url('/images/default-avatar.png'))
                     ->size(120),

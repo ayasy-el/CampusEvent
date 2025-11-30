@@ -21,12 +21,15 @@ class UserForm
                 FileUpload::make('avatar_url')
                     ->label('Avatar')
                     ->image()
-                    ->disk('public')
                     ->directory('avatars')
                     ->imageEditor()
                     ->circleCropper()
                     ->maxSize(2048)
                     ->helperText('Maksimal 2MB. Format: JPG, PNG')
+                    ->afterStateHydrated(
+                        fn(FileUpload $component, $state, ?User $record) =>
+                        $component->state($record?->getRawOriginal('avatar_url'))
+                    )
                     ->columnSpanFull(),
 
                 TextInput::make('name')

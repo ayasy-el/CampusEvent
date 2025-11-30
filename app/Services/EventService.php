@@ -456,22 +456,8 @@ class EventService
             return $path;
         }
 
-        $disk = config('filament.default_filesystem_disk') ?? config('filesystems.default', 'public');
-
-        // Filament sering pakai default disk; jika masih "local" (private), pakai public agar bisa diakses.
-        if ($disk === 'local') {
-            $disk = 'public';
-        }
-
-        if (Storage::disk($disk)->exists($path)) {
-            return asset('storage/' . ltrim($path, '/'));
-        }
-
-        if (Storage::exists($path)) {
-            return Storage::url($path);
-        }
-
-        return $path;
+        $disk = config('filament.default_filesystem_disk', config('filesystems.default'));
+        return Storage::disk($disk)->url($path);
     }
 
     protected function getQuotaInfo(int $quota, int $registered): string
