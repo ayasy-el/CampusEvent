@@ -382,7 +382,7 @@ class EventService
                     'name' => $speaker->name,
                     'title' => $speaker->title,
                     'bio' => $speaker->bio,
-                    'photo' => $speaker->photo,
+                    'photo' => $this->resolveImageUrl($speaker->photo),
                     'is_moderator' => $speaker->pivot?->is_moderator,
                 ];
             })->all(),

@@ -9,6 +9,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Model;
 
 class EventsRelationManager extends RelationManager
 {
@@ -19,6 +20,15 @@ class EventsRelationManager extends RelationManager
     protected static ?string $modelLabel = 'Event';
 
     protected static ?string $pluralModelLabel = 'Events';
+
+    public static function canViewForRecord(Model $ownerRecord, string $pageClass): bool
+    {
+        if ($ownerRecord->role === 'admin') {
+            return false;
+        }
+
+        return parent::canViewForRecord($ownerRecord, $pageClass);
+    }
 
     public function table(Table $table): Table
     {

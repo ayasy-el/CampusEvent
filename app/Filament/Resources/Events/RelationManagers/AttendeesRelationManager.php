@@ -10,6 +10,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class AttendeesRelationManager extends RelationManager
 {
@@ -88,6 +89,7 @@ class AttendeesRelationManager extends RelationManager
                 AttachAction::make()
                     ->label('Tambah Peserta')
                     ->preloadRecordSelect()
+                    ->recordSelectOptionsQuery(fn (Builder $query) => $query->where('role', '!=', 'admin'))
                     ->modalHeading('Tambah Peserta Event')
                     ->modalSubmitActionLabel('Tambah')
                     ->modalWidth('md')

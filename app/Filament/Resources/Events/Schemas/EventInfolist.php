@@ -5,7 +5,6 @@ namespace App\Filament\Resources\Events\Schemas;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Components\Flex;
-use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
@@ -69,195 +68,207 @@ class EventInfolist
                         ]),
                     ])
                     ->columnSpan('full'),                // Informasi Waktu & Lokasi
-                Section::make('Waktu & Lokasi')
-                    ->icon('heroicon-o-clock')
-                    ->description('Detail waktu dan tempat pelaksanaan event')
-                    ->schema([
-                        TextEntry::make('date')
-                            ->label('Tanggal')
-                            ->date('l, d F Y')
-                            ->icon('heroicon-o-calendar-days')
-                            ->weight(FontWeight::SemiBold)
-                            ->color('primary'),
 
-                        Group::make([
-                            TextEntry::make('start_time')
-                                ->label('Waktu Mulai')
-                                ->time('H:i')
-                                ->icon('heroicon-o-clock'),
+                // ============== 2 KOLOM FLEX ==============
+                Flex::make([
+                    // KOLOM KIRI
+                    Group::make([
+                        // Waktu & Lokasi
+                        Section::make('Waktu & Lokasi')
+                            ->icon('heroicon-o-clock')
+                            ->description('Detail waktu dan tempat pelaksanaan event')
+                            ->schema([
+                                TextEntry::make('date')
+                                    ->label('Tanggal')
+                                    ->date('l, d F Y')
+                                    ->icon('heroicon-o-calendar-days')
+                                    ->weight(FontWeight::SemiBold)
+                                    ->color('primary'),
 
-                            TextEntry::make('end_time')
-                                ->label('Waktu Selesai')
-                                ->time('H:i')
-                                ->placeholder('Belum ditentukan')
-                                ->icon('heroicon-o-clock'),
-                        ])->columns(2),
+                                Group::make([
+                                    TextEntry::make('start_time')
+                                        ->label('Waktu Mulai')
+                                        ->time('H:i')
+                                        ->icon('heroicon-o-clock'),
 
-                        TextEntry::make('location_type')
-                            ->label('Tipe Lokasi')
-                            ->badge()
-                            ->icon('heroicon-o-map')
-                            ->color(fn(string $state): string => match ($state) {
-                                'online' => 'info',
-                                'offline' => 'success',
-                                'hybrid' => 'warning',
-                                default => 'gray',
-                            })
-                            ->formatStateUsing(fn(string $state): string => ucfirst($state)),
+                                    TextEntry::make('end_time')
+                                        ->label('Waktu Selesai')
+                                        ->time('H:i')
+                                        ->placeholder('Belum ditentukan')
+                                        ->icon('heroicon-o-clock'),
+                                ])->columns(2),
 
-                        TextEntry::make('location_address')
-                            ->label('Alamat Lokasi')
-                            ->placeholder('Tidak ada alamat')
-                            ->icon('heroicon-o-map-pin'),
-                    ])
-                    ->collapsible(),
+                                TextEntry::make('location_type')
+                                    ->label('Tipe Lokasi')
+                                    ->badge()
+                                    ->icon('heroicon-o-map')
+                                    ->color(fn(string $state): string => match ($state) {
+                                        'online' => 'info',
+                                        'offline' => 'success',
+                                        'hybrid' => 'warning',
+                                        default => 'gray',
+                                    })
+                                    ->formatStateUsing(fn(string $state): string => ucfirst($state)),
 
-                // Informasi Peserta & Harga
-                Section::make('Kuota & Harga')
-                    ->icon('heroicon-o-ticket')
-                    ->description('Detail kuota peserta dan harga tiket')
-                    ->schema([
-                        Group::make([
-                            TextEntry::make('quota')
-                                ->label('Kuota Peserta')
-                                ->numeric()
-                                ->icon('heroicon-o-users')
-                                ->weight(FontWeight::Bold)
-                                ->color('success')
-                                ->suffix(' peserta'),
+                                TextEntry::make('location_address')
+                                    ->label('Alamat Lokasi')
+                                    ->placeholder('Tidak ada alamat')
+                                    ->icon('heroicon-o-map-pin'),
+                            ])
+                            ->collapsible(),
 
-                            TextEntry::make('price')
-                                ->label('Harga Tiket')
-                                ->money('IDR')
-                                ->icon('heroicon-o-banknotes')
-                                ->weight(FontWeight::Bold)
-                                ->color('warning'),
-                        ])->columns(2),
-                    ])
-                    ->collapsible(),
+                        // Daftar Peserta
+                        Section::make('Daftar Peserta')
+                            ->icon('heroicon-o-user-group')
+                            ->description('Mahasiswa yang mengikuti event ini')
+                            ->schema([
+                                TextEntry::make('attendees_count')
+                                    ->label('Total Peserta Terdaftar')
+                                    ->state(fn($record) => $record->attendees()->count())
+                                    ->badge()
+                                    ->icon('heroicon-o-users')
+                                    ->color('success')
+                                    ->weight(FontWeight::Bold),
 
-                // Daftar Peserta
-                Section::make('Daftar Peserta')
-                    ->icon('heroicon-o-user-group')
-                    ->description('Mahasiswa yang mengikuti event ini')
-                    ->schema([
-                        TextEntry::make('attendees_count')
-                            ->label('Total Peserta Terdaftar')
-                            ->state(fn($record) => $record->attendees()->count())
-                            ->badge()
-                            ->icon('heroicon-o-users')
-                            ->color('success')
-                            ->weight(FontWeight::Bold),
+                                TextEntry::make('attendees_list')
+                                    ->label('Daftar Mahasiswa')
+                                    ->listWithLineBreaks()
+                                    ->bulleted()
+                                    ->limitList(10)
+                                    ->expandableLimitedList()
+                                    ->state(function ($record) {
+                                        return $record->attendees->map(function ($user) {
+                                            $info = $user->name;
+                                            if ($user->nrp) {
+                                                $info .= " (NRP: {$user->nrp})";
+                                            }
+                                            if ($user->program_studi) {
+                                                $info .= " - {$user->program_studi}";
+                                            }
+                                            if ($user->angkatan) {
+                                                $info .= " Angkatan {$user->angkatan}";
+                                            }
+                                            return $info;
+                                        })->toArray();
+                                    })
+                                    ->placeholder('Belum ada peserta yang terdaftar')
+                                    ->columnSpanFull(),
+                            ])
+                            ->collapsible()
+                            ->collapsed(false)
+                            ->visible(fn($record) => $record->attendees()->count() > 0),
 
-                        TextEntry::make('attendees_list')
-                            ->label('Daftar Mahasiswa')
-                            ->listWithLineBreaks()
-                            ->bulleted()
-                            ->limitList(10)
-                            ->expandableLimitedList()
-                            ->state(function ($record) {
-                                return $record->attendees->map(function ($user) {
-                                    $info = $user->name;
-                                    if ($user->nrp) {
-                                        $info .= " (NRP: {$user->nrp})";
-                                    }
-                                    if ($user->program_studi) {
-                                        $info .= " - {$user->program_studi}";
-                                    }
-                                    if ($user->angkatan) {
-                                        $info .= " Angkatan {$user->angkatan}";
-                                    }
-                                    return $info;
-                                })->toArray();
-                            })
-                            ->placeholder('Belum ada peserta yang terdaftar')
-                            ->columnSpanFull(),
-                    ])
-                    ->collapsible()
-                    ->collapsed(false)
-                    ->visible(fn($record) => $record->attendees()->count() > 0),
+                        // Deskripsi Event
+                        Section::make('Deskripsi Event')
+                            ->icon('heroicon-o-document-text')
+                            ->description('Informasi lengkap tentang event')
+                            ->schema([
+                                TextEntry::make('description')
+                                    ->label('')
+                                    ->placeholder('Tidak ada deskripsi')
+                                    ->markdown()
+                                    ->columnSpanFull(),
+                            ])
+                            ->collapsible()
+                            ->collapsed(false),
+                    ])->grow(true),
 
-                // Deskripsi Event
-                Section::make('Deskripsi Event')
-                    ->icon('heroicon-o-document-text')
-                    ->description('Informasi lengkap tentang event')
-                    ->schema([
-                        TextEntry::make('description')
-                            ->label('')
-                            ->placeholder('Tidak ada deskripsi')
-                            ->markdown()
-                            ->columnSpanFull(),
-                    ])
-                    ->collapsible()
-                    ->collapsed(false),
+                    // KOLOM KANAN
+                    Group::make([
+                        // Kuota & Harga
+                        Section::make('Kuota & Harga')
+                            ->icon('heroicon-o-ticket')
+                            ->description('Detail kuota peserta dan harga tiket')
+                            ->schema([
+                                Group::make([
+                                    TextEntry::make('quota')
+                                        ->label('Kuota Peserta')
+                                        ->numeric()
+                                        ->icon('heroicon-o-users')
+                                        ->weight(FontWeight::Bold)
+                                        ->color('success')
+                                        ->suffix(' peserta'),
 
-                // Benefit
-                Section::make('Benefit Peserta')
-                    ->icon('heroicon-o-gift')
-                    ->description('Manfaat yang akan didapatkan peserta')
-                    ->schema([
-                        TextEntry::make('benefits')
-                            ->label('')
-                            ->placeholder('Tidak ada benefit')
-                            ->markdown()
-                            ->columnSpanFull(),
-                    ])
-                    ->collapsible()
-                    ->collapsed(),
+                                    TextEntry::make('price')
+                                        ->label('Harga Tiket')
+                                        ->money('IDR')
+                                        ->icon('heroicon-o-banknotes')
+                                        ->weight(FontWeight::Bold)
+                                        ->color('warning'),
+                                ])->columns(2),
+                            ])
+                            ->collapsible(),
 
-                // Informasi Kontak
-                Section::make('Informasi Kontak')
-                    ->icon('heroicon-o-phone')
-                    ->description('Hubungi penyelenggara untuk informasi lebih lanjut')
-                    ->schema([
-                        Group::make([
-                            TextEntry::make('contact_email')
-                                ->label('Email Kontak')
-                                ->placeholder('Tidak ada email')
-                                ->icon('heroicon-o-envelope')
-                                ->copyable()
-                                ->copyMessage('Email disalin!')
-                                ->url(fn($state) => $state ? "mailto:{$state}" : null),
+                        // Benefit
+                        Section::make('Benefit Peserta')
+                            ->icon('heroicon-o-gift')
+                            ->description('Manfaat yang akan didapatkan peserta')
+                            ->schema([
+                                TextEntry::make('benefits')
+                                    ->label('')
+                                    ->placeholder('Tidak ada benefit')
+                                    ->markdown()
+                                    ->columnSpanFull(),
+                            ])
+                            ->collapsible()
+                            ->collapsed(),
 
-                            TextEntry::make('contact_phone')
-                                ->label('No. Telepon')
-                                ->placeholder('Tidak ada nomor telepon')
-                                ->icon('heroicon-o-phone')
-                                ->copyable()
-                                ->copyMessage('Nomor telepon disalin!')
-                                ->url(fn($state) => $state ? "tel:{$state}" : null),
-                        ])->columns(2),
-                    ])
-                    ->collapsible(),
+                        // Informasi Kontak
+                        Section::make('Informasi Kontak')
+                            ->icon('heroicon-o-phone')
+                            ->description('Hubungi penyelenggara untuk informasi lebih lanjut')
+                            ->schema([
+                                Group::make([
+                                    TextEntry::make('contact_email')
+                                        ->label('Email Kontak')
+                                        ->placeholder('Tidak ada email')
+                                        ->icon('heroicon-o-envelope')
+                                        ->copyable()
+                                        ->copyMessage('Email disalin!')
+                                        ->url(fn($state) => $state ? "mailto:{$state}" : null),
 
-                // Informasi Teknis
-                Section::make('Informasi Teknis')
-                    ->icon('heroicon-o-cog')
-                    ->description('Data teknis dan metadata event')
-                    ->schema([
-                        TextEntry::make('slug')
-                            ->label('Slug URL')
-                            ->icon('heroicon-o-link')
-                            ->copyable()
-                            ->copyMessage('Slug disalin!')
-                            ->color('gray'),
+                                    TextEntry::make('contact_phone')
+                                        ->label('No. Telepon')
+                                        ->placeholder('Tidak ada nomor telepon')
+                                        ->icon('heroicon-o-phone')
+                                        ->copyable()
+                                        ->copyMessage('Nomor telepon disalin!')
+                                        ->url(fn($state) => $state ? "tel:{$state}" : null),
+                                ])->columns(2),
+                            ])
+                            ->collapsible(),
 
-                        Group::make([
-                            TextEntry::make('created_at')
-                                ->label('Dibuat Pada')
-                                ->dateTime('d F Y, H:i')
-                                ->icon('heroicon-o-plus-circle')
-                                ->color('gray'),
+                        // Informasi Teknis
+                        Section::make('Informasi Teknis')
+                            ->icon('heroicon-o-cog')
+                            ->description('Data teknis dan metadata event')
+                            ->schema([
+                                TextEntry::make('slug')
+                                    ->label('Slug URL')
+                                    ->icon('heroicon-o-link')
+                                    ->copyable()
+                                    ->copyMessage('Slug disalin!')
+                                    ->color('gray'),
 
-                            TextEntry::make('updated_at')
-                                ->label('Diperbarui Pada')
-                                ->dateTime('d F Y, H:i')
-                                ->icon('heroicon-o-arrow-path')
-                                ->color('gray'),
-                        ])->columns(2),
-                    ])
-                    ->collapsible()
-                    ->collapsed(),
+                                Group::make([
+                                    TextEntry::make('created_at')
+                                        ->label('Dibuat Pada')
+                                        ->dateTime('d F Y, H:i')
+                                        ->icon('heroicon-o-plus-circle')
+                                        ->color('gray'),
+
+                                    TextEntry::make('updated_at')
+                                        ->label('Diperbarui Pada')
+                                        ->dateTime('d F Y, H:i')
+                                        ->icon('heroicon-o-arrow-path')
+                                        ->color('gray'),
+                                ])->columns(2),
+                            ])
+                            ->collapsible()
+                            ->collapsed(),
+                    ])->grow(true),
+                ])
+                    ->columnSpan('full'),
             ]);
     }
 }

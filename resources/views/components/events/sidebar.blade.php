@@ -3,8 +3,7 @@
 <aside class="space-y-4 md:space-y-5 md:sticky md:top-20 h-max">
     @if (!empty($event['image']))
         <div class="overflow-hidden rounded-3xl border border-slate-100 shadow-sm shadow-slate-200/60">
-            <img src="{{ $event['image'] }}" alt="{{ $event['title'] ?? 'Poster event' }}"
-                class="w-full h-48 md:h-56 lg:h-64 object-cover">
+            <img src="{{ $event['image'] }}" alt="{{ $event['title'] ?? 'Poster event' }}" class="w-full object-contain">
         </div>
     @endif
 
@@ -34,7 +33,7 @@
         </div>
 
         @php
-            $registrationStatus = $event['registration_status'] ?? $event['card_status'] ?? 'open';
+            $registrationStatus = $event['registration_status'] ?? ($event['card_status'] ?? 'open');
             $isRegistered = $event['is_registered'] ?? false;
             $isAdmin = $user && $user->role === 'admin';
             $isMahasiswa = $user && $user->role === 'mahasiswa';
@@ -48,7 +47,8 @@
                 default => 'Daftar Sekarang',
             };
 
-            $disabled = $isAdmin || $isRegistered || $isQuotaFull || in_array($registrationStatus, ['finished', 'closed']);
+            $disabled =
+                $isAdmin || $isRegistered || $isQuotaFull || in_array($registrationStatus, ['finished', 'closed']);
         @endphp
 
         <div class="mt-2">
