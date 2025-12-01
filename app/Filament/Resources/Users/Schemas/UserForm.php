@@ -8,8 +8,8 @@ use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
-use Filament\Forms\Get;
 use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Utilities\Get;
 use Illuminate\Support\Facades\Hash;
 
 class UserForm
@@ -50,61 +50,60 @@ class UserForm
                 TextInput::make('password')
                     ->label('Password')
                     ->password()
-                    ->required()
+                    ->required(fn(string $operation) => $operation === 'create')
                     ->minLength(8)
                     ->maxLength(255)
                     ->placeholder('Minimal 8 karakter')
                     ->revealable()
-                    ->dehydrateStateUsing(fn($state) => Hash::make($state))
+                    ->dehydrateStateUsing(fn($state) => filled($state) ? Hash::make($state) : null)
+                    ->dehydrated(fn(string $operation) => $operation === 'create')
                     ->helperText('Password minimal 8 karakter')
-                    ->hiddenOn('edit')
-                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
+                    ->hidden(fn(?User $record, string $operation) => $operation === 'edit' || $record?->role === 'admin'),
 
                 TextInput::make('password_confirmation')
                     ->label('Konfirmasi Password')
                     ->password()
-                    ->required()
+                    ->required(fn(string $operation) => $operation === 'create')
                     ->minLength(8)
                     ->same('password')
                     ->placeholder('Ulangi password')
                     ->revealable()
                     ->dehydrated(false)
                     ->helperText('Harus sama dengan password')
-                    ->hiddenOn('edit')
-                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
+                    ->hidden(fn(?User $record, string $operation) => $operation === 'edit' || $record?->role === 'admin'),
 
                 TextInput::make('nrp')
                     ->label('NRP')
                     ->maxLength(20)
                     ->unique(table: User::class, column: 'nrp', ignoreRecord: true)
                     ->placeholder('Masukkan NRP')
-                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
+                    ->hidden(fn(Get $get, ?User $record, string $operation) => ($operation === 'create' && $get('role') === 'admin') || $record?->role === 'admin'),
 
                 TextInput::make('program_studi')
                     ->label('Program Studi')
                     ->maxLength(255)
                     ->placeholder('Contoh: Teknik Informatika')
-                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
+                    ->hidden(fn(Get $get, ?User $record, string $operation) => ($operation === 'create' && $get('role') === 'admin') || $record?->role === 'admin'),
 
                 TextInput::make('angkatan')
                     ->label('Angkatan')
                     ->numeric()
                     ->maxLength(4)
                     ->placeholder('Contoh: 2024')
-                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
+                    ->hidden(fn(Get $get, ?User $record, string $operation) => ($operation === 'create' && $get('role') === 'admin') || $record?->role === 'admin'),
 
                 TextInput::make('no_telepon')
                     ->label('No. Telepon')
                     ->tel()
                     ->maxLength(20)
                     ->placeholder('08xxxxxxxxxx')
-                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
+                    ->hidden(fn(Get $get, ?User $record, string $operation) => ($operation === 'create' && $get('role') === 'admin') || $record?->role === 'admin'),
 
                 TextInput::make('kota')
                     ->label('Kota')
                     ->maxLength(255)
                     ->placeholder('Masukkan nama kota')
-                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
+                    ->hidden(fn(Get $get, ?User $record, string $operation) => ($operation === 'create' && $get('role') === 'admin') || $record?->role === 'admin'),
 
                 Textarea::make('bio')
                     ->label('Biografi')
@@ -112,7 +111,7 @@ class UserForm
                     ->rows(4)
                     ->placeholder('Tulis biografi singkat...')
                     ->columnSpanFull()
-                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
+                    ->hidden(fn(Get $get, ?User $record, string $operation) => ($operation === 'create' && $get('role') === 'admin') || $record?->role === 'admin'),
 
                 Select::make('role')
                     ->label('Role')

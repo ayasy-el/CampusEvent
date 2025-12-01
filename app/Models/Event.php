@@ -62,4 +62,13 @@ class Event extends Model
             ->withPivot('created_at', 'updated_at')
             ->withTimestamps();
     }
+
+    /**
+     * Alias untuk relasi attendees agar kompatibel dengan komponen yang
+     * mengharapkan nama relasi "users".
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->attendees();
+    }
 }
