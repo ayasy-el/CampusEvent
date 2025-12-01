@@ -4,7 +4,7 @@
 
 @section('content')
     <x-page-header title="Edit Profil"
-        description="Perbarui data pribadi dan preferensi notifikasi untuk pengalaman event yang lebih relevan ✨" />
+        description="Perbarui data pribadi dan preferensi notifikasi untuk pengalaman event yang lebih relevan" />
 
     <main>
         <x-profile.profile-form :action="route('profile.update')" method="PUT">

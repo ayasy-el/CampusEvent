@@ -7,7 +7,7 @@
                 Event Terdaftar
             </h2>
             <p class="text-[11px] md:text-xs text-slate-500">
-                Daftar event yang sudah kamu pilih. Datang tepat waktu ya ✨
+                Daftar event yang sudah kamu pilih. Datang tepat waktu ya!
             </p>
         </div>
         <x-button href=" {{ route('my_events') }}" variant="link-sm">Show All</x-button>

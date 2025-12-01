@@ -1,5 +1,5 @@
 <section class="mb-10 md:mb-14">
-    <h2 class="text-lg md:text-2xl font-semibold text-slate-900 mb-3">
+    <h2 class="text-lg md:text-2xl font-semibold text-slate-900 dark:text-white mb-3">
         Connect & Grow
     </h2>
     <div class="-mx-4 px-4 md:mx-0 md:px-0">
@@ -18,7 +18,7 @@
             </div>
         </div>
     </div>
-    <p class="mt-3 text-xs md:text-sm text-slate-600 ">
+    <p class="mt-3 text-xs md:text-sm text-slate-600 dark:text-slate-400">
         Bangun koneksi dan pengalaman baru melalui event kampus. Temukan partner project, teman komunitas, hingga mentor karier
     </p>
 </section>

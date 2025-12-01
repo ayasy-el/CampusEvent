@@ -2,7 +2,7 @@
 
 <section class="mb-10 md:mb-14">
     <div class="flex items-center justify-between mb-3">
-        <h2 class="text-lg md:text-2xl font-semibold text-slate-900">
+        <h2 class="text-lg md:text-2xl font-semibold text-slate-900 dark:text-white">
             Event Mendatang
         </h2>
         <x-button variant="link-sm" href="{{ route('events') }}">
@@ -21,8 +21,8 @@
                 </div>
             @empty
                 <article
-                    class="bg-white rounded-2xl shadow-md shadow-slate-200/60 border border-dashed border-slate-200 p-5 min-w-[240px] max-w-[260px] flex-shrink-0 snap-start md:min-w-0 md:max-w-none md:flex-shrink md:snap-none">
-                    <p class="text-sm text-slate-600 mb-2">Belum ada event terjadwal.</p>
+                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-md shadow-slate-200/60 dark:shadow-slate-900/60 border border-dashed border-slate-200 dark:border-slate-700 p-5 min-w-[240px] max-w-[260px] flex-shrink-0 snap-start md:min-w-0 md:max-w-none md:flex-shrink md:snap-none">
+                    <p class="text-sm text-slate-600 dark:text-slate-300 mb-2">Belum ada event terjadwal.</p>
                     <x-button href="{{ route('events') }}" variant="dark-sm">Lihat semua event</x-button>
                 </article>
             @endforelse

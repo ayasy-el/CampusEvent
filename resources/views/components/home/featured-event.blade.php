@@ -3,7 +3,7 @@
 @if ($event)
     <section class="mb-10 md:mb-14">
         <div class="flex items-center justify-between gap-2 mb-4">
-            <h2 class="text-lg md:text-2xl font-semibold text-slate-900">
+            <h2 class="text-lg md:text-2xl font-semibold text-slate-900 dark:text-white">
                 Event Unggulan Pekan ini
             </h2>
             <x-badge variant="minimalist" size="sm">

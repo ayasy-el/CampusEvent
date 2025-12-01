@@ -80,7 +80,7 @@
 
 <div class="flex items-center gap-2 md:gap-3">
     <button id="viewModeBtn" type="button"
-        class="w-9 h-9 flex items-center justify-center rounded-xl shadow-sm text-slate-700 hover:bg-slate-100 transition"
+        class="w-9 h-9 flex items-center justify-center rounded-xl shadow-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition"
         aria-label="Toggle view mode">
         <svg id="viewModeIcon" viewBox="0 0 240 240" class="w-5 h-5">
             <rect x="80" y="40" width="100" height="16" rx="8" fill="currentColor" />
@@ -92,7 +92,7 @@
 
 <!-- Mobile: toggle filter -->
 <button id="toggleFilters" type="button"
-    class="md:hidden inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-medium text-slate-700 shadow-sm hover:bg-slate-50">
+    class="md:hidden inline-flex items-center gap-1 px-3 py-1.5 rounded-xl text-[11px] font-medium text-slate-700 dark:text-slate-300 shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700">
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
         <path fill="currentColor" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
             stroke-width="1.5"

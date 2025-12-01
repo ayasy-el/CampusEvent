@@ -6,36 +6,42 @@
     <title>@yield('title', 'Portal Event Kampus')</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    {{-- Tailwind CDN --}}
+    {{-- Dark Mode Initial Script (HARUS di atas, prevent flash) --}}
+    <script>
+        (function() {
+            if (localStorage.getItem('darkMode') === 'true') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
+
+    {{-- Tailwind CDN v4 --}}
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    
+    {{-- Tailwind Config dengan darkMode selector --}}
+    <style type="text/tailwindcss">
+        @theme {
+            --color-pastelBlue: #E4F0FF;
+            --color-pastelPeach: #FFE6D9;
+            --color-pastelLilac: #F1E4FF;
+        }
+        @variant dark (&:where(.dark, .dark *));
+    </style>
 
     {{-- Alpine.js for Interactivity --}}
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
+    {{-- Hide x-cloak elements until Alpine loads --}}
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+
     @stack('styles')
-
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'ui-sans-serif', 'sans-serif'],
-                    },
-                    colors: {
-                        pastelBlue: '#E4F0FF',
-                        pastelPeach: '#FFE6D9',
-                        pastelLilac: '#F1E4FF',
-                    },
-                },
-            },
-        };
-    </script>
-
     @stack('head')
 </head>
 
-<body class="font-sans bg-slate-50 text-slate-900">
-    <div class="min-h-screen bg-gradient-to-b from-pastelBlue/60 via-white to-pastelLilac/50">
+<body class="font-sans bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300">
+    <div class="min-h-screen bg-linear-to-b from-pastelBlue/60 via-white to-pastelLilac/50 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
         <div class="max-w-7xl mx-auto px-4 md:px-6 lg:px-8 pb-16">
 
             {{-- NAVBAR --}}

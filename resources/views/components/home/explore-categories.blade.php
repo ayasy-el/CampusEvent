@@ -24,7 +24,7 @@
 
 <section class="mb-10 md:mb-14">
     <div class="flex items-center justify-between mb-3">
-        <h2 class="text-lg md:text-2xl font-semibold text-slate-900">
+        <h2 class="text-lg md:text-2xl font-semibold text-slate-900 dark:text-white">
             Explore Categories
         </h2>
     </div>
@@ -51,7 +51,7 @@
                 </h3>
             </a>
         @empty
-            <p class="text-sm text-slate-600">Belum ada kategori yang terdaftar.</p>
+            <p class="text-sm text-slate-600 dark:text-slate-400">Belum ada kategori yang terdaftar.</p>
         @endforelse
     </div>
 </section>

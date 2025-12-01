@@ -5,10 +5,10 @@
 
         <!-- Text -->
         <div class="order-2 md:order-1 mt-6 md:mt-0">
-            <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 leading-tight">
+            <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white leading-tight">
                 Portal Event Kampus
             </h1>
-            <p class="mt-3 text-sm sm:text-base md:text-lg text-slate-600 leading-relaxed max-w-xl">
+            <p class="mt-3 text-sm sm:text-base md:text-lg text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
                 Temukan seminar, workshop, dan kegiatan kampus yang cocok dengan minatmu.
                 Bangun relasi dan pengalaman baru bersama teman-teman.
             </p>
@@ -17,7 +17,7 @@
                 <x-button href="{{ route('events') }}">Jelajahi Event</x-button>
             </div>
 
-            <div class="mt-5 flex flex-wrap gap-3 text-[11px] md:text-xs text-slate-500">
+            <div class="mt-5 flex flex-wrap gap-3 text-[11px] md:text-xs text-slate-500 dark:text-slate-400">
                 <x-badge variant="default" size="sm">
                     <x-dot /> &nbsp; {{ $count }} event aktif
                 </x-badge>
@@ -40,7 +40,7 @@
                 }
             }"
             x-init="start()"
-            class="order-1 md:order-2 relative rounded-3xl shadow-lg shadow-slate-200/60 aspect-video overflow-hidden">
+            class="order-1 md:order-2 relative rounded-3xl shadow-lg shadow-slate-200/60 dark:shadow-slate-900/60 aspect-video overflow-hidden">
 
             <template x-for="(image, i) in images" :key="i">
                 <img

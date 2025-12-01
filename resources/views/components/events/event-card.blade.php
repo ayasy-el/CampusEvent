@@ -30,7 +30,7 @@ $endDate = $event['end_date'] ?? null;
 $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m-d');
 @endphp
 
-<article @class([ 'bg-white/95 h-full border border-slate-100 shadow-sm hover:shadow-md transition group' , 'rounded-2xl p-4'=> $variant === 'list',
+<article @class([ 'bg-white/95 dark:bg-slate-800/95 h-full border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-md transition group' , 'rounded-2xl p-4'=> $variant === 'list',
     'rounded-3xl overflow-hidden' => $variant !== 'list',
 
     'opacity-80' => $cardStatus === 'finished',
@@ -96,7 +96,7 @@ $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m
         <!-- Content -->
         <div class="flex-1 min-w-0">
             <div class="flex justify-between items-start mb-1">
-                <h2 class="text-xs md:text-sm font-semibold text-slate-900 group-hover:text-sky-700 line-clamp-2">
+                <h2 class="text-xs md:text-sm font-semibold text-slate-900 dark:text-white group-hover:text-sky-700 dark:group-hover:text-sky-400 line-clamp-2">
                     <a href="{{ route('event_detail', ['slug' => $detailParam]) }}">{{ $event['title'] }}</a>
                 </h2>
                 @if ($cardStatus === 'open')
@@ -106,21 +106,21 @@ $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m
                     </x-badge>
                     @if ($extraCount > 0)
                     <span
-                        class="text-[10px] text-slate-500 leading-none bg-slate-100 px-1.5 py-0.5 rounded-full cursor-default js-extra-cats"
+                        class="text-[10px] text-slate-500 dark:text-slate-400 leading-none bg-slate-100 dark:bg-slate-700 px-1.5 py-0.5 rounded-full cursor-default js-extra-cats"
                         data-extra="{{ $extraLabel }}">
                         +{{ $extraCount }}
                     </span>
                     <div
-                        class="hidden group-hover/extra:flex absolute top-full left-0 mt-1 bg-white text-slate-800 text-[10px] rounded-xl px-2.5 py-2 shadow-lg shadow-slate-200 border border-slate-100 pointer-events-none js-extra-tooltip">
+                        class="hidden group-hover/extra:flex absolute top-full left-0 mt-1 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-[10px] rounded-xl px-2.5 py-2 shadow-lg shadow-slate-200 dark:shadow-slate-900 border border-slate-100 dark:border-slate-600 pointer-events-none js-extra-tooltip">
 
                         <div class="flex flex-wrap gap-1">
                             @foreach ($extraNames as $name)
                             <span
-                                class="px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px]">{{ $name }}</span>
+                                class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-600 border border-slate-200 dark:border-slate-500 text-[10px]">{{ $name }}</span>
                             @endforeach
                             @if ($extraCount > $extraNames->count())
                             <span
-                                class="px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px]">dll.</span>
+                                class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-600 border border-slate-200 dark:border-slate-500 text-[10px]">dll.</span>
                             @endif
                         </div>
                     </div>
@@ -130,7 +130,7 @@ $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m
             </div>
 
             @if ($show_subtitle)
-            <p class="text-[11px] text-slate-500">
+            <p class="text-[11px] text-slate-500 dark:text-slate-400">
                 {{ $event['organizer'] }}
                 @if ($event['location'] && $event['organizer'])
                 •
@@ -140,7 +140,7 @@ $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m
             @endif
 
             @if ($show_schedule)
-            <p class="mt-1 text-[11px] text-slate-500">
+            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
                 {{ $event['time'] }} WIB
                 @if ($event['benefit'] && $event['time'])
                 •
@@ -153,7 +153,7 @@ $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m
             @if ($show_badges)
             <div class="mt-2 flex gap-2 flex-wrap">
                 <x-badge variant="outline-dark" size="xxs">
-                    👥 {{ $event['registered'] ?? 0 }} terdaftar
+                    {{ $event['registered'] ?? 0 }} terdaftar
                 </x-badge>
 
                 <x-badge size="xxs" variant="{{ $style }}">
@@ -197,7 +197,7 @@ $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m
 
     <!-- CTA Mobile -->
     @if ($cardStatus === 'open' && $show_actions)
-    <div class="mt-3 flex md:hidden justify-between pt-3 border-t border-slate-100">
+    <div class="mt-3 flex md:hidden justify-between pt-3 border-t border-slate-100 dark:border-slate-700">
         <x-button href="{{ route('event_detail', ['slug' => $detailParam]) }}" variant="primary-sm">
             Lihat detail
         </x-button>
@@ -266,15 +266,15 @@ $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m
                     +{{ $extraCount }}
                 </span>
                 <div
-                    class="hidden group-hover/extra:flex absolute bottom-full right-0 mb-1 bg-white text-slate-800 text-[10px] rounded-xl px-2.5 py-2 border border-slate-100 pointer-events-none js-extra-tooltip">
+                    class="hidden group-hover/extra:flex absolute bottom-full right-0 mb-1 bg-white dark:bg-slate-700 text-slate-800 dark:text-slate-200 text-[10px] rounded-xl px-2.5 py-2 border border-slate-100 dark:border-slate-600 pointer-events-none js-extra-tooltip">
                     <div class="flex flex-wrap gap-1">
                         @foreach ($extraNames as $name)
                         <span
-                            class="px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px]">{{ $name }}</span>
+                            class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-600 border border-slate-200 dark:border-slate-500 text-[10px]">{{ $name }}</span>
                         @endforeach
                         @if ($extraCount > $extraNames->count())
                         <span
-                            class="px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px]">dll.</span>
+                            class="px-1.5 py-0.5 rounded-md bg-slate-100 dark:bg-slate-600 border border-slate-200 dark:border-slate-500 text-[10px]">dll.</span>
                         @endif
                     </div>
                 </div>
@@ -284,18 +284,18 @@ $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m
     </div>
 
     <div class="p-3.5 space-y-1.5">
-        <h2 class="text-sm font-semibold text-slate-900 group-hover:text-sky-700 line-clamp-2">
+        <h2 class="text-sm font-semibold text-slate-900 dark:text-white group-hover:text-sky-700 dark:group-hover:text-sky-400 line-clamp-2">
             <a href="{{ route('event_detail', ['slug' => $detailParam]) }}">{{ $event['title'] }}</a>
         </h2>
 
         @if ($show_subtitle)
-        <p class="text-[11px] text-slate-500">
+        <p class="text-[11px] text-slate-500 dark:text-slate-400">
             {{ $event['organizer'] }} • {{ $event['location'] }}
         </p>
         @endif
 
         @if ($show_schedule)
-        <p class="text-[11px] text-slate-500">
+        <p class="text-[11px] text-slate-500 dark:text-slate-400">
             {{ $event['time'] }} WIB • {{ $event['benefit'] }}
         </p>
         @endif
@@ -304,7 +304,7 @@ $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m
             <div class="flex gap-1 items-center">
                 @if ($show_badges)
                 <x-badge variant="outline-dark" size="xxs">
-                    👥 {{ $event['registered'] ?? 0 }} peserta
+                    {{ $event['registered'] ?? 0 }} peserta
                 </x-badge>
                 @php $isFree = ($event['price'] ?? 0) == 0; @endphp
                 <x-badge size="xxs" variant="{{ $isFree ? 'subtle-success' : 'subtle-info' }}">

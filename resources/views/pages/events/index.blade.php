@@ -4,7 +4,7 @@
 
 @section('content')
     <x-page-header title="Semua Event Kampus"
-        description="Filter berdasarkan kategori, tanggal, lokasi, dan urutkan sesuai kebutuhanmu ✨">
+        description="Filter berdasarkan kategori, tanggal, lokasi, dan urutkan sesuai kebutuhanmu">
         <x-slot:badge>
             <x-badge variant="default" size="sm">
                 <x-dot /> &nbsp; {{ $totalActiveEvents ?? $eventsCount }} event aktif

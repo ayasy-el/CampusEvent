@@ -46,21 +46,21 @@
 
 <aside id="filters" class="space-y-3 md:sticky md:top-30 md:self-start md:pr-2 hidden md:block">
 
-    <div class="bg-white/50 border border-slate-100 rounded-2xl p-4 shadow-sm space-y-4">
+    <div class="bg-white/50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 rounded-2xl p-4 shadow-sm space-y-4">
         <!-- Header with Reset All -->
-        <div class="flex items-center justify-between pb-3 border-b border-slate-100">
-            <p class="text-sm font-bold text-slate-800">Filter Event</p>
-            <a href="{{ route('events') }}" class="text-xs text-sky-600 hover:text-sky-700 font-medium transition">
+        <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-700">
+            <p class="text-sm font-bold text-slate-800 dark:text-white">Filter Event</p>
+            <a href="{{ route('events') }}" class="text-xs text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300 font-medium transition">
                 Reset Semua
             </a>
         </div>
 
         {{-- ==================== KATEGORI ==================== --}}
         <div class="space-y-2.5">
-            <p class="text-xs font-semibold text-slate-800">
+            <p class="text-xs font-semibold text-slate-800 dark:text-white">
                 Kategori
                 @if (!empty($current['categories']))
-                    <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+                    <button class="text-[11px] text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 font-semibold cursor-pointer"
                         data-clear="categories">
                         Clear
                     </button>
@@ -71,8 +71,8 @@
                     <button
                         class="px-3 py-1.5 rounded-full text-xs border font-medium transition cursor-pointer flex items-center gap-1
                         {{ in_array($item['value'], $current['categories'] ?? [])
-                            ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
-                            : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
+                            ? 'bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-700 hover:bg-sky-200 dark:hover:bg-sky-900'
+                            : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-600' }}"
                         data-filter-category="{{ $item['value'] }}">
                         @if (in_array($item['value'], $current['categories'] ?? []))
                             <span class="text-[10px]">×</span>
@@ -80,19 +80,19 @@
                         <span>{{ $item['label'] }}</span>
                     </button>
                 @empty
-                    <span class="text-[11px] text-slate-400">Kategori belum tersedia.</span>
+                    <span class="text-[11px] text-slate-400 dark:text-slate-500">Kategori belum tersedia.</span>
                 @endforelse
             </div>
         </div>
 
-        <div class="border-t border-slate-100"></div>
+        <div class="border-t border-slate-100 dark:border-slate-700"></div>
 
         {{-- ==================== TANGGAL ==================== --}}
         <div class="space-y-2.5">
             <div class="flex items-center gap-2">
-                <p class="text-xs font-semibold text-slate-800">Tanggal</p>
+                <p class="text-xs font-semibold text-slate-800 dark:text-white">Tanggal</p>
                 @if (!empty($current['date']) || $current['date_from'] || $current['date_to'])
-                    <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+                    <button class="text-[11px] text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 font-semibold cursor-pointer"
                         data-clear="date">
                         Clear
                     </button>
@@ -103,8 +103,8 @@
                     <button
                         class="px-3 py-1.5 rounded-full text-xs border font-medium transition cursor-pointer flex items-center gap-1
                         {{ ($current['date'] ?? null) === $item['value']
-                            ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
-                            : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
+                            ? 'bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-700 hover:bg-sky-200 dark:hover:bg-sky-900'
+                            : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-600' }}"
                         data-filter-date="{{ $item['value'] }}">
                         @if (($current['date'] ?? null) === $item['value'])
                             <span class="text-[10px]">×</span>
@@ -115,31 +115,31 @@
             </div>
 
             <div class="space-y-1.5 pt-1">
-                <p class="text-[11px] text-slate-500 font-medium">Rentang tanggal:</p>
+                <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Rentang tanggal:</p>
                 <form method="GET" class="grid grid-cols-2 gap-2">
                     @foreach (request()->except(['date_from', 'date_to']) as $key => $value)
                         <input type="hidden" name="{{ $key }}" value="{{ $value }}">
                     @endforeach
                     <input type="date" name="date_from" value="{{ $current['date_from'] }}"
-                        class="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-[11px] text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-400/60 focus:border-transparent" />
+                        class="w-full rounded-lg border border-slate-200 dark:border-slate-600 px-2 py-1.5 text-[11px] text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-400/60 focus:border-transparent" />
                     <input type="date" name="date_to" value="{{ $current['date_to'] }}"
-                        class="w-full rounded-lg border border-slate-200 px-2 py-1.5 text-[11px] text-slate-700 bg-white focus:outline-none focus:ring-2 focus:ring-sky-400/60 focus:border-transparent" />
+                        class="w-full rounded-lg border border-slate-200 dark:border-slate-600 px-2 py-1.5 text-[11px] text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-sky-400/60 focus:border-transparent" />
                     <button type="submit"
-                        class="col-span-2 mt-1 px-3 py-1.5 rounded-full bg-slate-900 text-white text-[11px] font-semibold hover:bg-slate-800 transition cursor-pointer">
+                        class="col-span-2 mt-1 px-3 py-1.5 rounded-full bg-slate-900 dark:bg-sky-600 text-white text-[11px] font-semibold hover:bg-slate-800 dark:hover:bg-sky-700 transition cursor-pointer">
                         Terapkan Rentang
                     </button>
                 </form>
             </div>
         </div>
 
-        <div class="border-t border-slate-100"></div>
+        <div class="border-t border-slate-100 dark:border-slate-700"></div>
 
         {{-- ==================== MODE EVENT & LOKASI ==================== --}}
         <div class="space-y-2.5">
             <div class="flex items-center gap-2">
-                <p class="text-xs font-semibold text-slate-800">Mode Event</p>
+                <p class="text-xs font-semibold text-slate-800 dark:text-white">Mode Event</p>
                 @if (!empty($current['mode']))
-                    <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+                    <button class="text-[11px] text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 font-semibold cursor-pointer"
                         data-clear="mode">
                         Clear
                     </button>
@@ -150,8 +150,8 @@
                     <button
                         class="px-3 py-1.5 rounded-full text-xs border font-medium transition cursor-pointer flex items-center gap-1
                         {{ in_array($item['value'], $current['mode'] ?? [])
-                            ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
-                            : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
+                            ? 'bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-700 hover:bg-sky-200 dark:hover:bg-sky-900'
+                            : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-600' }}"
                         data-filter-mode="{{ $item['value'] }}">
                         @if (in_array($item['value'], $current['mode'] ?? []))
                             <span class="text-[10px]">×</span>
@@ -163,9 +163,9 @@
 
             <div class="space-y-1.5 pt-1">
                 <div class="flex items-center gap-2">
-                    <p class="text-[11px] text-slate-500 font-medium">Lokasi:</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Lokasi:</p>
                     @if (!empty($current['location']))
-                        <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+                        <button class="text-[11px] text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 font-semibold cursor-pointer"
                             data-clear="location">
                             Clear
                         </button>
@@ -177,27 +177,27 @@
                     @endforeach
                     <input type="text" name="location" value="{{ $current['location'] }}"
                         placeholder="Contoh: Aula Utama, FTI..."
-                        class="w-full rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs text-slate-700 bg-white placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-sky-400/60 focus:border-transparent" />
+                        class="w-full rounded-lg border border-slate-200 dark:border-slate-600 px-2.5 py-1.5 text-xs text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-700 placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-sky-400/60 focus:border-transparent" />
                     <button type="submit"
-                        class="px-3 py-1.5 rounded-full bg-slate-900 text-white text-[11px] font-semibold hover:bg-slate-800 transition cursor-pointer">
+                        class="px-3 py-1.5 rounded-full bg-slate-900 dark:bg-sky-600 text-white text-[11px] font-semibold hover:bg-slate-800 dark:hover:bg-sky-700 transition cursor-pointer">
                         Cari
                     </button>
                 </form>
             </div>
         </div>
 
-        <div class="border-t border-slate-100"></div>
+        <div class="border-t border-slate-100 dark:border-slate-700"></div>
 
         {{-- ==================== FILTER LANJUTAN ==================== --}}
         <div class="space-y-2.5">
-            <p class="text-xs font-semibold text-slate-800">Lainnya</p>
+            <p class="text-xs font-semibold text-slate-800 dark:text-white">Lainnya</p>
 
             {{-- Harga --}}
             <div class="space-y-1.5">
                 <div class="flex items-center gap-2">
-                    <p class="text-[11px] text-slate-500 font-medium">Harga</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Harga</p>
                     @if (!empty($current['price']))
-                        <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+                        <button class="text-[11px] text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 font-semibold cursor-pointer"
                             data-clear="price">
                             Clear
                         </button>
@@ -208,8 +208,8 @@
                         <button
                             class="px-3 py-1.5 rounded-full text-xs border font-medium transition cursor-pointer flex items-center gap-1
                         {{ ($current['price'] ?? null) === $item['value']
-                            ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
-                            : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
+                            ? 'bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-700 hover:bg-sky-200 dark:hover:bg-sky-900'
+                            : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-600' }}"
                             data-filter-price="{{ $item['value'] }}">
                             @if (($current['price'] ?? null) === $item['value'])
                                 <span class="text-[10px]">×</span>
@@ -223,9 +223,9 @@
             {{-- Status Pendaftaran --}}
             <div class="space-y-2.5">
                 <div class="flex items-center gap-2">
-                    <p class="text-[11px] text-slate-500 font-medium">Status Pendaftaran</p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 font-medium">Status Pendaftaran</p>
                     @if (!empty($current['status']))
-                        <button class="text-[11px] text-slate-500 hover:text-slate-700 font-semibold cursor-pointer"
+                        <button class="text-[11px] text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 font-semibold cursor-pointer"
                             data-clear="status">
                             Clear
                         </button>
@@ -237,8 +237,8 @@
                             class="px-3 py-1.5 rounded-full text-xs border font-medium transition
                             cursor-pointer flex items-center gap-1
                             {{ in_array($item['value'], $current['status'] ?? [])
-                                ? 'bg-sky-100 text-sky-700 border-sky-200 hover:bg-sky-200'
-                                : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100' }}"
+                                ? 'bg-sky-100 dark:bg-sky-900/50 text-sky-700 dark:text-sky-300 border-sky-200 dark:border-sky-700 hover:bg-sky-200 dark:hover:bg-sky-900'
+                                : 'bg-slate-50 dark:bg-slate-700 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-600 hover:bg-slate-100 dark:hover:bg-slate-600' }}"
                             data-filter-status="{{ $item['value'] }}">
                             @if (in_array($item['value'], $current['status'] ?? []) && $item['value'] !== 'open')
                                 <span class="text-[10px]">×</span>
