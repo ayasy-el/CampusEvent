@@ -17,7 +17,7 @@
 
     {{-- Tailwind CDN v4 --}}
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    
+
     {{-- Tailwind Config dengan darkMode selector --}}
     <style type="text/tailwindcss">
         @theme {
@@ -33,7 +33,9 @@
 
     {{-- Hide x-cloak elements until Alpine loads --}}
     <style>
-        [x-cloak] { display: none !important; }
+        [x-cloak] {
+            display: none !important;
+        }
     </style>
 
     @stack('styles')

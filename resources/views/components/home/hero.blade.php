@@ -25,7 +25,7 @@
         </div>
 
         <!-- Hero Carousel -->
-        <div 
+        <div
             x-data="{
                 images: [
                     'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?auto=format&fit=crop&w=1170&q=80',
@@ -52,8 +52,7 @@
                     x-transition:enter-end="opacity-100 scale-100"
                     x-transition:leave="opacity-100 scale-100"
                     x-transition:leave-end="opacity-0 scale-95"
-                    :alt="'Event image ' + (i + 1)"
-                />
+                    :alt="'Event image ' + (i + 1)" />
             </template>
 
         </div>

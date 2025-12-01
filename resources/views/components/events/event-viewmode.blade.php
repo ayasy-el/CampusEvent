@@ -1,59 +1,59 @@
 @once
-    @push('styles')
-        <style>
-            #eventsWrapper[data-view="list"] .view-list {
-                display: block;
-            }
+@push('styles')
+<style>
+    #eventsWrapper[data-view="list"] .view-list {
+        display: block;
+    }
 
-            #eventsWrapper[data-view="list"] .view-grid {
-                display: none;
-            }
+    #eventsWrapper[data-view="list"] .view-grid {
+        display: none;
+    }
 
-            #eventsWrapper[data-view="grid"] .view-list {
-                display: none;
-            }
+    #eventsWrapper[data-view="grid"] .view-list {
+        display: none;
+    }
 
-            #eventsWrapper[data-view="grid"] .view-grid {
-                display: grid;
-            }
-        </style>
-    @endpush
+    #eventsWrapper[data-view="grid"] .view-grid {
+        display: grid;
+    }
+</style>
+@endpush
 
-    @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
 
-                const toggleFiltersBtn = document.getElementById('toggleFilters');
-                const filters = document.getElementById('filters');
+        const toggleFiltersBtn = document.getElementById('toggleFilters');
+        const filters = document.getElementById('filters');
 
-                if (toggleFiltersBtn && filters) {
-                    toggleFiltersBtn.addEventListener('click', () => {
-                        filters.classList.toggle('hidden');
-                    });
-                }
+        if (toggleFiltersBtn && filters) {
+            toggleFiltersBtn.addEventListener('click', () => {
+                filters.classList.toggle('hidden');
+            });
+        }
 
-                // --- VIEW MODE ---
-                const viewBtn = document.getElementById('viewModeBtn');
-                const viewIcon = document.getElementById('viewModeIcon');
-                const wrapper = document.getElementById('eventsWrapper');
+        // --- VIEW MODE ---
+        const viewBtn = document.getElementById('viewModeBtn');
+        const viewIcon = document.getElementById('viewModeIcon');
+        const wrapper = document.getElementById('eventsWrapper');
 
-                let mode = 'list'; // default
+        let mode = 'list'; // default
 
-                function updateView() {
-                    wrapper.setAttribute('data-view', mode);
+        function updateView() {
+            wrapper.setAttribute('data-view', mode);
 
-                    if (mode === 'list') {
-                        // ICON LIST:
-                        viewIcon.innerHTML = `
+            if (mode === 'list') {
+                // ICON LIST:
+                viewIcon.innerHTML = `
                     <g transform="translate(-30,-20) scale(1.25)">
                         <rect x="80" y="40" width="100" height="16" rx="8" fill="currentColor"/>
                         <rect x="65" y="73" width="130" height="16" rx="8" fill="currentColor"/>
                         <rect x="50" y="106" width="160" height="84" rx="20" fill="currentColor"/>
                     </g>
                     `;
-                    } else {
-                        // ICON GRID:
-                        viewIcon.innerHTML = `
+            } else {
+                // ICON GRID:
+                viewIcon.innerHTML = `
                         <rect x="20" y="20" width="90" height="90" rx="16" fill="currentColor"/>
                         <rect x="140" y="20" width="90" height="90" rx="16" fill="currentColor"/>
 
@@ -61,19 +61,19 @@
                         <rect x="140" y="140" width="90" height="90" rx="16" fill="currentColor"/>
 
                     `;
-                    }
-                }
+            }
+        }
 
-                updateView();
+        updateView();
 
-                viewBtn.addEventListener('click', () => {
-                    mode = (mode === 'list') ? 'grid' : 'list';
-                    updateView();
-                });
+        viewBtn.addEventListener('click', () => {
+            mode = (mode === 'list') ? 'grid' : 'list';
+            updateView();
+        });
 
-            });
-        </script>
-    @endpush
+    });
+</script>
+@endpush
 
 @endonce
 

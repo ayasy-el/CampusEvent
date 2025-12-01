@@ -1,6 +1,6 @@
 @props([
-    'variant' => 'default', // default, sky, plain
-    'size' => 'md',         // sm, md
+'variant' => 'default', // default, sky, plain
+'size' => 'md', // sm, md
 ])
 
 <span
@@ -26,8 +26,6 @@
         "rounded-full bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-300"=> $variant === "subtle-success",
         "rounded-full bg-sky-50 dark:bg-sky-900/30 border border-sky-100 dark:border-sky-800 text-sky-700 dark:text-sky-300" => $variant === "subtle-info",
         "rounded-full bg-slate-100 dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-slate-600 dark:text-slate-300" => $variant === "subtle-gray",
-    ])}}
->
+    ])}}>
     {{ $slot }}
 </span>
-

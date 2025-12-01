@@ -21,9 +21,9 @@
                 </p>
                 <p class="text-[11px] md:text-xs text-slate-500">
                     @php
-                        $detail = collect([$user?->program_studi, $user?->angkatan])
-                            ->filter()
-                            ->implode(' • ');
+                    $detail = collect([$user?->program_studi, $user?->angkatan])
+                    ->filter()
+                    ->implode(' • ');
                     @endphp
                     {{ $detail !== '' ? $detail : '-' }}
                 </p>

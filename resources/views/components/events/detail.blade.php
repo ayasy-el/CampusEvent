@@ -15,15 +15,15 @@
                         Diselenggarakan oleh {{ $event['organizer'] ?? '-' }}
                     </p>
                     @if (!empty($event['category']))
-                        <p class="text-[11px] text-slate-500 dark:text-slate-400 capitalize">
-                            {{ $event['category'] ?? 'Event' }} • {{ $event['mode'] ?? 'hybrid' }}
-                        </p>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 capitalize">
+                        {{ $event['category'] ?? 'Event' }} • {{ $event['mode'] ?? 'hybrid' }}
+                    </p>
                     @endif
                     @if (!empty($event['benefit']))
-                        <span
-                            class="inline-flex mt-1 text-[11px] text-slate-500 dark:text-slate-400 items-center px-2.5 py-1 rounded-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600">
-                            {{ $event['benefit'] }}
-                        </span>
+                    <span
+                        class="inline-flex mt-1 text-[11px] text-slate-500 dark:text-slate-400 items-center px-2.5 py-1 rounded-full bg-slate-50 dark:bg-slate-700 border border-slate-200 dark:border-slate-600">
+                        {{ $event['benefit'] }}
+                    </span>
                     @endif
                 </div>
             </div>
@@ -51,19 +51,19 @@
         </div>
 
         @php
-            $benefits = array_filter(array_map('trim', explode(',', $event['benefit'] ?? '')));
+        $benefits = array_filter(array_map('trim', explode(',', $event['benefit'] ?? '')));
         @endphp
         @if (!empty($benefits))
-            <div class="grid gap-3 md:grid-cols-2 text-[11px] md:text-xs text-slate-600 dark:text-slate-300">
-                <div class="space-y-1.5">
-                    <p class="font-semibold text-slate-900 dark:text-white text-xs md:text-sm">Benefit Peserta:</p>
-                    <ul class="list-disc list-inside space-y-1">
-                        @foreach ($benefits as $b)
-                            <li>{{ $b }}</li>
-                        @endforeach
-                    </ul>
-                </div>
+        <div class="grid gap-3 md:grid-cols-2 text-[11px] md:text-xs text-slate-600 dark:text-slate-300">
+            <div class="space-y-1.5">
+                <p class="font-semibold text-slate-900 dark:text-white text-xs md:text-sm">Benefit Peserta:</p>
+                <ul class="list-disc list-inside space-y-1">
+                    @foreach ($benefits as $b)
+                    <li>{{ $b }}</li>
+                    @endforeach
+                </ul>
             </div>
+        </div>
         @endif
     </section>
 
@@ -74,18 +74,18 @@
             Agenda &amp; Rundown
         </h2>
         @if (!empty($event['agenda']))
-            <div class="space-y-2 text-[11px] md:text-xs text-slate-600 dark:text-slate-300">
-                @foreach ($event['agenda'] as $item)
-                    <div class="flex gap-3">
-                        <div class="w-20 md:w-24 font-semibold text-slate-800 dark:text-slate-200">
-                            {{ $item['time'] ?? '-' }}
-                        </div>
-                        <p>{{ $item['title'] ?? '-' }}</p>
-                    </div>
-                @endforeach
+        <div class="space-y-2 text-[11px] md:text-xs text-slate-600 dark:text-slate-300">
+            @foreach ($event['agenda'] as $item)
+            <div class="flex gap-3">
+                <div class="w-20 md:w-24 font-semibold text-slate-800 dark:text-slate-200">
+                    {{ $item['time'] ?? '-' }}
+                </div>
+                <p>{{ $item['title'] ?? '-' }}</p>
             </div>
+            @endforeach
+        </div>
         @else
-            <p class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400">Agenda belum dicantumkan.</p>
+        <p class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400">Agenda belum dicantumkan.</p>
         @endif
     </section>
 
@@ -97,29 +97,29 @@
         </h2>
         @php $speakers = collect($event['speakers'] ?? []); @endphp
         @if ($speakers->isNotEmpty())
-            <div class="grid gap-3 md:grid-cols-2">
-                @foreach ($speakers as $speaker)
-                    <div class="flex gap-3">
-                        <div
-                            class="w-12 h-12 min-w-12 rounded-2xl bg-slate-200 dark:bg-slate-700 bg-cover bg-center"
-                            @if (!empty($speaker['photo'])) style="background-image: url('{{ $speaker['photo'] }}')" @endif>
-                        </div>
-                        <div class="text-xs md:text-sm text-slate-700 dark:text-slate-300">
-                            <p class="font-semibold text-slate-900 dark:text-white">{{ $speaker['name'] }}</p>
-                            @if (!empty($speaker['title']))
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ $speaker['title'] }}</p>
-                            @endif
-                            @if (!empty($speaker['bio']))
-                                <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
-                                    {{ Str::limit($speaker['bio'], 140) }}
-                                </p>
-                            @endif
-                        </div>
-                    </div>
-                @endforeach
+        <div class="grid gap-3 md:grid-cols-2">
+            @foreach ($speakers as $speaker)
+            <div class="flex gap-3">
+                <div
+                    class="w-12 h-12 min-w-12 rounded-2xl bg-slate-200 dark:bg-slate-700 bg-cover bg-center"
+                    @if (!empty($speaker['photo'])) style="background-image: url('{{ $speaker['photo'] }}')" @endif>
+                </div>
+                <div class="text-xs md:text-sm text-slate-700 dark:text-slate-300">
+                    <p class="font-semibold text-slate-900 dark:text-white">{{ $speaker['name'] }}</p>
+                    @if (!empty($speaker['title']))
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ $speaker['title'] }}</p>
+                    @endif
+                    @if (!empty($speaker['bio']))
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">
+                        {{ Str::limit($speaker['bio'], 140) }}
+                    </p>
+                    @endif
+                </div>
             </div>
+            @endforeach
+        </div>
         @else
-            <p class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400">Pembicara belum ditambahkan.</p>
+        <p class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400">Pembicara belum ditambahkan.</p>
         @endif
     </section>
 
@@ -132,9 +132,9 @@
         <div class="space-y-2 text-xs md:text-sm text-slate-600 dark:text-slate-300">
             <p class="font-semibold text-slate-900 dark:text-white capitalize">
                 @if (($event['location_type'] ?? 'hybrid') === 'online')
-                    Online Event
+                Online Event
                 @else
-                    {{ $event['location'] ?? 'Lokasi belum ditentukan' }}
+                {{ $event['location'] ?? 'Lokasi belum ditentukan' }}
                 @endif
             </p>
             <p class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400">

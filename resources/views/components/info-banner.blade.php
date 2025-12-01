@@ -1,7 +1,7 @@
 @props([
-    'title',
-    'description',
-    'href' => '#',
+'title',
+'description',
+'href' => '#',
 ])
 
 <div class="mt-6 bg-sky-50/90 dark:bg-sky-900/30 border border-sky-100 dark:border-sky-800 rounded-2xl px-3.5 py-3 md:px-4 md:py-3.5 shadow-sm flex flex-col md:flex-row md:items-center md:justify-between gap-3">

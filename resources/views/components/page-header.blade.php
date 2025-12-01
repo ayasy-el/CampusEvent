@@ -1,6 +1,6 @@
 @props([
-    'title',
-    'description',
+'title',
+'description',
 ])
 
 <section class="mb-4 md:mb-6">

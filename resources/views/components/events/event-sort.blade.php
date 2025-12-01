@@ -2,7 +2,7 @@
 
 <form method="GET" class="flex items-center gap-2 md:gap-3">
     @foreach (collect($hidden) as $key => $val)
-        <input type="hidden" name="{{ $key }}" value="{{ $val }}">
+    <input type="hidden" name="{{ $key }}" value="{{ $val }}">
     @endforeach
     <label for="sort" class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400 whitespace-nowrap">
         Urutkan:
@@ -11,10 +11,10 @@
         <select id="sort" name="sort"
             class="appearance-none text-xs md:text-sm pl-3 pr-8 py-2 rounded-2xl bg-white/70 dark:bg-slate-800/70 border border-slate-100 dark:border-slate-700 text-slate-700 dark:text-slate-200 shadow-sm focus:outline-none focus:ring-2 focus:ring-sky-400/60 cursor-pointer"
             onchange="this.form.submit()">
-            <option value="upcoming" @selected($selected === 'upcoming')>Paling dekat (Upcoming)</option>
-            <option value="newest" @selected($selected === 'newest')>Terbaru ditambahkan</option>
-            <option value="popular" @selected($selected === 'popular')>Paling populer</option>
-            <option value="az" @selected($selected === 'az')>Judul A-Z</option>
+            <option value="upcoming" @selected($selected==='upcoming' )>Paling dekat (Upcoming)</option>
+            <option value="newest" @selected($selected==='newest' )>Terbaru ditambahkan</option>
+            <option value="popular" @selected($selected==='popular' )>Paling populer</option>
+            <option value="az" @selected($selected==='az' )>Judul A-Z</option>
         </select>
         <span class="pointer-events-none absolute inset-y-0 right-2 flex items-center text-slate-400 dark:text-slate-500 text-xs">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">

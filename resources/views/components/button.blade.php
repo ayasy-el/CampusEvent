@@ -1,6 +1,6 @@
 @props([
-    'variant' => 'primary-lg',
-    'href' => '#',
+'variant' => 'primary-lg',
+'href' => '#',
 ])
 
 <a href="{{ $href }}"

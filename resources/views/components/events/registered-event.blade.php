@@ -15,15 +15,15 @@
 
 
     @if ($events->isEmpty())
-        <div class="bg-white/90 border border-dashed border-slate-200 rounded-3xl p-4 text-center text-xs text-slate-500">
-          Kamu belum mendaftar event apapun. Yuk eksplor <span class="font-semibold text-sky-600">Semua Event</span> di atas!
-        </div>
+    <div class="bg-white/90 border border-dashed border-slate-200 rounded-3xl p-4 text-center text-xs text-slate-500">
+        Kamu belum mendaftar event apapun. Yuk eksplor <span class="font-semibold text-sky-600">Semua Event</span> di atas!
+    </div>
     @endif
 
     <div class="grid gap-3 lg:grid-cols-3">
         @foreach ($events as $i => $event)
-            <x-events.event-card :event="$event" :index="$i+1" variant="list" status="registered"
-                :show_detail="true" :show_badges="false" :show_subtitle="false" />
+        <x-events.event-card :event="$event" :index="$i+1" variant="list" status="registered"
+            :show_detail="true" :show_badges="false" :show_subtitle="false" />
         @endforeach
     </div>
 </section>

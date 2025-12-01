@@ -2,7 +2,7 @@ services:
   app:
     build:
       args:
-        user: sammy
+        user: EventCampus
         uid: 1000
       context: ./
       dockerfile: Dockerfile
@@ -14,29 +14,6 @@ services:
       - ./:/var/www
     env_file:
       - .env
-    networks:
-      - campusevent
-    depends_on:
-      db:
-        condition: service_healthy
-
-  db:
-    image: mysql:8.0
-    container_name: campusevent-db
-    restart: unless-stopped
-    environment:
-      MYSQL_DATABASE: campusevent
-      MYSQL_ROOT_PASSWORD: secret
-      MYSQL_PASSWORD: secret
-      MYSQL_USER: campusevent
-      SERVICE_TAGS: dev
-      SERVICE_NAME: mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-psecret"]
-      retries: 5
-      timeout: 10s
-    volumes:
-      - ./.docker/dbdata:/var/lib/mysql
     networks:
       - campusevent
 
