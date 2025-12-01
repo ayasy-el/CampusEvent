@@ -108,14 +108,29 @@ class EventForm
                             ->schema([
                                 Section::make('Waktu Pelaksanaan')
                                     ->schema([
-                                        DatePicker::make('date')
-                                            ->label('Tanggal Event')
+                                        DatePicker::make('start_date')
+                                            ->label('Tanggal Mulai')
                                             ->required()
-                                            ->helperText('Pilih tanggal pelaksanaan event')
+                                            ->helperText('Pilih tanggal mulai event')
                                             ->native(false)
                                             ->displayFormat('d F Y')
                                             ->minDate(now())
-                                            ->columnSpan(2),
+                                            ->live()
+                                            ->afterStateUpdated(function ($state, callable $set, callable $get) {
+                                                $endDate = $get('end_date');
+                                                if ($endDate && $state && $endDate < $state) {
+                                                    $set('end_date', $state);
+                                                }
+                                            })
+                                            ->columnSpan(1),
+
+                                        DatePicker::make('end_date')
+                                            ->label('Tanggal Selesai')
+                                            ->helperText('Kosongkan jika event hanya 1 hari')
+                                            ->native(false)
+                                            ->displayFormat('d F Y')
+                                            ->minDate(fn(callable $get) => $get('start_date') ?? now())
+                                            ->columnSpan(1),
 
                                         TimePicker::make('start_time')
                                             ->label('Waktu Mulai')
@@ -130,7 +145,6 @@ class EventForm
                                             ->helperText('Pilih waktu selesai event')
                                             ->native(false)
                                             ->seconds(false)
-                                            ->after('start_time')
                                             ->columnSpan(1),
                                     ])
                                     ->columns(2),

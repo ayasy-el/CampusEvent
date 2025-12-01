@@ -21,7 +21,8 @@ class Event extends Model
         'benefits',
 
         'agenda',
-        'date',
+        'start_date',
+        'end_date',
         'start_time',
         'end_time',
 
@@ -38,7 +39,8 @@ class Event extends Model
 
     protected $casts = [
         'agenda'        => 'array',
-        'date'          => 'date',
+        'start_date'    => 'date',
+        'end_date'      => 'date',
         'start_time'    => 'datetime:H:i',
         'end_time'      => 'datetime:H:i',
         'quota'         => 'integer',

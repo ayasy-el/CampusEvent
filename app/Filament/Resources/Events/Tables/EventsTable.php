@@ -40,9 +40,16 @@ class EventsTable
                     ->wrap()
                     ->limit(20)
                     ->toggleable(),
-                TextColumn::make('date')
+                TextColumn::make('start_date')
                     ->label('Tanggal')
-                    ->date('d M Y')
+                    ->formatStateUsing(function ($record) {
+                        $start = $record->start_date?->format('d M Y');
+                        $end = $record->end_date?->format('d M Y');
+                        if ($end && $end !== $start) {
+                            return $start . ' - ' . $end;
+                        }
+                        return $start;
+                    })
                     ->sortable()
                     ->alignCenter()
                     ->grow(false),
@@ -163,7 +170,7 @@ class EventsTable
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('date', 'desc')
+            ->defaultSort('start_date', 'desc')
             ->striped()
             ->paginated([10, 25, 50, 100]);
     }

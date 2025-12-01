@@ -17,6 +17,12 @@ class EventFactory extends Factory
         $start = Carbon::instance(fake()->dateTimeBetween(startDate: '+5 days', endDate: '+2 months'));
         $end = (clone $start)->addMinutes(fake()->numberBetween(60, 180));
 
+        // Randomly decide if it's a multi-day event (20% chance)
+        $isMultiDay = fake()->boolean(20);
+        $eventEndDate = $isMultiDay
+            ? (clone $start)->addDays(fake()->numberBetween(1, 3))
+            : null;
+
         $locationType = fake()->randomElement(['offline', 'online', 'hybrid']);
         $locationAddress = $locationType === 'online'
             ? null
@@ -44,7 +50,8 @@ class EventFactory extends Factory
                 ['time' => $start->copy()->addHour()->format('H:i'), 'title' => 'Sesi materi'],
                 ['time' => $end->copy()->subMinutes(30)->format('H:i'), 'title' => 'Tanya jawab'],
             ],
-            'date' => $start->toDateString(),
+            'start_date' => $start->toDateString(),
+            'end_date' => $eventEndDate?->toDateString(),
             'start_time' => $start->format('H:i'),
             'end_time' => $end->format('H:i'),
 

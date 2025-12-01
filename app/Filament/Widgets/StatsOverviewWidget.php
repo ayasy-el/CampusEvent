@@ -15,9 +15,21 @@ class StatsOverviewWidget extends BaseWidget
     protected function getStats(): array
     {
         $totalEvents = Event::count();
-        $upcomingEvents = Event::where('date', '>', now()->toDateString())->count();
-        $ongoingEvents = Event::where('date', '=', now()->toDateString())->count();
-        $completedEvents = Event::where('date', '<', now()->toDateString())->count();
+        $today = now()->toDateString();
+        $upcomingEvents = Event::where('start_date', '>', $today)->count();
+        $ongoingEvents = Event::where('start_date', '<=', $today)
+            ->where(function ($q) use ($today) {
+                $q->whereNull('end_date')
+                    ->orWhere('end_date', '>=', $today);
+            })
+            ->count();
+        $completedEvents = Event::where(function ($q) use ($today) {
+            $q->where('end_date', '<', $today)
+                ->orWhere(function ($q2) use ($today) {
+                    $q2->whereNull('end_date')
+                        ->where('start_date', '<', $today);
+                });
+        })->count();
 
         $totalUsers = User::count();
         $newUsersThisMonth = User::whereMonth('created_at', now()->month)

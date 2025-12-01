@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Builder;
 
 class EventService
 {
@@ -56,10 +57,31 @@ class EventService
         // Quick date filters
         if ($dateFilter) {
             match ($dateFilter) {
-                'today' => $event->whereDate('date', Carbon::today()),
-                'week' => $event->whereBetween('date', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()]),
-                'month' => $event->whereBetween('date', [Carbon::now()->startOfMonth(), Carbon::now()->endOfMonth()]),
-                'upcoming' => $event->whereDate('date', '>=', Carbon::today()),
+                'today' => $event->where('start_date', '<=', Carbon::today())
+                    ->where(function ($q) {
+                        $q->whereNull('end_date')
+                            ->orWhere('end_date', '>=', Carbon::today());
+                    }),
+                'week' => $event->where('start_date', '<=', Carbon::now()->endOfWeek())
+                    ->where(function ($q) {
+                        $q->where('end_date', '>=', Carbon::now()->startOfWeek())
+                            ->orWhere(function ($q2) {
+                                $q2->whereNull('end_date')
+                                    ->where('start_date', '>=', Carbon::now()->startOfWeek());
+                            });
+                    }),
+                'month' => $event->where('start_date', '<=', Carbon::now()->endOfMonth())
+                    ->where(function ($q) {
+                        $q->where('end_date', '>=', Carbon::now()->startOfMonth())
+                            ->orWhere(function ($q2) {
+                                $q2->whereNull('end_date')
+                                    ->where('start_date', '>=', Carbon::now()->startOfMonth());
+                            });
+                    }),
+                'upcoming' => $event->where(function ($q) {
+                    $q->where('start_date', '>=', Carbon::today())
+                        ->orWhere('end_date', '>=', Carbon::today());
+                }),
                 default => null,
             };
         }
@@ -68,7 +90,14 @@ class EventService
         if ($dateFrom || $dateTo) {
             $start = $dateFrom ? Carbon::parse($dateFrom) : Carbon::today();
             $end = $dateTo ? Carbon::parse($dateTo) : Carbon::today()->addYears(5);
-            $event->whereBetween('date', [$start, $end]);
+            $event->where('start_date', '<=', $end)
+                ->where(function ($q) use ($start) {
+                    $q->where('end_date', '>=', $start)
+                        ->orWhere(function ($q2) use ($start) {
+                            $q2->whereNull('end_date')
+                                ->where('start_date', '>=', $start);
+                        });
+                });
         }
 
         // Category filter
@@ -110,12 +139,20 @@ class EventService
 
         // Registration status filter
         if ($registrationStatus === 'open') {
-            $event->whereDate('date', '>', Carbon::today())
-                ->where('status', 'published');
+            $event->where(function ($q) {
+                $q->where('start_date', '>', Carbon::today())
+                    ->orWhere('end_date', '>=', Carbon::today());
+            })->where('status', 'published');
         } elseif ($registrationStatus === 'closed') {
             $event->where(function ($q) {
                 $q->where('status', 'closed')
-                    ->orWhereDate('date', '<=', Carbon::today());
+                    ->orWhere(function ($q2) {
+                        $q2->where('end_date', '<', Carbon::today())
+                            ->orWhere(function ($q3) {
+                                $q3->whereNull('end_date')
+                                    ->where('start_date', '<', Carbon::today());
+                            });
+                    });
             });
         }
 
@@ -134,14 +171,14 @@ class EventService
                 $event->orderByDesc('created_at');
                 break;
             case 'popular':
-                $event->orderByDesc('attendees_count')->orderBy('date');
+                $event->orderByDesc('attendees_count')->orderBy('start_date');
                 break;
             case 'az':
                 $event->orderBy('title');
                 break;
             case 'upcoming':
             default:
-                $event->orderBy('date');
+                $event->orderBy('start_date');
                 break;
         }
 
@@ -179,12 +216,21 @@ class EventService
             ->whereHas('attendees', fn($q) => $q->where('user_id', $user->id))
             ->with('categories')
             ->withCount('attendees')
-            ->orderBy('date');
+            ->orderBy('start_date');
 
         if ($status === 'upcoming') {
-            $query->whereDate('date', '>=', now()->toDateString());
+            $query->where(function ($q) {
+                $q->where('start_date', '>=', now()->toDateString())
+                    ->orWhere('end_date', '>=', now()->toDateString());
+            });
         } elseif ($status === 'past') {
-            $query->whereDate('date', '<', now()->toDateString());
+            $query->where(function ($q) {
+                $q->where('end_date', '<', now()->toDateString())
+                    ->orWhere(function ($q2) {
+                        $q2->whereNull('end_date')
+                            ->where('start_date', '<', now()->toDateString());
+                    });
+            });
         }
 
         return $query->get()->map(function (Event $event) {
@@ -214,7 +260,9 @@ class EventService
                 ->withCount('attendees')
                 ->firstOrFail();
 
-            if ($event->date->isPast()) {
+            // Check if event has ended (use end_date if available, otherwise start_date)
+            $eventEndDate = $event->end_date ?? $event->start_date;
+            if ($eventEndDate->isPast()) {
                 return [
                     'status' => 'closed',
                     'message' => 'Pendaftaran sudah ditutup karena event telah berlangsung.',
@@ -355,7 +403,10 @@ class EventService
             'quota_info' => $quotaInfo,
             'price' => $price,
             'price_display' => $price > 0 ? 'Rp ' . number_format($price, 0, ',', '.') : 'Gratis',
-            'date' => $event->date,
+            'start_date' => $event->start_date,
+            'end_date' => $event->end_date,
+            'date' => $event->start_date, // backward compatibility
+            'date_display' => $this->formatDateRange($event->start_date, $event->end_date),
             'card_status' => $this->resolveCardStatus($event),
             'start_time_obj' => $event->start_time,
             'end_time_obj' => $event->end_time,
@@ -428,6 +479,21 @@ class EventService
         return $start ?: '-';
     }
 
+    protected function formatDateRange($startDate, $endDate): string
+    {
+        if (!$startDate) {
+            return '-';
+        }
+
+        $start = $startDate->translatedFormat('d F Y');
+
+        if ($endDate && $endDate->format('Y-m-d') !== $startDate->format('Y-m-d')) {
+            $end = $endDate->translatedFormat('d F Y');
+            return "{$start} - {$end}";
+        }
+
+        return $start;
+    }
     /**
      * Pastikan path gambar dari Filament dapat diakses publik.
      */
@@ -442,7 +508,9 @@ class EventService
         }
 
         $disk = config('filament.default_filesystem_disk', config('filesystems.default'));
-        return Storage::disk($disk)->url($path);
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $storage */
+        $storage = Storage::disk($disk);
+        return $storage->url($path);
     }
 
     protected function getQuotaInfo(int $quota, int $registered): string
@@ -462,7 +530,9 @@ class EventService
 
     protected function resolveCardStatus(Event $event): string
     {
-        if ($event->status === 'closed' || $event->date->isPast()) {
+        // Use end_date if available, otherwise start_date
+        $eventEndDate = $event->end_date ?? $event->start_date;
+        if ($event->status === 'closed' || $eventEndDate->isPast()) {
             return 'finished';
         }
 
@@ -471,7 +541,8 @@ class EventService
 
     protected function resolveCardStatusForRegistered(Event $event): string
     {
-        return $event->date->isPast() || $event->status === 'closed'
+        $eventEndDate = $event->end_date ?? $event->start_date;
+        return $eventEndDate->isPast() || $event->status === 'closed'
             ? 'finished'
             : 'registered';
     }
@@ -482,7 +553,8 @@ class EventService
             return 'registered';
         }
 
-        if ($event->date->isPast()) {
+        $eventEndDate = $event->end_date ?? $event->start_date;
+        if ($eventEndDate->isPast()) {
             return 'finished';
         }
 

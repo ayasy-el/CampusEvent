@@ -49,9 +49,16 @@ class RecentEventsWidget extends BaseWidget
                     ->separator(',')
                     ->limit(30),
 
-                Tables\Columns\TextColumn::make('date')
+                Tables\Columns\TextColumn::make('start_date')
                     ->label('Tanggal')
-                    ->date('d M Y')
+                    ->formatStateUsing(function ($record) {
+                        $start = $record->start_date?->format('d M Y');
+                        $end = $record->end_date?->format('d M Y');
+                        if ($end && $end !== $start) {
+                            return $start . ' - ' . $end;
+                        }
+                        return $start;
+                    })
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('start_time')

@@ -39,16 +39,38 @@
             <div class="flex items-end justify-end">
                 <div class="flex items-center gap-3">
                     <div class="hidden text-right md:flex flex-col items-end text-[11px] text-slate-200">
-                        <p>{{ $event['date']?->translatedFormat('l, d F Y') }}</p>
+                        <p>{{ $event['date_display'] ?? $event['date']?->translatedFormat('l, d F Y') }}</p>
                         <p>{{ $event['time'] ?? '-' }} WIB • {{ $event['location'] ?? '-' }}</p>
                     </div>
+
+                    @php
+                    $startDate = $event['start_date'] ?? $event['date'];
+                    $endDate = $event['end_date'] ?? null;
+                    $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m-d');
+                    @endphp
+
                     <div class="px-3 py-2 rounded-2xl bg-white/95 text-center min-w-[70px]">
-                        <span
-                            class="text-[10px] uppercase tracking-wide text-slate-500 block">{{ $event['date']?->translatedFormat('D') }}</span>
-                        <span
-                            class="text-lg md:text-xl font-bold leading-none block text-slate-900">{{ $event['date']?->format('d') }}</span>
-                        <span
-                            class="text-[10px] text-slate-500 block mt-0.5">{{ $event['date']?->translatedFormat('M') }}</span>
+                        @if($isMultiDay)
+                        {{-- Multi-day: Show range --}}
+                        <span class="text-[9px] uppercase tracking-wide text-slate-500 block">{{ $startDate?->translatedFormat('D') }} - {{ $endDate?->translatedFormat('D') }}</span>
+                        <div class="flex items-center justify-center gap-1">
+                            <span class="text-base md:text-lg font-bold leading-none text-slate-900">{{ $startDate?->format('d') }}</span>
+                            <span class="text-xs text-slate-400">-</span>
+                            <span class="text-base md:text-lg font-bold leading-none text-slate-900">{{ $endDate?->format('d') }}</span>
+                        </div>
+                        <span class="text-[9px] text-slate-500 block mt-0.5">
+                            @if($startDate?->format('M') === $endDate?->format('M'))
+                            {{ $startDate?->translatedFormat('M Y') }}
+                            @else
+                            {{ $startDate?->translatedFormat('M') }} - {{ $endDate?->translatedFormat('M') }}
+                            @endif
+                        </span>
+                        @else
+                        {{-- Single day --}}
+                        <span class="text-[10px] uppercase tracking-wide text-slate-500 block">{{ $startDate?->translatedFormat('D') }}</span>
+                        <span class="text-lg md:text-xl font-bold leading-none block text-slate-900">{{ $startDate?->format('d') }}</span>
+                        <span class="text-[10px] text-slate-500 block mt-0.5">{{ $startDate?->translatedFormat('M') }}</span>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -57,7 +79,7 @@
 
     <!-- Info singkat di mobile -->
     <div class="mt-3 md:hidden text-[11px] text-slate-600 px-1">
-        <p>{{ $event['date']?->translatedFormat('l, d F Y') }} • {{ $event['time'] ?? '-' }} WIB</p>
+        <p>{{ $event['date_display'] ?? $event['date']?->translatedFormat('l, d F Y') }} • {{ $event['time'] ?? '-' }} WIB</p>
         <p>{{ $event['location'] ?? '-' }}</p>
     </div>
 </section>

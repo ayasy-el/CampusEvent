@@ -79,9 +79,16 @@ class EventInfolist
                             ->icon('heroicon-o-clock')
                             ->description('Detail waktu dan tempat pelaksanaan event')
                             ->schema([
-                                TextEntry::make('date')
+                                TextEntry::make('start_date')
                                     ->label('Tanggal')
-                                    ->date('l, d F Y')
+                                    ->formatStateUsing(function ($record) {
+                                        $start = $record->start_date?->translatedFormat('l, d F Y');
+                                        $end = $record->end_date?->translatedFormat('l, d F Y');
+                                        if ($end && $record->end_date?->format('Y-m-d') !== $record->start_date?->format('Y-m-d')) {
+                                            return $start . ' - ' . $end;
+                                        }
+                                        return $start;
+                                    })
                                     ->icon('heroicon-o-calendar-days')
                                     ->weight(FontWeight::SemiBold)
                                     ->color('primary'),
