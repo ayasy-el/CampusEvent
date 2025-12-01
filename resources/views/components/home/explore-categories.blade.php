@@ -31,7 +31,8 @@
 
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4">
         @forelse ($categories as $i => $category)
-            <div
+            <a
+                href="{{ route('events', ['categories' => $category['slug']]) }}"
                 class="group relative overflow-hidden rounded-3xl
                        {{ $wrappers[$i % count($wrappers)] }}
                        p-4 md:p-5 min-h-[88px] md:min-h-[96px]
@@ -48,7 +49,7 @@
                 <h3 class="relative text-sm md:text-base font-semibold text-white tracking-wide drop-shadow">
                     {{ $category['title'] }}
                 </h3>
-            </div>
+            </a>
         @empty
             <p class="text-sm text-slate-600">Belum ada kategori yang terdaftar.</p>
         @endforelse
