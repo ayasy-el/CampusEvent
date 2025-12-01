@@ -15,7 +15,7 @@ class AuthController extends Controller
             return $this->redirectAuthenticatedUser();
         }
 
-        return view('auth.login');
+        return view('pages.auth.login');
     }
 
     public function login(Request $request)
@@ -46,7 +46,7 @@ class AuthController extends Controller
             return $this->redirectAuthenticatedUser();
         }
 
-        return view('auth.register');
+        return view('pages.auth.register');
     }
 
     public function register(Request $request)
