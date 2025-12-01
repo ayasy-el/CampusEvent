@@ -10,6 +10,7 @@ use App\Filament\Resources\Speakers\Schemas\SpeakerInfolist;
 use App\Filament\Resources\Speakers\Tables\SpeakersTable;
 use App\Models\Speaker;
 use BackedEnum;
+use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
@@ -61,6 +62,11 @@ class SpeakerResource extends Resource
         return [
             //
         ];
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        return parent::getEloquentQuery()->withCount('events');
     }
 
     public static function getPages(): array
