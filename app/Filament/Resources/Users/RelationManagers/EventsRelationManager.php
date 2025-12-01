@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\RelationManagers;
 
+use App\Filament\Resources\Events\EventResource;
 use Filament\Actions\AttachAction;
 use Filament\Actions\DetachAction;
 use Filament\Actions\DetachBulkAction;
@@ -16,6 +17,10 @@ class EventsRelationManager extends RelationManager
     protected static string $relationship = 'events';
 
     protected static ?string $title = 'Event yang Diikuti';
+
+    protected static ?string $relatedResource = EventResource::class;
+
+    protected static bool $isLazy = false;
 
     protected static ?string $modelLabel = 'Event';
 

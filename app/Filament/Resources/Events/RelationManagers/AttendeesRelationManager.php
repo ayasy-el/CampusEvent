@@ -24,6 +24,8 @@ class AttendeesRelationManager extends RelationManager
 
     protected static ?string $pluralModelLabel = 'Peserta';
 
+    protected static bool $isLazy = false;
+
     public function table(Table $table): Table
     {
         return $table
@@ -88,7 +90,7 @@ class AttendeesRelationManager extends RelationManager
                 AttachAction::make()
                     ->label('Tambah Peserta')
                     ->preloadRecordSelect()
-                    ->recordSelectOptionsQuery(fn (Builder $query) => $query->where('role', '!=', 'admin'))
+                    ->recordSelectOptionsQuery(fn(Builder $query) => $query->where('role', '!=', 'admin'))
                     ->modalHeading('Tambah Peserta Event')
                     ->modalSubmitActionLabel('Tambah')
                     ->modalWidth('md')

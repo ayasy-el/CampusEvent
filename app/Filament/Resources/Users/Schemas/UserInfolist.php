@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Users\Schemas;
 
+use App\Models\User;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
@@ -56,7 +57,8 @@ class UserInfolist
                     ->formatStateUsing(fn($state): string => $state ? 'Terverifikasi ✓' : 'Belum Terverifikasi')
                     ->color(fn($state): string => $state ? 'success' : 'warning')
                     ->dateTime('d M Y H:i')
-                    ->placeholder('Belum Terverifikasi'),
+                    ->placeholder('Belum Terverifikasi')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin'),
 
                 TextEntry::make('events_count')
                     ->label('Total Event Diikuti')
@@ -64,55 +66,64 @@ class UserInfolist
                     ->color('success')
                     ->icon('heroicon-m-ticket')
                     ->formatStateUsing(fn($state): string => ($state ?? 0) . ' Event')
-                    ->default('0 Event'),
+                    ->default('0 Event')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin'),
 
                 TextEntry::make('nrp')
                     ->label('NRP')
                     ->placeholder('-')
                     ->copyable()
-                    ->icon('heroicon-m-identification'),
+                    ->icon('heroicon-m-identification')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin'),
 
                 TextEntry::make('program_studi')
                     ->label('Program Studi')
                     ->placeholder('-')
-                    ->icon('heroicon-m-book-open'),
+                    ->icon('heroicon-m-book-open')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin'),
 
                 TextEntry::make('angkatan')
                     ->label('Angkatan')
                     ->placeholder('-')
                     ->badge()
                     ->color('info')
-                    ->icon('heroicon-m-calendar'),
+                    ->icon('heroicon-m-calendar')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin'),
 
                 TextEntry::make('no_telepon')
                     ->label('No. Telepon')
                     ->placeholder('-')
                     ->copyable()
                     ->icon('heroicon-m-phone')
-                    ->url(fn($state): ?string => $state ? "tel:{$state}" : null),
+                    ->url(fn($state): ?string => $state ? "tel:{$state}" : null)
+                    ->hidden(fn(?User $record) => $record?->role === 'admin'),
 
                 TextEntry::make('kota')
                     ->label('Kota')
                     ->placeholder('-')
-                    ->icon('heroicon-m-map-pin'),
+                    ->icon('heroicon-m-map-pin')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin'),
 
                 TextEntry::make('bio')
                     ->label('Biografi')
                     ->placeholder('Belum ada biografi')
                     ->markdown()
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->hidden(fn(?User $record) => $record?->role === 'admin'),
 
                 TextEntry::make('created_at')
                     ->label('Terdaftar Pada')
                     ->dateTime('d M Y, H:i')
                     ->icon('heroicon-m-calendar-days')
-                    ->color('success'),
+                    ->color('success')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin'),
 
                 TextEntry::make('updated_at')
                     ->label('Terakhir Diperbarui')
                     ->dateTime('d M Y, H:i')
                     ->icon('heroicon-m-clock')
-                    ->color('warning'),
+                    ->color('warning')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin'),
             ])
             ->columns(2);
     }

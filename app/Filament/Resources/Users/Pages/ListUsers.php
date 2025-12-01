@@ -3,7 +3,7 @@
 namespace App\Filament\Resources\Users\Pages;
 
 use App\Filament\Resources\Users\UserResource;
-use Filament\Actions\CreateAction;
+use App\Filament\Resources\Users\Widgets\AdminUsersTable;
 use Filament\Resources\Pages\ListRecords;
 
 class ListUsers extends ListRecords
@@ -12,8 +12,13 @@ class ListUsers extends ListRecords
 
     protected function getHeaderActions(): array
     {
+        return [];
+    }
+
+    protected function getFooterWidgets(): array
+    {
         return [
-            CreateAction::make(),
+            AdminUsersTable::class,
         ];
     }
 }

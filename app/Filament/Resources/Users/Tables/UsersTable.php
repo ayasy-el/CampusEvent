@@ -6,6 +6,8 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\EditAction;
+use Filament\Actions\CreateAction;
+use App\Filament\Resources\Users\UserResource;
 use Filament\Actions\ViewAction;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Select;
@@ -20,6 +22,8 @@ class UsersTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->modifyQueryUsing(fn($query) => $query->where('role', '!=', 'admin'))
+            ->heading('Mahasiswa')
             ->columns([
                 ImageColumn::make('avatar_url')
                     ->label('Avatar')
@@ -86,7 +90,6 @@ class UsersTable
                     ->badge()
                     ->color(fn(string $state): string => match ($state) {
                         'admin' => 'danger',
-                        'moderator' => 'warning',
                         'user' => 'success',
                         default => 'gray',
                     })
@@ -193,7 +196,6 @@ class UsersTable
                             ->label('Role')
                             ->options([
                                 'user' => 'User',
-                                'moderator' => 'Moderator',
                                 'admin' => 'Admin',
                             ])
                             ->required()
@@ -215,6 +217,12 @@ class UsersTable
                     ->modalSubmitActionLabel('Ya, Hapus')
                     ->modalCancelActionLabel('Batal')
                     ->successNotificationTitle('Pengguna berhasil dihapus'),
+            ])
+            ->headerActions([
+                CreateAction::make('newMahasiswa')
+                    ->label('New Mahasiswa')
+                    ->icon('heroicon-m-user-plus')
+                    ->url(fn(): string => UserResource::getUrl('create', ['role' => 'mahasiswa'])),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

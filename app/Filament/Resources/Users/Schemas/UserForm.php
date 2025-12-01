@@ -57,7 +57,8 @@ class UserForm
                     ->revealable()
                     ->dehydrateStateUsing(fn($state) => Hash::make($state))
                     ->helperText('Password minimal 8 karakter')
-                    ->hiddenOn('edit'),
+                    ->hiddenOn('edit')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
 
                 TextInput::make('password_confirmation')
                     ->label('Konfirmasi Password')
@@ -69,58 +70,65 @@ class UserForm
                     ->revealable()
                     ->dehydrated(false)
                     ->helperText('Harus sama dengan password')
-                    ->hiddenOn('edit'),
+                    ->hiddenOn('edit')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
 
                 TextInput::make('nrp')
                     ->label('NRP')
                     ->maxLength(20)
-                    ->placeholder('Masukkan NRP'),
+                    ->unique(table: User::class, column: 'nrp', ignoreRecord: true)
+                    ->placeholder('Masukkan NRP')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
 
                 TextInput::make('program_studi')
                     ->label('Program Studi')
                     ->maxLength(255)
-                    ->placeholder('Contoh: Teknik Informatika'),
+                    ->placeholder('Contoh: Teknik Informatika')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
 
                 TextInput::make('angkatan')
                     ->label('Angkatan')
                     ->numeric()
                     ->maxLength(4)
-                    ->placeholder('Contoh: 2024'),
+                    ->placeholder('Contoh: 2024')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
 
                 TextInput::make('no_telepon')
                     ->label('No. Telepon')
                     ->tel()
                     ->maxLength(20)
-                    ->placeholder('08xxxxxxxxxx'),
+                    ->placeholder('08xxxxxxxxxx')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
 
                 TextInput::make('kota')
                     ->label('Kota')
                     ->maxLength(255)
-                    ->placeholder('Masukkan nama kota'),
+                    ->placeholder('Masukkan nama kota')
+                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
 
                 Textarea::make('bio')
                     ->label('Biografi')
                     ->maxLength(65535)
                     ->rows(4)
                     ->placeholder('Tulis biografi singkat...')
-                    ->columnSpanFull(),
+                    ->columnSpanFull()
+                    ->hidden(fn(?User $record) => $record?->role === 'admin' || request()?->query('role', 'admin')),
 
                 Select::make('role')
                     ->label('Role')
                     ->options([
                         'mahasiswa' => 'Mahasiswa',
-                        'user' => 'User',
-                        'moderator' => 'Moderator',
                         'admin' => 'Admin',
                     ])
+                    ->disabled()
                     ->required()
-                    ->default('mahasiswa')
-                    ->native(false),
+                    ->default(fn() => request()?->query('role', 'mahasiswa') ?? 'mahasiswa')
+                    ->native(false)
 
-                DateTimePicker::make('email_verified_at')
-                    ->label('Email Terverifikasi')
-                    ->placeholder('Pilih tanggal verifikasi')
-                    ->helperText('Kosongkan jika belum terverifikasi'),
+                // DateTimePicker::make('email_verified_at')
+                //     ->label('Email Terverifikasi')
+                //     ->placeholder('Pilih tanggal verifikasi')
+                //     ->helperText('Kosongkan jika belum terverifikasi'),
             ]);
     }
 }
