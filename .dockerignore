@@ -1,0 +1,16 @@
+.git
+.gitignore
+.env
+.env.backup
+.env.example
+.env.production
+node_modules
+storage/logs
+storage/framework/cache
+.docker/dbdata
+.vscode
+.idea
+.DS_Store
+*.log
+README.md
+.editorconfig
