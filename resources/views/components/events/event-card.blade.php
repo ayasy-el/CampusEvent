@@ -80,8 +80,8 @@
                     </h2>
                     @if ($cardStatus === 'open')
                         <div class="flex items-center gap-1 relative group/extra">
-                            <x-badge variant="subtle-info" size="xs">
-                                {{ $event['category_icon'] }} {{ ucfirst($event['category']) }}
+                            <x-badge variant="minimalist" size="xs">
+                                {{ ucfirst($event['category'] ?? 'Event') }}
                             </x-badge>
                             @if ($extraCount > 0)
                                 <span
@@ -95,11 +95,11 @@
                                     <div class="flex flex-wrap gap-1">
                                         @foreach ($extraNames as $name)
                                             <span
-                                                class="px-1.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px]">{{ $name }}</span>
+                                                class="px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px]">{{ $name }}</span>
                                         @endforeach
                                         @if ($extraCount > $extraNames->count())
                                             <span
-                                                class="px-1.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px]">dll.</span>
+                                                class="px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px]">dll.</span>
                                         @endif
                                     </div>
                                 </div>
@@ -217,8 +217,8 @@
             @endif
             <div class="absolute inset-x-2 bottom-2 flex justify-end flex-wrap gap-1">
                 <div class="flex items-center gap-1 relative group/extra">
-                    <x-badge variant="subtle-info" size="xs">
-                        {{ $event['category_icon'] }} {{ ucfirst($event['category']) }}
+                    <x-badge variant="minimalist" size="xs">
+                        {{ ucfirst($event['category'] ?? 'Event') }}
                     </x-badge>
                     @if ($extraCount > 0)
                         <span
@@ -227,15 +227,15 @@
                             +{{ $extraCount }}
                         </span>
                         <div
-                            class="hidden group-hover/extra:flex absolute bottom-full right-0 mb-1 bg-white text-slate-800 text-[10px] rounded-xl px-2.5 py-2 shadow-lg shadow-slate-200 border border-slate-100 pointer-events-none js-extra-tooltip">
+                            class="hidden group-hover/extra:flex absolute bottom-full right-0 mb-1 bg-white text-slate-800 text-[10px] rounded-xl px-2.5 py-2 border border-slate-100 pointer-events-none js-extra-tooltip">
                             <div class="flex flex-wrap gap-1">
                                 @foreach ($extraNames as $name)
                                     <span
-                                        class="px-1.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px]">{{ $name }}</span>
+                                        class="px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px]">{{ $name }}</span>
                                 @endforeach
                                 @if ($extraCount > $extraNames->count())
                                     <span
-                                        class="px-1.5 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-[10px]">dll.</span>
+                                        class="px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[10px]">dll.</span>
                                 @endif
                             </div>
                         </div>

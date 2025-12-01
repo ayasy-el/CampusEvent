@@ -18,7 +18,7 @@
         "bg-white/70 border border-slate-100 text-slate-700" => $variant === 'default',
         "bg-white/70 border border-sky-100 shadow-sm text-sky-700" => $variant === 'sky',
         "bg-white/70 border border-slate-100" => $variant === 'plain',
-        "bg-white rounded-full shadow-md border border-slate-100 text-slate-700" => $variant === 'minimalist',
+        "bg-white rounded-full shadow-2xs border border-slate-100 text-slate-700" => $variant === 'minimalist',
         "bg-slate-50 border border-slate-200 rounded-full text-slate-600" => $variant === 'outline-dark',
 
         "rounded-full bg-red-50 border border-red-200 text-red-700"=> $variant === "subtle-danger",

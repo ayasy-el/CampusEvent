@@ -345,7 +345,6 @@ class EventService
             'title' => $event->title,
             'category' => $categoryName,
             'category_slug' => $categorySlug,
-            'category_icon' => $this->getCategoryIcon($categorySlug),
             'mode' => $this->formatMode($event->location_type),
             'image' => $this->resolveImageUrl($event->image),
             'organizer' => $event->organizer,
@@ -398,20 +397,6 @@ class EventService
             'registration_status' => $this->resolveRegistrationStatus($event, $isRegistered),
             'is_registered' => $isRegistered,
         ]);
-    }
-
-    protected function getCategoryIcon(string $categorySlug): string
-    {
-        return match ($categorySlug) {
-            'seminar' => '🎓',
-            'workshop' => '🛠️',
-            'kompetisi' => '🏆',
-            'webinar' => '💻',
-            'pelatihan' => '📚',
-            'karir-magang' => '💼',
-            'komunitas' => '🤝',
-            default => '📅',
-        };
     }
 
     protected function formatMode(?string $mode): string

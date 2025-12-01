@@ -16,7 +16,7 @@
             <div class="space-y-2 md:space-y-3 max-w-2xl">
                 <div class="hidden md:inline-flex flex-wrap items-center gap-2">
                     <span class="px-3 py-1 rounded-full bg-sky-100/90 text-[11px] md:text-xs text-sky-800 font-medium">
-                        {{ $event['category_icon'] ?? '📅' }} {{ $event['category'] ?? 'Event' }}
+                        {{ $event['category'] ?? 'Event' }}
                     </span>
                     <span
                         class="px-3 py-1 rounded-full bg-emerald-100/90 text-[11px] md:text-xs text-emerald-800 font-medium capitalize">

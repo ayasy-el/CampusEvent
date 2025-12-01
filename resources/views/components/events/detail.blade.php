@@ -16,14 +16,15 @@
                     </p>
                     @if (!empty($event['category']))
                         <p class="text-[11px] text-slate-500 capitalize">
-                            {{ $event['category_icon'] ?? '📅' }} {{ $event['category'] }} • {{ $event['mode'] ?? 'hybrid' }}
+                            {{ $event['category'] ?? 'Event' }} • {{ $event['mode'] ?? 'hybrid' }}
                         </p>
                     @endif
                     @if (!empty($event['benefit']))
-                    <span class="inline-flex mt-1 text-[11px] text-slate-500 items-center px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200">
-                        {{ $event['benefit'] }}
-                    </span>
-                @endif
+                        <span
+                            class="inline-flex mt-1 text-[11px] text-slate-500 items-center px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200">
+                            {{ $event['benefit'] }}
+                        </span>
+                    @endif
                 </div>
             </div>
             <div class="flex flex-wrap gap-2 text-[11px] text-slate-500">
