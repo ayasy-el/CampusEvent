@@ -14,6 +14,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
 
 class AdminUsersTable extends TableWidget
@@ -35,7 +36,7 @@ class AdminUsersTable extends TableWidget
                 ImageColumn::make('avatar_url')
                     ->label('Avatar')
                     ->circular()
-                    ->defaultImageUrl(url('/images/default-avatar.png'))
+                    ->defaultImageUrl(Storage::url('default-avatar.png'))
                     ->size(48),
                 TextColumn::make('name')
                     ->label('Nama Lengkap')

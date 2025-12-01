@@ -27,7 +27,7 @@
                 </article>
             @endforelse
 
-            <article
+            {{-- <article
                 class="hidden lg:block bg-white rounded-2xl shadow-md shadow-slate-200/60 border border-dashed border-slate-200">
                 <div class="h-full flex flex-col items-center justify-center px-4 py-5 text-center">
                     <p class="text-xs text-slate-500 mb-2">
@@ -37,7 +37,7 @@
                         Daftarkan Eventmu
                     </x-button>
                 </div>
-            </article>
+            </article> --}}
         </div>
     </div>
 </section>

@@ -16,7 +16,7 @@ class HomeController extends Controller
         $events = $this->eventService
             ->getPublishedEvents(['date' => 'upcoming', 'sort' => 'upcoming']);
 
-        $upcomingEvents = $events->take(3);
+        $upcomingEvents = $events->take(4);
         $eventsCount = $events->count();
 
         $featuredEvent = $this->eventService

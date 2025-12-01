@@ -9,6 +9,7 @@ use Filament\Schemas\Components\Group;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 use Filament\Support\Enums\FontWeight;
+use Illuminate\Support\Facades\Storage;
 
 class EventInfolist
 {
@@ -22,7 +23,7 @@ class EventInfolist
                         Flex::make([
                             ImageEntry::make('image')
                                 ->label('Gambar Event')
-                                ->defaultImageUrl(url('/images/placeholder.png'))
+                                ->defaultImageUrl(Storage::url('placeholder.png'))
                                 ->height(300)
                                 ->grow(false)
                                 ->extraAttributes([

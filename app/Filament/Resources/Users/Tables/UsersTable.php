@@ -14,6 +14,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Illuminate\Support\Facades\Storage;
 use Filament\Tables\Table;
 use App\Models\User;
 
@@ -28,7 +29,7 @@ class UsersTable
                 ImageColumn::make('avatar_url')
                     ->label('Avatar')
                     ->circular()
-                    ->defaultImageUrl(url('/images/default-avatar.png'))
+                    ->defaultImageUrl(Storage::url('default-avatar.png'))
                     ->size(40),
 
                 TextColumn::make('name')

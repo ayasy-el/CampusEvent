@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
 
 class SpeakersTable
 {
@@ -23,7 +24,7 @@ class SpeakersTable
                 ImageColumn::make('photo')
                     ->label('Foto')
                     ->circular()
-                    ->defaultImageUrl(url('/images/default-avatar.png'))
+                    ->defaultImageUrl(Storage::url('default-avatar.png'))
                     ->size(50),
 
                 TextColumn::make('name')

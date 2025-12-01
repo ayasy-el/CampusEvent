@@ -20,7 +20,7 @@ class EventsTable
                     ->label('Gambar')
                     ->circular()
                     ->size(40)
-                    ->defaultImageUrl(url('/images/placeholder.png'))
+                    ->defaultImageUrl(url('https://oakglenn.com/wp-content/uploads/2022/01/dummy-image-Placeholder.jpg'))
                     ->grow(false),
                 TextColumn::make('title')
                     ->label('Judul')

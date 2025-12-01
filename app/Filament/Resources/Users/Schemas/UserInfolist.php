@@ -6,6 +6,7 @@ use App\Models\User;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\TextEntry;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class UserInfolist
 {
@@ -16,7 +17,7 @@ class UserInfolist
                 ImageEntry::make('avatar_url')
                     ->label('Avatar')
                     ->circular()
-                    ->defaultImageUrl(url('/images/default-avatar.png'))
+                    ->defaultImageUrl(Storage::url('default-avatar.png'))
                     ->size(120),
 
                 TextEntry::make('name')

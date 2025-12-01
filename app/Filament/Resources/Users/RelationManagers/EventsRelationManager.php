@@ -11,6 +11,7 @@ use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 
 class EventsRelationManager extends RelationManager
 {
@@ -42,7 +43,7 @@ class EventsRelationManager extends RelationManager
                 ImageColumn::make('image')
                     ->label('Gambar')
                     ->size(60)
-                    ->defaultImageUrl(url('/images/placeholder.png')),
+                    ->defaultImageUrl(Storage::url('placeholder.png')),
 
                 TextColumn::make('title')
                     ->label('Judul Event')

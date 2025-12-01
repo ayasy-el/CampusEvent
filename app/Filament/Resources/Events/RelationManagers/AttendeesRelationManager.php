@@ -10,6 +10,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Builder;
 
 class AttendeesRelationManager extends RelationManager
@@ -33,7 +34,7 @@ class AttendeesRelationManager extends RelationManager
                 ImageColumn::make('avatar_url')
                     ->label('Avatar')
                     ->circular()
-                    ->defaultImageUrl(url('/images/default-avatar.png'))
+                    ->defaultImageUrl(Storage::url('default-avatar.png'))
                     ->size(40),
 
                 TextColumn::make('name')
