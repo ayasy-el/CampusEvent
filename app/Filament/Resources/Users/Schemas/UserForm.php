@@ -77,12 +77,14 @@ class UserForm
                     ->maxLength(20)
                     ->unique(table: User::class, column: 'nrp', ignoreRecord: true)
                     ->placeholder('Masukkan NRP')
+                    ->required(fn(Get $get, ?User $record) => ($get('role') ?? $record?->role) === 'mahasiswa')
                     ->hidden(fn(Get $get, ?User $record, string $operation) => ($operation === 'create' && $get('role') === 'admin') || $record?->role === 'admin'),
 
                 TextInput::make('program_studi')
                     ->label('Program Studi')
                     ->maxLength(255)
                     ->placeholder('Contoh: Teknik Informatika')
+                    ->required(fn(Get $get, ?User $record) => ($get('role') ?? $record?->role) === 'mahasiswa')
                     ->hidden(fn(Get $get, ?User $record, string $operation) => ($operation === 'create' && $get('role') === 'admin') || $record?->role === 'admin'),
 
                 TextInput::make('angkatan')
@@ -90,6 +92,7 @@ class UserForm
                     ->numeric()
                     ->maxLength(4)
                     ->placeholder('Contoh: 2024')
+                    ->required(fn(Get $get, ?User $record) => ($get('role') ?? $record?->role) === 'mahasiswa')
                     ->hidden(fn(Get $get, ?User $record, string $operation) => ($operation === 'create' && $get('role') === 'admin') || $record?->role === 'admin'),
 
                 TextInput::make('no_telepon')
@@ -122,6 +125,18 @@ class UserForm
                     ->disabled()
                     ->required()
                     ->default(fn() => request()?->query('role', 'mahasiswa') ?? 'mahasiswa')
+                    ->afterStateHydrated(function (Select $component, $state, ?User $record) {
+                        if ($record) {
+                            return;
+                        }
+
+                        $role = request()?->query('role');
+
+                        if (filled($role)) {
+                            $component->state($role);
+                        }
+                    })
+                    ->dehydrated(fn(string $operation) => $operation === 'create')
                     ->native(false)
 
                 // DateTimePicker::make('email_verified_at')
