@@ -47,7 +47,7 @@ $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m
         <div class="relative hidden md:flex w-25 h-25 rounded-2xl overflow-hidden bg-slate-200 flex-shrink-0">
             <img src="{{ $event['image'] }}" alt="{{ $event['title'] }}" @class([ 'w-full h-full object-cover' , 'grayscale'=> $cardStatus === 'finished',
             ]) />
-            <div class="absolute top-1 left-1 px-1.5 py-1 rounded-2xl bg-slate-900/90 text-white text-center min-w-[44px]">
+            <div class="absolute top-1 left-1 px-2 py-2 rounded-2xl bg-slate-900/90 text-white text-center min-w-[44px]">
                 @if($isMultiDay)
                 <span class="text-[8px] uppercase tracking-wide text-slate-200 block">{{ $startDate->translatedFormat('D') }} - {{ $endDate->translatedFormat('D') }}</span>
                 <div class="flex items-center justify-center gap-0.5">
@@ -70,7 +70,7 @@ $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m
             </div>
         </div>
         @else
-        <div class="hidden md:flex flex-col items-center justify-center px-4 py-2 bg-slate-900 text-white rounded-xl min-w-[68px]">
+        <div class="hidden md:flex flex-col items-center justify-center px-4 py-2 bg-slate-900 text-white rounded-xl w-25 h-25 flex-shrink-0">
             @if($isMultiDay)
             <span class="text-[9px] uppercase text-slate-300">{{ $startDate->translatedFormat('D') }} - {{ $endDate->translatedFormat('D') }}</span>
             <div class="flex items-center justify-center gap-0.5">
@@ -210,7 +210,7 @@ $isMultiDay = $endDate && $endDate->format('Y-m-d') !== $startDate?->format('Y-m
         <img src="{{ $event['image'] }}"
             class="w-full h-full object-cover group-hover:scale-[1.03] transition" />
 
-        <div class="absolute top-2 left-2 px-2 py-1.5 bg-slate-900/90 text-white rounded-2xl text-center">
+        <div class="absolute top-2 left-2 px-2.5 py-2.5 bg-slate-900/90 text-white rounded-2xl text-center">
             @if($isMultiDay)
             <span class="text-[8px] uppercase text-slate-200 block">{{ $startDate->translatedFormat('D') }} - {{ $endDate->translatedFormat('D') }}</span>
             <div class="flex items-center justify-center gap-0.5">

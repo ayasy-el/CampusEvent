@@ -11,8 +11,12 @@
         <div class="mb-4 md:mb-5">
             <div @class([
                 'rounded-2xl border p-3.5 md:p-4 text-sm',
-                'bg-emerald-50 border-emerald-100 text-emerald-800' => session('success'),
-                'bg-red-50 border-red-100 text-red-700' => session('error'),
+                // success (green)
+                'bg-emerald-50 border-emerald-100 text-emerald-800
+                dark:bg-emerald-900/40 dark:border-emerald-700 dark:text-emerald-200' => session('success'),
+                // error (red)
+                'bg-red-50 border-red-100 text-red-700
+                dark:bg-red-900/40 dark:border-red-700 dark:text-red-200' => session('error'),
             ])>
                 <p class="font-semibold mb-0.5">
                     {{ session('success') ? 'Berhasil' : 'Gagal' }}

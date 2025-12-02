@@ -1,13 +1,13 @@
-<div class="inline-flex items-center text-[11px] md:text-xs bg-white/80 border border-slate-100 rounded-full p-1 shadow-sm"
+<div class="inline-flex items-center text-[11px] md:text-xs bg-white/80 dark:bg-slate-800/95 border border-slate-100 dark:border-slate-700 rounded-full p-1 shadow-sm"
     id="event-filter">
     <button type="button" data-filter="semua"
-        class="cursor-pointer px-3 py-1 rounded-full bg-slate-900 text-white font-medium">
+        class="cursor-pointer px-3 py-1 rounded-full bg-slate-900 dark:text-slate-200 text-white font-medium">
         Semua
     </button>
-    <button type="button" data-filter="mendatang" class="cursor-pointer px-3 py-1 rounded-full text-slate-500">
+    <button type="button" data-filter="mendatang" class="cursor-pointer px-3 py-1 rounded-full text-slate-500 dark:text-slate-400">
         Mendatang
     </button>
-    <button type="button" data-filter="riwayat" class="cursor-pointer px-3 py-1 rounded-full text-slate-500">
+    <button type="button" data-filter="riwayat" class="cursor-pointer px-3 py-1 rounded-full text-slate-500 dark:text-slate-400">
         Riwayat
     </button>
 </div>
@@ -25,12 +25,12 @@
 
                 function setActiveButton(activeBtn) {
                     buttons.forEach(btn => {
-                        btn.classList.remove('bg-slate-900', 'text-white', 'font-medium');
-                        btn.classList.add('text-slate-500');
+                        btn.classList.remove('bg-slate-900', 'text-white', 'font-medium', 'dark:text-slate-200');
+                        btn.classList.add('text-slate-500', 'dark:text-slate-400');
 
                         if (btn === activeBtn) {
-                            btn.classList.add('bg-slate-900', 'text-white', 'font-medium');
-                            btn.classList.remove('text-slate-500');
+                            btn.classList.add('bg-slate-900', 'text-white', 'font-medium', 'dark:text-slate-200');
+                            btn.classList.remove('text-slate-500', 'dark:text-slate-400');
                         }
                     });
                 }

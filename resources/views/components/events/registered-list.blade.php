@@ -7,7 +7,7 @@
     <section data-section="mendatang">
         <div class="flex items-center justify-between mb-3 md:mb-4">
             <div>
-                <h2 class="text-lg md:text-xl font-bold text-slate-900">
+                <h2 class="text-lg md:text-xl font-bold text-slate-900 dark:text-white">
                     Event Terdaftar – Mendatang
                 </h2>
                 <p class="text-[11px] md:text-xs text-slate-500">
@@ -20,7 +20,7 @@
         </div>
 
         @if ($upcomingEvents->isEmpty())
-            <div class="bg-white/90 border border-dashed border-slate-200 rounded-3xl p-4 text-center text-xs text-slate-500">
+            <div class="bg-white/90 dark:bg-slate-800/95 border border-dashed border-slate-200 dark:border-slate-700 rounded-3xl p-4 text-center text-xs text-slate-500 dark:text-slate-200">
                 Kamu belum mendaftar event mendatang. Yuk jelajahi
                 <a href="{{ route('events') }}" class="font-semibold text-sky-600">Semua Event</a>!
             </div>
@@ -37,10 +37,10 @@
     <section data-section="riwayat">
         <div class="flex items-center justify-between mb-3 md:mb-4">
             <div>
-                <h2 class="text-lg md:text-xl font-bold text-slate-900">
+                <h2 class="text-lg md:text-xl font-bold text-slate-900 dark:text-white">
                     Riwayat Event (History)
                 </h2>
-                <p class="text-[11px] md:text-xs text-slate-500">
+                <p class="text-[11px] md:text-xs text-slate-500 dark:text-slate-400">
                     Event yang sudah kamu ikuti atau sudah lewat.
                 </p>
             </div>
@@ -48,7 +48,7 @@
         </div>
 
         @if ($pastEvents->isEmpty())
-            <div class="bg-white/90 border border-dashed border-slate-200 rounded-3xl p-4 text-center text-xs text-slate-500">
+            <div class="bg-white/90 dark:bg-slate-800/95 border border-dashed border-slate-200 dark:border-slate-700 rounded-3xl p-4 text-center text-xs text-slate-500 dark:text-slate-200">
                 Belum ada riwayat event. Mulai daftar event baru di
                 <a href="{{ route('events') }}" class="font-semibold text-sky-600">Semua Event</a>.
             </div>

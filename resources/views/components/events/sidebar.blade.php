@@ -66,7 +66,9 @@
                     Kamu sudah terdaftar pada event ini.
                 </p>
                 <button type="submit"
-                    class="cursor-pointer w-full px-4 py-2.5 rounded-full text-sm font-semibold border border-red-200 text-red-600 bg-red-50 hover:bg-red-100">
+                    class="cursor-pointer w-full px-4 py-2.5 rounded-full text-sm font-semibold
+                        border border-red-300 text-red-700 bg-red-100 hover:bg-red-200
+                        dark:border-red-500 dark:text-red-200 dark:bg-red-700/40 dark:hover:bg-red-600/50">
                     Batalkan Pendaftaran
                 </button>
             </form>
