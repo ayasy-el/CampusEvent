@@ -9,6 +9,8 @@ class UsersOverviewWidget extends ChartWidget
 {
     protected ?string $heading = 'Pengguna Per Bulan';
 
+    protected static bool $isLazy = false;
+
     protected static ?int $sort = 4;
 
     protected function getData(): array

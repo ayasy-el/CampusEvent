@@ -28,7 +28,7 @@ class AdminPanelProvider extends PanelProvider
             ->login(fn() => redirect()->route('login'))
             ->brandName('CampusEvent')
             ->homeUrl(url('/'))
-            ->maxContentWidth('full')
+            ->maxContentWidth('7xl')
             ->favicon(asset('favicon.ico'))
             ->darkMode(true)
             ->colors([

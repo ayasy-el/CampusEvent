@@ -13,6 +13,8 @@ class RecentEventsWidget extends BaseWidget
 
     protected int | string | array $columnSpan = 'full';
 
+    protected static bool $isLazy = false;
+
     public function table(Table $table): Table
     {
         return $table

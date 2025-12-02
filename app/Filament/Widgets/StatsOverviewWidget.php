@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 
 class StatsOverviewWidget extends BaseWidget
 {
+    protected static bool $isLazy = false;
+
     protected function getStats(): array
     {
         $totalEvents = Event::count();

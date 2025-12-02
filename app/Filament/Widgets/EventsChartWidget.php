@@ -10,6 +10,8 @@ class EventsChartWidget extends ChartWidget
 {
     protected ?string $heading = 'Event Per Bulan';
 
+    protected static bool $isLazy = false;
+
     protected static ?int $sort = 2;
 
     protected function getData(): array
