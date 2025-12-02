@@ -15,7 +15,7 @@
 
 
     @if ($events->isEmpty())
-    <div class="bg-white/90 border border-dashed border-slate-200 rounded-3xl p-4 text-center text-xs text-slate-500">
+    <div class="bg-white/90 dark:bg-slate-800/95 border border-dashed border-slate-200 dark:border-slate-700 rounded-3xl p-4 text-center text-xs text-slate-500 dark:text-slate-400">
         Kamu belum mendaftar event apapun. Yuk eksplor <span class="font-semibold text-sky-600">Semua Event</span> di atas!
     </div>
     @endif
